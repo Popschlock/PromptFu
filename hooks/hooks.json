@@ -1,0 +1,31 @@
+{
+  "hooks": {
+    "PreToolUse": [
+      {
+        "matcher": "Agent|Workflow",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "node",
+            "args": ["${CLAUDE_PLUGIN_ROOT}/hooks/pretooluse-reminder.js"],
+            "timeout": 10,
+            "statusMessage": "PromptFu reminder"
+          }
+        ]
+      }
+    ],
+    "UserPromptSubmit": [
+      {
+        "hooks": [
+          {
+            "type": "command",
+            "command": "node",
+            "args": ["${CLAUDE_PLUGIN_ROOT}/hooks/long-prompt-check.js"],
+            "timeout": 15,
+            "statusMessage": "PromptFu length check"
+          }
+        ]
+      }
+    ]
+  }
+}

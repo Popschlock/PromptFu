@@ -1,0 +1,12 @@
+{
+  "name": "promptfu",
+  "owner": { "name": "Popschlock" },
+  "plugins": [
+    {
+      "name": "promptfu",
+      "source": "./",
+      "description": "Rewrites prompts to fit the target Claude model before they run, and picks the model and effort level for you.",
+      "version": "1.0.0"
+    }
+  ]
+}
