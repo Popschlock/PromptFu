@@ -22,11 +22,11 @@ It keeps the meaning of what you wrote and fixes the parts that trip up the mode
 | Model | Best for | Effort |
 | --- | --- | --- |
 | Fable 5 | Ambiguous, judgment heavy work: planning, design review, audits | `high`, or `xhigh` when a wrong call is expensive |
-| Opus 4.8 | Security, bio, or competing-model work, or anything where you need to read the reasoning | Adaptive thinking, `xhigh` for coding and agentic work |
+| Opus 5 | Security, bio, or competing-model work, hard agentic coding, or anything where you need to read the reasoning | `xhigh` for coding and agentic work; `low`/`medium` hold quality for cheap passes |
 | Sonnet 5 | Well specified building: implement to a spec, refactor against tests, transform data | `high`, lower for cost or latency |
 | Haiku 4.5 | Mechanical work: classify, label, route, format checks, high volume grading | Cheapest tier |
 
-Ask for `auto` and PromptFu picks the model and effort for you, says why, and names the runner up before it writes the prompt.
+Ask for `auto` and PromptFu picks the model and effort for you, says why, and names the runner up before it writes the prompt. Opus 4.8 keeps its profile for legacy dispatch targets and as Fable's mid-run fallback.
 
 Your configured model and effort are a floor. PromptFu can recommend going higher for a hard task, and it can suggest going lower to save tokens on simple work, but it never drops below your setting silently. Every downgrade is surfaced so you can keep the higher level. If you would rather it never suggest a downgrade at all, set the `PROMPTFU_NEVER_DOWNGRADE` environment variable and it holds your configured model and effort or goes higher, never lower. Keep declining downgrades and it will offer to set that for you.
 

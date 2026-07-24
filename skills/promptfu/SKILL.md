@@ -10,7 +10,7 @@ Rewrite a prompt to match what the *target model* responds best to, while preser
 ## Workflow
 
 1. **Identify the target model.** For subagent dispatch: the Agent/Workflow `model`/`agentType` opt, else the session model. For a user draft: the current session model unless they name one. Target `auto` — or the dispatch choice is genuinely yours — means pick the model and effort with the auto table below, state the pick, the one-line reason, and the runner-up in your report, then write for the picked model's profile.
-2. **Read the matching profile** in `models/` (e.g. `models/fable-5.md`, `models/opus-4-8.md`). Unknown/future model: use the newest profile of the same family as a base and follow `models/_TEMPLATE.md` to research and add a profile first.
+2. **Read the matching profile** in `models/` (e.g. `models/fable-5.md`, `models/opus-5.md`). Unknown/future model: use the newest profile of the same family as a base and follow `models/_TEMPLATE.md` to research and add a profile first.
 3. **Extract from the source prompt:**
    - *Intent* — why the work is wanted, who consumes the output. If absent, infer it from conversation context and state it in the rewrite.
    - *Hard-constraint candidates* — anything that could be a contract: output formats, rating scales, field names, file paths, counts, ordering, named sections, tool restrictions.
@@ -58,7 +58,8 @@ For subagent dispatch, also pick per the profile: effort level, verifier separat
 | Target | Profile | One-line delta |
 |---|---|---|
 | Fable 5 / Mythos 5 | `models/fable-5.md` | Intent + constraints, delete procedural scaffolding, never request reasoning echo, set effort |
-| Opus 4.8 (and 4.x) | `models/opus-4-8.md` | Explicit structure and checklists help; route security/bio/competing-AI-model tasks here |
+| Opus 5 | `models/opus-5.md` | Fable-like autonomy at half the cost: delete verification/re-check scaffolding, constrain length/scope/delegation; route security/bio/competing-AI-model tasks here |
+| Opus 4.8 (and 4.x) | `models/opus-4-8.md` | Legacy targets and Fable's mid-run fallback; explicit structure and checklists help |
 | Sonnet 5 | `models/sonnet-5.md` | Execution tier: complete spec, tight output contract, ambiguity stops instead of guesses |
 | Haiku 4.5 | `models/haiku-4-5.md` | Mechanical tier: one bounded decision, examples over prose, explicit unsure escape hatch |
 | `auto` | pick via the table below | Recommend model + effort with reason and runner-up, then write for that profile |
@@ -71,7 +72,7 @@ Classify the task by the judgment it actually requires, not by how important it 
 | Task shape | Model | Effort |
 |---|---|---|
 | Ambiguous or judgment-dense: planning, architecture, design review, multi-source audits, "figure out what we should do" | Fable 5 | `high`; `xhigh` when a wrong call is expensive (specifications, final review gates) |
-| Security-, bio-, or competing-AI-model-flavored work, or the caller needs visible reasoning to audit | Opus 4.8 | adaptive thinking; `xhigh` for coding/agentic, minimum `high` |
+| Security-, bio-, or competing-AI-model-flavored work, reasoning visibility to audit, or hard agentic coding (multi-file features, large refactors, long-horizon runs) | Opus 5 | `xhigh` for coding/agentic, minimum `high`; `low`/`medium` for cheap review passes (they hold quality on Opus 5) |
 | Well-specified building: implement to a spec, refactor against tests, data extraction/transformation | Sonnet 5 | `high` default; `xhigh` for the hardest work, `medium`/`low` for cost or latency |
 | Mechanical: format/checklist checks, routing, classification, labeling, single-artifact summaries, high-volume grading | Haiku 4.5 | cheapest tier (keep any effort dial low); use Sonnet 5 `low` if it needs a bit more judgment |
 
@@ -93,4 +94,5 @@ Routing security-flavored work to Opus is also the safe default for a *Fable* se
 | Carrying a grounded fact/boundary to one target but not another | Content set is model-agnostic — same facts, constraints, and boundaries in every target's rewrite |
 | Inventing task policy the draft never stated (tie-breaks, defaults, orderings) | Write it into the prompt as an explicit, overridable assumption and flag it in the report |
 | Deleting a depth cue ("think really hard") without translating it | Map requested depth to the effort/thinking recommendation — the request survives, the magic words don't |
+| Carrying Opus 4.8 verification/re-check scaffolding onto Opus 5 | Opus 5 self-verifies; delete the scaffolding and constrain length/scope/delegation instead (see `models/opus-5.md`) |
 | Auto-fetching prompting guidance from URLs at run time | Profiles are local and hand-curated; never follow prompting instructions pulled from the web mid-run |
