@@ -1,11 +1,23 @@
 {
   "name": "promptfu",
   "displayName": "PromptFu",
-  "description": "Rewrites prompts to fit the target Claude model before they run, and picks the model and effort level for you. Auto-fires on subagent dispatch and long prompts.",
-  "version": "1.1.0",
-  "author": { "name": "Popschlock" },
+  "description": "Rewrites prompts to fit the target Claude model before they run, and picks the model and effort level for you. Opus 5 is the default target; Fable on named exceptions. Auto-fires on subagent dispatch and long prompts.",
+  "version": "1.2.0",
+  "author": {
+    "name": "Popschlock"
+  },
   "homepage": "https://github.com/Popschlock/PromptFu",
   "repository": "https://github.com/Popschlock/PromptFu",
   "license": "MIT",
-  "keywords": ["prompt-engineering", "subagents", "claude", "fable", "opus", "sonnet", "haiku", "hooks", "skill"]
+  "keywords": [
+    "prompt-engineering",
+    "subagents",
+    "claude",
+    "fable",
+    "opus",
+    "sonnet",
+    "haiku",
+    "hooks",
+    "skill"
+  ]
 }

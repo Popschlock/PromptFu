@@ -2,6 +2,18 @@
 
 Last verified 2026-07-13 against the model's official prompting guidance. Re-verify when the model or its docs update.
 
+## Where Fable fits now (updated 2026-07-25)
+
+**Fable is no longer the default for judgment-dense work — Opus 5 is.** Until Opus 5 shipped, the routing rule was "ambiguous or judgment-dense ⇒ Fable"; that rule was written when the alternative was Opus 4.8. On the published benchmarks Opus 5 and Fable 5 now sit close enough that the split mostly buys a session handoff rather than better output, at roughly twice the cost.
+
+Reach for Fable on the exceptions, not by default:
+
+1. **Opus 5 already tried and stalled.** Observed failure is the trigger — not anticipating one.
+2. **Long-form legal, regulatory, or contract analysis**, where Fable's published margin is widest and a miss is quiet and expensive.
+3. **The caller explicitly asks for it**, or a genuinely irreversible fork is worth a second, differently-trained opinion.
+
+Everything below still applies in full whenever Fable *is* the target — the prompting deltas did not change, only when you pick it.
+
 ## Core shift vs Opus
 
 Give **intent + constraints, not procedures**. Fable plans better than manual scaffolding; careful Opus-era prompts (numbered step lists, behavior checklists, flight-manual skills) *degrade* Fable output — it follows your steps faithfully, including the wrong ones. Start with less structure than feels safe; add back only what observed failures justify.
