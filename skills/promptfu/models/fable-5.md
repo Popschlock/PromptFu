@@ -2,6 +2,8 @@
 
 Last verified 2026-07-13 against the model's official prompting guidance. Re-verify when the model or its docs update.
 
+**Fable 5.1 shipped (2026-09).** Its deltas live in `fable-5-1.md`, layered on this file: read this file first, then that one. Target this profile alone only when a dispatch pins Fable 5 by name.
+
 ## Where Fable fits now (updated 2026-07-25)
 
 **Fable is no longer the default for judgment-dense work — Opus 5 is.** Until Opus 5 shipped, the routing rule was "ambiguous or judgment-dense ⇒ Fable"; that rule was written when the alternative was Opus 4.8. On the published benchmarks Opus 5 and Fable 5 now sit close enough that the split mostly buys a session handoff rather than better output, at roughly twice the cost.
