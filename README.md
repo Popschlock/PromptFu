@@ -21,16 +21,16 @@ It keeps the meaning of what you wrote and fixes the parts that trip up the mode
 
 | Model | Best for | Effort |
 | --- | --- | --- |
-| Fable 5 | Ambiguous, judgment heavy work: planning, design review, audits | `high`, or `xhigh` when a wrong call is expensive |
-| Opus 5 | Security, bio, or competing-model work, hard agentic coding, or anything where you need to read the reasoning | `xhigh` for coding and agentic work; `low`/`medium` hold quality for cheap passes |
+| Opus 5 | The default for substantive work: planning, design review, audits, hard agentic coding, and all security, bio, or competing-model work | `xhigh` for coding and agentic work; `high` otherwise; `low`/`medium` hold quality for cheap passes |
+| Fable 5.1 | When Opus 5 at higher effort still falls short, genuinely long-horizon agentic runs, long-form legal or contract analysis, or when you ask for it by name. Also a cost route: Fable 5.1 at `low` often beats Sonnet or Opus at higher effort on cost per task | `high`, or `xhigh` when a wrong call is expensive; `low`/`medium` as the cost route |
 | Sonnet 5 | Well specified building: implement to a spec, refactor against tests, transform data | `high`, lower for cost or latency |
 | Haiku 4.5 | Mechanical work: classify, label, route, format checks, high volume grading | Cheapest tier |
 
-Ask for `auto` and PromptFu picks the model and effort for you, says why, and names the runner up before it writes the prompt. Opus 4.8 keeps its profile for legacy dispatch targets and as Fable's mid-run fallback.
+Ask for `auto` and PromptFu picks the model and effort for you, says why, and names the runner up before it writes the prompt. Fable 5 and Opus 4.8 keep their profiles for dispatches that pin them by name; Opus 4.8 and Opus 5 are Fable 5.1's fallback targets when a safeguard fires mid-run.
 
 Your configured model and effort are a floor. PromptFu can recommend going higher for a hard task, and it can suggest going lower to save tokens on simple work, but it never drops below your setting silently. Every downgrade is surfaced so you can keep the higher level. If you would rather it never suggest a downgrade at all, set the `PROMPTFU_NEVER_DOWNGRADE` environment variable and it holds your configured model and effort or goes higher, never lower. Keep declining downgrades and it will offer to set that for you.
 
-Adding a model is one file. Each model lives in `skills/promptfu/models/`, and there's a `_TEMPLATE.md` to copy. Nothing else changes, so the plugin keeps working as new Claude models ship.
+Adding a model is one file. Each model lives in `skills/promptfu/models/`, and there's a `_TEMPLATE.md` to copy. A point release can be a delta layer on its predecessor, the way `fable-5-1.md` sits on `fable-5.md`. Nothing else changes, so the plugin keeps working as new Claude models ship.
 
 ## Install
 

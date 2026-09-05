@@ -10,9 +10,9 @@ process.stdin.on('data', (c) => (raw += c));
 process.stdin.on('end', () => {
   const context =
     'Before dispatching this subagent, apply the PromptFu skill (promptfu) to its prompt: ' +
-    'read the target-model profile (Fable 5 by default; Opus 5 for security- or bio-flavored ' +
-    'work and hard agentic coding; Sonnet 5 for well-specified building; Haiku 4.5 for mechanical ' +
-    'work), state the intent, ' +
+    'read the target-model profile (Opus 5 by default, including all security- or bio-flavored ' +
+    'work; Fable 5.1 when Opus 5 falls short or the run is genuinely long-horizon; Sonnet 5 for ' +
+    'well-specified building; Haiku 4.5 for mechanical work), state the intent, ' +
     'preserve any hard constraints verbatim, remove reasoning-echo instructions, and set an ' +
     'appropriate effort level. If the prompt already follows PromptFu, proceed.' +
     (NEVER_DOWNGRADE
