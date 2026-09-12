@@ -5,18 +5,24 @@
 // the current model while keeping the spirit of what the user typed.
 //
 // Threshold is configurable with the PROMPTFU_WORD_THRESHOLD env var (default 50).
+// Silenced entirely by the kill switch in gate.js (PROMPTFU_DISABLE env var, or
+// a project `.promptfu` file with `off`).
+const { disabled } = require('./gate');
+
 const THRESHOLD = Number(process.env.PROMPTFU_WORD_THRESHOLD) || 50;
 const NEVER_DOWNGRADE = /^(1|true|yes|on)$/i.test(process.env.PROMPTFU_NEVER_DOWNGRADE || '');
 
 let raw = '';
 process.stdin.on('data', (c) => (raw += c));
 process.stdin.on('end', () => {
-  let prompt = '';
+  let data = {};
   try {
-    prompt = JSON.parse(raw).prompt || '';
+    data = JSON.parse(raw);
   } catch {
     process.exit(0);
   }
+  if (disabled(data.cwd)) process.exit(0);
+  const prompt = data.prompt || '';
   // Skip slash commands and prompts that already mention PromptFu.
   if (/^\s*\//.test(prompt) || /promptfu/i.test(prompt)) process.exit(0);
   const words = prompt.trim().split(/\s+/).filter(Boolean).length;
