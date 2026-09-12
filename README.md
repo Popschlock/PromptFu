@@ -47,6 +47,15 @@ Run `/reload-plugins` or restart the session so the hooks register. Update later
 
 Most of the time you do nothing. It fires on its own before subagent and workflow dispatches, and when you submit a long prompt. To run it by hand, type `/promptfu` and paste your draft. You get back the rewritten prompt, a short list of what changed and why, any assumptions it made, and any refusal risks it caught.
 
+## Turning it off
+
+Sometimes the rewrite pass is the wrong trade: a live tabletop session, a demo, any moment where latency matters more than a tuned prompt. Two switches, checked on every auto-invoke:
+
+- Set the `PROMPTFU_DISABLE` environment variable (`1`, `true`, `yes`, or `on`) and neither hook fires anywhere on the machine.
+- Put a `.promptfu` file at a project's root with `off` as its first line and the hooks stay quiet for that project. Same idea as wlah's `.wlah` file. The file is read on every check, so a script or a skill can create and delete it to toggle PromptFu mid-session.
+
+Either way `/promptfu` still works when you call it by name. The switch only stops the automatic firing.
+
 ## How it's built
 
 ```
