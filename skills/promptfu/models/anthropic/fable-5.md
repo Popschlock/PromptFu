@@ -2,7 +2,7 @@
 
 Last verified 2026-07-13 against the model's official prompting guidance. Re-verify when the model or its docs update.
 
-**Fable 5.1 shipped (2026-09).** Its deltas live in `fable-5-1.md`, layered on this file: read this file first, then that one. Target this profile alone only when a dispatch pins Fable 5 by name.
+**Fable 5.1 shipped (2026-09).** Its deltas live in `fable-5-1.md`, layered on this file: read `_family.md`, then this file, then that one. Target this profile alone only when a dispatch pins Fable 5 by name.
 
 ## Where Fable fits now (updated 2026-07-25)
 
@@ -40,7 +40,7 @@ The classifiers fire on **vocabulary and framing**, not on the task's underlying
 
 - **Reframe defensively and state authorization.** "Security review / audit / harden / assess exposure / pre-launch check of our own authorized code" passes where "find an exploit / write a payload / brute-force / bypass / weaponize" trips. Name who owns the system and that the goal is to protect it.
 - **Never ask for reasoning echo** (`reasoning_extraction`). Preserve auditability with source citations or a send-to-user tool, not "show your reasoning."
-- **When the task is genuinely security, bio, or competing-AI-model work, route it to Opus 4.8 from the start.** Opus is the fallback target and does not carry these classifiers, so routing up front avoids a refuse-then-retry round trip. Auto mode already does this.
+- **When the task is genuinely security, bio, or competing-AI-model work, route it within Anthropic to Opus 5 (or Opus 4.8) from the start.** Opus is the fallback target and does not carry these classifiers, so routing up front avoids a refuse-then-retry round trip. Auto mode already does this.
 - **The orchestrator trips too.** When the *session* model is Fable and you are optimizing a security-flavored subagent prompt, the act of handling that content can trip your own classifier. Keep your own change-report prose defensive and brief, don't quote long offensive-security passages back verbatim, and recommend routing the subagent to Opus.
 - Budget refusals per request: a single turn (an agent plus its subagents) can produce several.
 

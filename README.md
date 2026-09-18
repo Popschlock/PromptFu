@@ -1,36 +1,50 @@
 # PromptFu
 
-Your prompts are often hurting your results. Each model has prompting nuances, and what works for one model will make the results worse in another. As an example, multi-step numbered instructions keep Opus on track and the model will deviate and push back where it needs to meet your goal. Fable will follow those same instructions to the letter, even if those steps are not optimized and could be improved on, so for Fable those steps should be replaced by a goal and the constraints.
+Your prompts are often hurting your results. Each model has prompting habits of its own, and what works for one makes another worse. Numbered step lists keep Opus on track, and it will push back where a step does not serve the goal. Fable follows the same steps to the letter, wrong ones included, so for Fable those steps should become a goal and its constraints. GPT-6 Astra reads a step list as a script and asks before doing anything it was not told to do, so it wants a bias-toward-action line and a stop condition instead. Gemini over-analyzes scaffolding written for older models and wants a short, direct ask with the question last.
 
-Crafting each prompt to work best with the model you are using is time consuming and difficult. That's where PromptFu steps in.
+Crafting each prompt for the model you are on, and for what you are trying to do, is slow. That is where PromptFu steps in.
 
-PromptFu will auto-evaluate and rewrite long, subagent, and workflow prompts to be optimized for the model you are prompting. It will invoke automatically in those situations, or you can invoke the skill manually with /promptfu. You write the messy human version, and PromptFu turns it into what the model responds best to.
+PromptFu rewrites long, subagent and workflow prompts to fit the model that will run them and the kind of task they describe. It fires on its own in those situations in Claude Code, Codex runs it from an `AGENTS.md` line, and you can invoke it by hand with `/promptfu`. You write the messy human version and PromptFu turns it into what the model responds best to, with fewer tokens spent across the run because the first attempt lands.
 
 ## What it does with your prompt
 
-It keeps the meaning of what you wrote and fixes the parts that trip up the model you're on.
+It keeps the meaning of what you wrote and fixes the parts that trip up the model you are on.
 
-- **Adds the intent you left out**, because the model uses your reasons to make the small calls you never spelled out.
-- **Protects your hard constraints:** output formats, column names, rating scales, file paths, counts. It never swaps them for something it thinks is better. If one is unclear and you're at the keyboard, it asks. If it's running on its own, it keeps your version and flags the choice.
-- **Tailors the prompt to each model's best practices.** The same phrase can help one model and hurt another. "think step by step" gives Opus useful structure, but it pushes Fable to follow fixed steps instead of your goal, so PromptFu keeps it for one and drops it for the other. It tells you what it changed and why.
-- **Keeps you off Fable's safety tripwires.** Security, bio, and competing-model work can get refused and bounced to Opus mid-run. PromptFu spots that kind of task, frames it as the defensive work it usually is, and routes it to a model that will just answer.
-- **Never quietly lowers your effort.** It can suggest a cheaper model or effort for simple work, but it won't drop below what you've configured without telling you and leaving you the call.
-- **Adjusts the dispatch:** which model, which effort level, and when to have a second agent double-check the work.
+- **Detects the model in use.** In Claude Code it reads the session model and the `model` option of a subagent call. In Codex it reads the session's `model` and `model_reasoning_effort`, falling back to `~/.codex/config.toml` and saying so. A model or product you name in the request wins over both. The report's first line says what it targeted and how it knew.
+- **Picks the playbook for the task.** A one-shot question, a long agentic run, a tool-calling agent, a deep research brief, an image or video prompt, a multimodal input, a JSON contract, an instruction file or a prompt that keeps failing each get a different block set. The playbook decides which blocks earn their tokens.
+- **Adds the intent you left out**, because every current model uses your reason to make the small calls you never spelled out.
+- **Protects your hard constraints.** Output formats, column names, rating scales, file paths and counts stay as you wrote them. It never swaps them for something it thinks is better. If one is unclear and you are at the keyboard, it asks. Running on its own, it keeps your version and flags the choice.
+- **Tailors the form to the vendor.** Claude gets XML-tagged blocks. GPT gets ALL-CAPS sections and the exact autonomy, tool-policy and style lines OpenAI publishes. Gemini gets direct prose with the context first and the question last. The content is the same in all three.
+- **Keeps you off safety tripwires.** Security, bio and competing-model work can be refused and bounced mid-run on Fable. PromptFu frames it as the defensive work it usually is and routes it to the sibling that answers.
+- **Never quietly lowers your effort.** It can suggest a cheaper model or effort for simple work, and it will not drop below what you configured without telling you and leaving you the call.
+- **Adjusts the dispatch.** It recommends which model, which effort, and when a second agent with fresh context should grade the work.
 
-## Models and effort
+## Models
 
-| Model | Best for | Effort |
+Auto mode picks within the vendor you are running on, says why, and names the runner-up before it writes the prompt. Effort names line up across vendors: Claude `effort` and OpenAI `reasoning.effort` both run `low` to `max`, Codex adds `ultra`, and Gemini `thinking_level` runs `minimal` to `high`.
+
+| Vendor | Default | Step up | Step down | Notes |
+| --- | --- | --- | --- | --- |
+| Anthropic | Opus 5 | Fable 5.1 when Opus 5 at higher effort still falls short, for hours-long agentic runs, long-form legal analysis, or when asked by name | Sonnet 5 for well-specified building, Haiku 4.5 for mechanical work | Fable 5 and Opus 4.8 keep profiles for dispatches that pin them |
+| OpenAI | GPT-5.6 Sol | GPT-6 Astra for the hardest end-to-end and agentic work | Terra for execution, Luna for mechanical work | GPT-5.6 Cyber for authorized security testing. GPT Image 2.5 Flare and Sunburst for images |
+| Google | Gemini 3.8 Flash | 3.1 Pro preview for the hardest reasoning, Deep Think beyond that | 3.5 Flash-Lite for mechanical work | Gemini 3 Pro Image and 3.1 Flash Image for images, Veo 3.1 for video, Deep Research models |
+
+Your configured model and effort are a floor. PromptFu can recommend going higher for a hard task and can suggest going lower to save tokens on simple work, and it never drops below your setting silently. Set the `PROMPTFU_NEVER_DOWNGRADE` environment variable and it holds your configured model and effort or goes higher. Keep declining downgrades and it offers to set that for you.
+
+## Use cases
+
+| You are writing | PromptFu applies | What changes |
 | --- | --- | --- |
-| Opus 5 | The default for substantive work: planning, design review, audits, hard agentic coding, and all security, bio, or competing-model work | `xhigh` for coding and agentic work; `high` otherwise; `low`/`medium` hold quality for cheap passes |
-| Fable 5.1 | When Opus 5 at higher effort still falls short, genuinely long-horizon agentic runs, long-form legal or contract analysis, or when you ask for it by name. Also a cost route: Fable 5.1 at `low` often beats Sonnet or Opus at higher effort on cost per task | `high`, or `xhigh` when a wrong call is expensive; `low`/`medium` as the cost route |
-| Sonnet 5 | Well specified building: implement to a spec, refactor against tests, transform data | `high`, lower for cost or latency |
-| Haiku 4.5 | Mechanical work: classify, label, route, format checks, high volume grading | Cheapest tier |
-
-Ask for `auto` and PromptFu picks the model and effort for you, says why, and names the runner up before it writes the prompt. Fable 5 and Opus 4.8 keep their profiles for dispatches that pin them by name; Opus 4.8 and Opus 5 are Fable 5.1's fallback targets when a safeguard fires mid-run.
-
-Your configured model and effort are a floor. PromptFu can recommend going higher for a hard task, and it can suggest going lower to save tokens on simple work, but it never drops below your setting silently. Every downgrade is surfaced so you can keep the higher level. If you would rather it never suggest a downgrade at all, set the `PROMPTFU_NEVER_DOWNGRADE` environment variable and it holds your configured model and effort or goes higher, never lower. Keep declining downgrades and it will offer to set that for you.
-
-Adding a model is one file. Each model lives in `skills/promptfu/models/`, and there's a `_TEMPLATE.md` to copy. A point release can be a delta layer on its predecessor, the way `fable-5-1.md` sits on `fable-5.md`. Nothing else changes, so the plugin keeps working as new Claude models ship.
+| A quick question or one-line edit | `tasks/short-run.md` | Three blocks, a stated length, and the rewrite comes out shorter |
+| A long autonomous task or migration | `tasks/long-run-agentic.md` | Autonomy policy, a completion test, batching, a scope limiter, a compaction list |
+| An agent that calls tools or MCP servers | `tasks/tool-agents.md` | Tool policy, authority map, a never-invent list, action classes, recovery rules |
+| A research brief | `tasks/deep-research.md` | The seven-layer brief, source tiers, evidence labels, the product's plan controls |
+| An image or an edit | `tasks/image-generation.md` | Deliverable, subject, composition, lighting, text, a preserve list, params outside the prompt |
+| A video clip | `tasks/video-generation.md` | Shot, action, camera, audio, duration, continuity |
+| A prompt with images, PDFs, audio or screenshots attached | `tasks/multimodal-input.md` | An input map with one role per input, an authority map, an unreadable rule |
+| A JSON contract | `tasks/structured-output.md` | Meaning in the prompt, shape in the schema, an unknown value |
+| A system prompt, `AGENTS.md`, `CLAUDE.md` or `SKILL.md` | `tasks/instruction-files.md` | Short triggers, progressive disclosure, permission statements, no duplicated rules |
+| A prompt that keeps failing | `tasks/prompt-debugging.md` | Nine-layer diagnosis and a one-variable loop |
 
 ## Install
 
@@ -43,9 +57,11 @@ In a Claude Code session:
 
 Run `/reload-plugins` or restart the session so the hooks register. Update later with `/plugin marketplace update promptfu`.
 
+For Codex, copy `skills/promptfu/` to `~/.agents/skills/promptfu/` and add one line to `~/.codex/AGENTS.md`: "apply the `promptfu` skill to any prompt over ~50 words before running it." The HIYA umbrella's `scripts/sync_agents.py` does both.
+
 ## Using it
 
-Most of the time you do nothing. It fires on its own before subagent and workflow dispatches, and when you submit a long prompt. To run it by hand, type `/promptfu` and paste your draft. You get back the rewritten prompt, a short list of what changed and why, any assumptions it made, and any refusal risks it caught.
+Most of the time you do nothing. In Claude Code it fires before subagent and workflow dispatches and when you submit a long prompt. To run it by hand, type `/promptfu` and paste your draft, or say which model or product the prompt is for ("optimize this for GPT-6 Astra", "this is for Gemini Deep Research"). You get back the target it resolved, the rewritten prompt, what changed and why, the draft and rewrite word counts, any assumptions it made, and any refusal risks it caught.
 
 ## Turning it off
 
@@ -60,14 +76,20 @@ Either way `/promptfu` still works when you call it by name. The switch only sto
 
 ```
 PromptFu/
-  .claude-plugin/    plugin manifest and marketplace file
-  hooks/             the two auto-invoke hooks, and their scripts
-  skills/promptfu/   the workflow (SKILL.md) and one file per model
+  .claude-plugin/          plugin manifest and marketplace file
+  hooks/                   the two auto-invoke hooks and their scripts
+  skills/promptfu/
+    SKILL.md               the workflow, target resolution, token budget, playbook index
+    harnesses.md           how Claude Code, Codex and Gemini CLI name their model and effort
+    models/<vendor>/       one _family.md per vendor plus one file per model
+    tasks/                 one playbook per task type
 ```
 
-PromptFu uses standardized Claude hooks to work on all platforms. The long prompt threshold defaults to fifty words and you can change it with the `PROMPTFU_WORD_THRESHOLD` environment variable.
+The hooks are standard Claude Code hooks. The long-prompt threshold defaults to fifty words and `PROMPTFU_WORD_THRESHOLD` changes it.
 
-The model files are curated by hand from published prompting guidance. PromptFu never pulls prompting instructions off the web while it runs, so a web page can't change how it rewrites your prompts.
+Adding a model is one file. Copy `models/_TEMPLATE.md` into the vendor's directory and write only what the model changes from its family file. A point release can be a delta on its predecessor the way `anthropic/fable-5-1.md` sits on `fable-5.md`. Adding a task type is one file too, from `tasks/_TEMPLATE.md`, plus a row in the playbook index.
+
+The model files are curated by hand from official prompting guides first and practitioner writeups second, each dated and sourced. PromptFu never pulls prompting instructions off the web while it runs, so a web page cannot change how it rewrites your prompts.
 
 ## License
 
