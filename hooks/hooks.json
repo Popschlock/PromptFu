@@ -9,7 +9,7 @@
             "command": "node",
             "args": ["${CLAUDE_PLUGIN_ROOT}/hooks/pretooluse-reminder.js"],
             "timeout": 10,
-            "statusMessage": "PromptFu reminder"
+            "statusMessage": "PromptFu dispatch check"
           }
         ]
       }

@@ -61,7 +61,7 @@ For Codex, copy `skills/promptfu/` to `~/.agents/skills/promptfu/` and add one l
 
 ## Using it
 
-Most of the time you do nothing. In Claude Code it fires before subagent and workflow dispatches and when you submit a long prompt. To run it by hand, type `/promptfu` and paste your draft, or say which model or product the prompt is for ("optimize this for GPT-6 Astra", "this is for Gemini Deep Research"). You get back the target it resolved, the rewritten prompt, what changed and why, the draft and rewrite word counts, any assumptions it made, and any refusal risks it caught.
+Most of the time you do nothing. In Claude Code it fires when you submit a long prompt (only the text you typed counts, not the notifications Claude Code attaches), and it flags a subagent or workflow dispatch whose prompt shows no PromptFu structure -- that note arrives with the tool result, so it shapes the next dispatch and any SendMessage continuation. To run it by hand, type `/promptfu` and paste your draft, or say which model or product the prompt is for ("optimize this for GPT-6 Astra", "this is for Gemini Deep Research"). You get back the target it resolved, the rewritten prompt, what changed and why, the draft and rewrite word counts, any assumptions it made, and any refusal risks it caught.
 
 ## Turning it off
 
