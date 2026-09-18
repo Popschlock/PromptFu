@@ -5,8 +5,8 @@ Last verified 2026-07-13 against official model guidance. Re-verify on Sonnet po
 ## Where this model fits
 
 - **The execution tier.** Well-specified implementation, refactors backed by tests, data extraction/transformation, structured pipelines, and mechanical verification that still needs some judgment — at roughly a third of frontier cost.
-- Route judgment-dense planning and final review *up* to Fable 5 (or Opus 5 for security/bio/competing-AI-model/reasoning-visibility); route pure-mechanical single-decision work *down* to Haiku 4.5.
-- Canonical stage routing: plan on Fable → implement on Sonnet → review on Fable, with Sonnet also a cheap fresh-context grader for well-specified rubrics.
+- Route judgment-dense planning and final review *up* to Opus 5 (Fable 5.1 on the exceptions in `_family.md`); route pure-mechanical single-decision work *down* to Haiku 4.5.
+- Canonical stage routing: plan on Opus 5 → implement on Sonnet → review on Opus 5, with Sonnet also a cheap fresh-context grader for well-specified rubrics.
 
 ## Prompting posture
 
