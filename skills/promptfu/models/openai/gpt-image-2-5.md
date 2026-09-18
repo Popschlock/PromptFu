@@ -66,6 +66,8 @@ images. `moderation` accepts `auto` (default) or `low` for less restrictive filt
 
 ## Always add
 
+The family file's text blocks (role hierarchy, prose style, slop blocklist, cache-stable prefix, effort ladder) do not apply to an image request. Only the routing table and the API conventions carry over.
+
 - **New image, eight parts in this order** (secondary source): deliverable (asset type and use),
   subject (visible attributes, pose, product geometry), scene, composition (placement regions
   such as "lower-left third", copy-safe zones as percentages, negative space, hierarchy), visual

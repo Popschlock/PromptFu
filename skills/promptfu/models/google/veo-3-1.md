@@ -50,6 +50,8 @@ Every clip carries a SynthID watermark. Only English prompts have been evaluated
 
 ## Always add
 
+The family file's text blocks (thinking level, prose dialect, long-context ordering) do not apply to a video request. Only the routing table and the API conventions carry over.
+
 Google's element list, in this order, each as a short clause: subject, action, style, camera
 position and motion, composition, focus and lens, ambiance, then audio and dialogue. The
 secondary source adds environmental motion, lighting and palette, mood and pacing, continuity and
