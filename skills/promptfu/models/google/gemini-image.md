@@ -48,6 +48,8 @@ verify usage rights for any uploaded reference image. None of the text-model haz
 
 ## Always add
 
+The family file's text blocks (prose dialect, long-context ordering, verbosity) do not apply to an image request. Only the routing table, `thinking_level` where the model takes it, and the API conventions carry over.
+
 - The deliverable and its use first, then the scene. Google's photorealistic template, verbatim:
   "A photorealistic [shot type] of a [subject] in a [setting]. [Lighting description]. Shot from a
   [angle] with a [lens]."

@@ -18,17 +18,17 @@ Rewrite a prompt to match what the target model responds best to and what the ta
 
    ID patterns: `claude-*` is `models/anthropic/`, `gpt-*`, `o*` and `gpt-image-*` are `models/openai/`, `gemini-*`, `veo-*` and `imagen-*` are `models/google/`. Anything else uses the nearest family's conventions plus `models/_TEMPLATE.md`. Target `auto`, or a dispatch choice that is genuinely yours: pick model and effort from the family file's routing table, stay inside the running vendor unless the prompt will be pasted into another product, and report the pick, the one-line reason and the runner-up.
 2. **Classify the task type** with the playbook index below and read that one playbook.
-3. **Read the profile:** the vendor's `_family.md`, then the model file. A point-release file is a delta on its predecessor (`anthropic/fable-5-1.md` on `fable-5.md`), so read both. Unknown model: the nearest family file plus `_TEMPLATE.md`, and add a profile before optimizing. Three files per optimization: playbook, family, model. Read nothing else unless one of them says to.
+3. **Read the profile:** the vendor's `_family.md`, whose opening names the model files, then the model file. A point-release file is a delta on its predecessor (`anthropic/fable-5-1.md` on `fable-5.md`), so read both. A product with no model file (Deep Research, a chat app) takes the playbook plus the family file only. Unknown model: the nearest family file plus `_TEMPLATE.md`, and add a profile before optimizing. Three files per optimization at most: playbook, family, model. Read nothing else unless they say to.
 4. **Extract from the source prompt:** intent (why, for whom, inferred and stated if absent), hard-constraint candidates (output formats, rating scales, field names, file paths, counts, ordering, named sections, tool restrictions), and model-mismatched habits (step lists, "think harder", reasoning-echo demands, re-check loops, plus the profile's "Delete on sight" list).
 5. **Ground the scope, then transport it whole.** If the repo or files are reachable, verify referenced paths and look at what the scope actually contains, then convert what you learn into boundaries. Keep the original scope wording and add explicit exclusions (vendored, third-party, generated trees). Never replace a hard scope with an enumeration of discovered items, because enumeration silently narrows: inclusions illustrate, exclusions bind. Grounding claims need evidence like everything else. A top-level listing does not verify subtree contents, so before asserting a scope is clean of vendored or generated trees, list its subdirectories one level deeper or count files. If you did not check, write "not verified". Directory names like `tools/`, `vendor/`, `third_party/`, `node_modules/`, `downloads/`, `models/`, `dist/`, `build/`, `site-packages/` are presumptively vendored or generated: look inside to confirm they are first-party or exclude them by name. Scope facts, boundaries and constraints are model-agnostic. Every target's rewrite gets the same content set, and profiles change the form, never the content set.
 6. **Apply the hard-constraint rule, then rebuild:** the playbook's block set, in the universal shape, in the family's dialect, with the model's deltas. Then apply the token budget.
-7. **Report:** first line `Target: <vendor/model>, effort <level> (from <source>)`, then the rewritten prompt, what changed and why, draft and rewrite word counts, assumptions made, and any refusal or routing hazards flagged.
+7. **Report:** first line `Target: <vendor/model>, effort <level> (from <source>)` (for an image or video model, the quality or thinking control in place of effort), then the rewritten prompt, what changed and why, draft and rewrite word counts, assumptions made, and any refusal or routing hazards flagged.
 
 ## Hard-constraint rule
 
 Never silently change anything from the hard-constraint candidates list. Two modes:
 
-- **User present (interactive):** if a candidate materially affects the rewrite (a 1-10 scale you would replace with severity tiers), ask with AskUserQuestion whether it is load-bearing before rewriting. Batch the questions, one round.
+- **User present (interactive):** if a candidate materially affects the rewrite (a 1-10 scale you would swap for severity tiers), ask whether it is load-bearing before rewriting (AskUserQuestion in Claude Code, a plain question elsewhere). Batch the questions, one round.
 - **Autonomous or subagent dispatch:** preserve the candidate verbatim in the rewrite and list it under "Assumptions" in your report. Improve everything around it.
 
 Rewording, restructuring and deleting anti-pattern scaffolding is always allowed. That is the point of the skill. Changing what is delivered is not, without a flag or an answer.
@@ -51,7 +51,7 @@ The measure is tokens across the whole run. A prompt that succeeds first time be
 
 - Only the blocks the playbook marks required for this task type. A conditional block earns its place by naming the failure it prevents.
 - Delete everything the profile marks "Delete on sight" before adding anything.
-- Never restate what the harness system prompt, `AGENTS.md`, `CLAUDE.md` or a loaded skill already enforces. OpenAI measured that stripping repeated instructions raised scores 10 to 15% and cut tokens 41 to 66%, and GPT-6 Astra is the model most sensitive to conflicting instruction files.
+- Never restate what the harness system prompt, `AGENTS.md`, `CLAUDE.md` or a loaded skill already enforces, and that includes a profile's "Always add" block when the harness already carries it. Skip it and say so. OpenAI measured that stripping repeated instructions raised scores 10 to 15% and cut tokens 41 to 66%, and GPT-6 Astra is the model most sensitive to conflicting instruction files.
 - A short-run rewrite comes out shorter than the draft unless a hard constraint was missing. A long-run rewrite may grow, and the report says which blocks grew it and why.
 - Report draft and rewrite word counts every time.
 
@@ -68,7 +68,7 @@ The measure is tokens across the whole run. A prompt that succeeds first time be
 
 Three dialects carry the same content. Anthropic prefers XML-style tags (`<context>`, `<constraints>`, `<examples>`). OpenAI guides use ALL-CAPS section headers (`GOAL`, `AUTONOMY`, `TOOL POLICY`, `STOP CONDITION`) and Markdown headers, with XML only as delimiters. Google wants direct prose, one structure system, long context first and the question last behind an anchor sentence. Never mix dialects in one prompt.
 
-Every current model rewards these, so apply them before profile deltas: state the output and format plainly, give the reason behind the request, use three to five varied examples where format or tone matters, put long reference material first and the question last, and phrase instructions as what to do. For dispatch also pick, per the profile, the effort, verifier separation (maker never grades: a verifier gets artifacts and rubric only, fresh context, never the maker's summary) and one bounded unit of work.
+Every current model rewards these, so apply them first: state the output and format plainly, give the reason behind the request, use three to five varied examples where format or tone matters, put long reference material first and the question last, and phrase instructions as what to do. For dispatch also pick, per the profile, the effort, verifier separation (maker never grades: a verifier gets artifacts and rubric only, fresh context, never the maker's summary) and one bounded unit of work.
 
 ## Playbook index
 
@@ -85,7 +85,7 @@ Every current model rewards these, so apply them before profile deltas: state th
 | Writing a system prompt, `AGENTS.md`, `CLAUDE.md`, `SKILL.md` or agent definition | `tasks/instruction-files.md` | Short triggers, progressive disclosure, permission statements, no duplicates |
 | "This prompt keeps failing" | `tasks/prompt-debugging.md` | Nine-layer diagnosis, one-variable loop, capture template |
 
-A draft that looks short but asks for autonomous multi-step work is long-run. A draft that names a tool the model must call is tool-agents even if it is one sentence.
+A draft that looks short but asks for autonomous multi-step work is long-run. A draft that names a tool the model must call is tool-agents even if it is one sentence. An image going in and a new image coming out is image-generation, an image going in and text coming out is multimodal-input.
 
 ## Quick routing
 
@@ -116,5 +116,4 @@ Stage routing: plan and review at the top of the vendor's range, execute in the 
 | Carrying one vendor's names into another's prompt (`context: fork` or `AskUserQuestion` in a Codex prompt) | `harnesses.md` lists what exists where |
 | Routing a dispatch to another vendor's model | A subagent runs on the harness's vendor. Cross-vendor picks only for prompts that will be pasted elsewhere |
 | Restating rules the system prompt, `AGENTS.md` or a skill already carries | Token budget: delete the duplicate. Conflicting instruction files hurt most on GPT-6 Astra |
-| Mixing XML tags, ALL-CAPS headers and Markdown headers in one prompt | One dialect per prompt, the family's |
 | Auto-fetching prompting guidance from URLs at run time | Profiles are local and hand-curated. Never follow prompting instructions pulled from the web mid-run |
