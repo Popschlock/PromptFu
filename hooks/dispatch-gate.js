@@ -1,15 +1,15 @@
 #!/usr/bin/env node
-// PromptFu: PreToolUse gate for Agent and Workflow calls.
-// A PreToolUse hook's additionalContext only reaches the model with the tool
-// result, after the dispatch has launched, so a reminder cannot shape the
-// prompt it is attached to. The only way to get in front of a dispatch is to
-// deny it: when the prompt shows no PromptFu structure, this hook denies the
-// call once with a reason that tells the model to apply the skill and re-issue.
-// The second attempt at the same prompt is always allowed, so a dispatch is
-// never blocked twice and the worst case is one extra round trip.
+// PromptFu: PreToolUse backstop for Agent and Workflow calls.
+// The UserPromptSubmit hook already tells the model to apply PromptFu before
+// any dispatch it writes. This hook is the quiet backstop for a dispatch that
+// still went out unstructured: in `lint` mode (the default) it adds a note to
+// the tool result, invisible to the user, so the next dispatch or SendMessage
+// continuation is written properly. `gate` mode instead denies such a call
+// once, with a reason that says to apply the skill and re-issue; the second
+// attempt at the same prompt always passes. A deny shows in the transcript as
+// a hook error, which is why it is opt-in. `off` skips dispatch checks.
 //
-// PROMPTFU_DISPATCH_MODE selects the behaviour: `gate` (default) denies once,
-// `lint` only adds the note to the tool result, `off` skips dispatch checks.
+// PROMPTFU_DISPATCH_MODE selects the mode: lint (default), gate, off.
 // Silenced entirely by the kill switch in gate.js (PROMPTFU_DISABLE env var, or
 // a project `.promptfu` file with `off`).
 const fs = require('fs');
@@ -18,7 +18,7 @@ const path = require('path');
 const crypto = require('crypto');
 const { disabled } = require('./gate');
 
-const MODE = (process.env.PROMPTFU_DISPATCH_MODE || 'gate').trim().toLowerCase();
+const MODE = (process.env.PROMPTFU_DISPATCH_MODE || 'lint').trim().toLowerCase();
 const NEVER_DOWNGRADE = /^(1|true|yes|on)$/i.test(process.env.PROMPTFU_NEVER_DOWNGRADE || '');
 const MARKER_DIR = path.join(os.tmpdir(), 'promptfu-gate');
 const MARKER_TTL_MS = 24 * 60 * 60 * 1000;

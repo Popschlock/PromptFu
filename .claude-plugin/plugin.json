@@ -2,7 +2,7 @@
   "name": "promptfu",
   "displayName": "PromptFu",
   "description": "Rewrites prompts to fit the model that will run them (Claude, GPT and Codex, Gemini, and image, video and deep-research products), detects the model in use in Claude Code or Codex, picks the model and effort within that vendor, and shapes the prompt to the task type. Auto-fires on subagent dispatch and long prompts. Kill switch: PROMPTFU_DISABLE env var, or a project .promptfu file with `off`.",
-  "version": "2.1.0",
+  "version": "2.1.1",
   "author": {
     "name": "Popschlock"
   },
