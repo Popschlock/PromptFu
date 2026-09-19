@@ -1,8 +1,12 @@
 #!/usr/bin/env node
 // PromptFu: UserPromptSubmit hook.
-// When a submitted prompt runs long (over the word threshold), remind the model
-// to run it through the PromptFu skill before executing, so the ask is tuned to
-// the model in use and the task type while keeping the spirit of what was typed.
+// Every typed prompt gets one quiet line telling the model to apply the
+// PromptFu skill to any subagent or workflow prompt it writes this turn, before
+// the call and without narrating the rewrite. That is the only hook timing that
+// runs ahead of a dispatch: a PreToolUse note arrives with the tool result.
+// A prompt over the word threshold also gets the long-prompt reminder, so the
+// ask itself is tuned to the model in use and the task type while keeping the
+// spirit of what was typed.
 //
 // Only the text the user typed is counted. Claude Code appends its own blocks
 // to the prompt field (system reminders, background-task notifications,
@@ -31,6 +35,12 @@ function typedText(prompt) {
   return text.trim();
 }
 
+const DISPATCH_LINE =
+  'If this turn dispatches a subagent or workflow, apply the PromptFu skill (promptfu) to its prompt ' +
+  'before the call: resolve the target per harnesses.md, read that model\'s family file and profile and ' +
+  'the task playbook, state the intent, preserve any hard constraints verbatim, and set the effort. Do this ' +
+  'silently: send the rewritten prompt and skip the report unless the user asked to see the rewrite.';
+
 let raw = '';
 process.stdin.on('data', (c) => (raw += c));
 process.stdin.on('end', () => {
@@ -46,17 +56,20 @@ process.stdin.on('end', () => {
   // Skip slash commands and prompts that already mention PromptFu.
   if (/^\//.test(prompt) || /promptfu/i.test(prompt)) process.exit(0);
   const words = prompt.split(/\s+/).filter(Boolean).length;
-  if (words <= THRESHOLD) process.exit(0);
-  const context =
-    'This prompt runs long (over ' + THRESHOLD + ' words). Before executing it, apply the PromptFu ' +
-    'skill (promptfu) to restructure the ask for the model in use: resolve the target per harnesses.md, ' +
-    'pick the task playbook, state the intent, preserve any hard constraints verbatim (ask if a ' +
-    'constraint is ambiguous and the user is present), and apply the matching family file and model ' +
-    'profile. Then execute the optimized version, keeping the spirit of what was typed.' +
-    (NEVER_DOWNGRADE
-      ? ' PROMPTFU_NEVER_DOWNGRADE is set: do not propose or apply an effort level or model tier'
-        + ' below what is currently configured; hold at the configured level or higher.'
-      : '');
+  let context = DISPATCH_LINE;
+  if (words > THRESHOLD) {
+    context =
+      'This prompt runs long (over ' + THRESHOLD + ' words). Before executing it, apply the PromptFu ' +
+      'skill (promptfu) to restructure the ask for the model in use: resolve the target per harnesses.md, ' +
+      'pick the task playbook, state the intent, preserve any hard constraints verbatim (ask if a ' +
+      'constraint is ambiguous and the user is present), and apply the matching family file and model ' +
+      'profile. Then execute the optimized version, keeping the spirit of what was typed. ' + DISPATCH_LINE;
+  }
+  if (NEVER_DOWNGRADE) {
+    context +=
+      ' PROMPTFU_NEVER_DOWNGRADE is set: do not propose or apply an effort level or model tier' +
+      ' below what is currently configured; hold at the configured level or higher.';
+  }
   process.stdout.write(
     JSON.stringify({
       suppressOutput: true,
