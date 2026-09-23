@@ -25,7 +25,7 @@ Auto mode picks within the vendor you are running on, says why, and names the ru
 
 | Vendor | Default | Step up | Step down | Notes |
 | --- | --- | --- | --- | --- |
-| Anthropic | Opus 5 | Fable 5.1 when Opus 5 at higher effort still falls short, for hours-long agentic runs, long-form legal analysis, or when asked by name | Sonnet 5 for well-specified building, Haiku 4.5 for mechanical work | Fable 5 and Opus 4.8 keep profiles for dispatches that pin them |
+| Anthropic | Opus 5.5 | Fable 5.1 when Opus 5.5 at higher effort still falls short, for hours-long agentic runs, long-form legal analysis, or when asked by name | Sonnet 5 for well-specified building, Haiku 4.5 for mechanical work | Opus 5, Fable 5 and Opus 4.8 keep profiles for dispatches that pin them |
 | OpenAI | GPT-5.6 Sol | GPT-6 Astra for the hardest end-to-end and agentic work | Terra for execution, Luna for mechanical work | GPT-5.6 Cyber for authorized security testing. GPT Image 2.5 Flare and Sunburst for images |
 | Google | Gemini 3.8 Flash | 3.1 Pro preview for the hardest reasoning, Deep Think beyond that | 3.5 Flash-Lite for mechanical work | Gemini 3 Pro Image and 3.1 Flash Image for images, Veo 3.1 for video, Deep Research models |
 

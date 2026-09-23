@@ -2,6 +2,8 @@
 
 Last verified 2026-07-24 against the official "Prompting Claude Opus 5" guide, "What's new in Claude Opus 5" release notes, and the effort documentation. Re-verify on point releases.
 
+**Superseded as the Anthropic default by Opus 5.5.** `opus-5-5.md` is a delta on this file, so its reader starts here. Target Opus 5 alone only when a dispatch pins it or an Opus 5.5 classifier declined the task.
+
 ## Where Opus 5 fits
 
 - **The workhorse frontier tier: complex agentic coding and enterprise work at half Fable 5's cost** ($5/$25 per MTok, unchanged from Opus 4.8). Strongest on difficult coding: multi-file features, larger refactors, end-to-end feature work. It completes full tasks rather than leaving stubs, and performs best given the complete task specification up front and left to run.
