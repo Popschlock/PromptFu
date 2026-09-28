@@ -2,8 +2,8 @@
 // disabled(cwd) returns true when the hooks should stay quiet:
 //   - the PROMPTFU_DISABLE env var is set to 1/true/yes/on (machine-wide), or
 //   - a `.promptfu` file at the project root has `off` as its first meaningful
-//     line (per project, same idea as wlah's `.wlah` file). The file is read on
-//     every check, so a script or skill can toggle it mid-session.
+//     line (per project). The file is read on every check, so a script or
+//     skill can toggle it mid-session.
 // The switch only stops automatic firing; the /promptfu skill still works by name.
 const fs = require('fs');
 const path = require('path');
