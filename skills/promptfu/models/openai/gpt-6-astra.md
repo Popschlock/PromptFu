@@ -20,8 +20,8 @@ https://codex.danielvaughan.com/2026/09/04/gpt-6-astra-codex-cli-integration-gui
   professional work. It reaches stronger results with substantially fewer output tokens than
   earlier models, so cost per task can beat the headline rate.
 - **Price tier.** $10 input, $1 cached input, $12.50 cache write, $50 output per MTok. That is
-  2.5x GPT-5.6 Sol per token, so benchmark cost per task before moving a workload up (secondary
-  source for the comparison).
+  5x GPT-6.1 Sol and 10x GPT-6.1 Terra per token (model pages, 2026-10-29), so benchmark cost per
+  task before moving a workload up.
 - **Pick it over Sol** for long agentic runs, computer use, multi-hour coding across many files,
   and research or document work where a miss is expensive. Route execution to Terra and
   mechanical work to Luna as the family table says.
@@ -153,7 +153,7 @@ PrompTessor blocks fill gaps OpenAI leaves and are marked as such.
 - Removed parameters: `temperature`, `top_p`, `top_logprobs`, and `logprobs` on Chat
   Completions, plus `message.output_text.logprobs` in `include` on Responses.
 - `prompt_cache_options.ttl: "30m"` replaces `prompt_cache_retention`.
-- `configuration_update` input items are supported on this model only, in standard single-agent
+- `configuration_update` input items are supported on this model and GPT-6.1 Terra, in standard single-agent
   mode.
 - Fast mode (`service_tier: "fast"` or `"priority"`) is unavailable with EU data residency and
   carries no latency SLA on this model. Tools and features are the family set.

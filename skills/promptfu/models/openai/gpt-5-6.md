@@ -2,7 +2,9 @@
 
 Delta on `models/openai/_family.md`. Read the family file first. One profile covers the three
 tiers because OpenAI's guidance is that they share one prompt skeleton and differ in cost,
-latency and reasoning depth. `gpt-5.6-cyber` appears here only as a routing note.
+latency and reasoning depth. `gpt-5.6-cyber` appears here only as a routing note. Since October
+2026 the GPT-6.1 lineup is the default and these tiers are older models, so this profile applies
+when a dispatch pins one (see the family routing table).
 
 Last verified 2026-09-18 against the model pages for `gpt-5.6-sol`, `gpt-5.6-terra`,
 `gpt-5.6-luna` and `gpt-5.6-cyber`, the reasoning guide, the prompt-caching guide, the Codex

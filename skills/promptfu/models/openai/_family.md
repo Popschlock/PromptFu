@@ -1,13 +1,19 @@
 # OpenAI family: what every GPT profile shares
 
 Every profile in `models/openai/` is a delta on this file. Read this file first, then the model
-file (`gpt-6-astra.md`, `gpt-5-6.md`, `gpt-image-2-5.md`). This file holds the API conventions,
-the effort ladder, the structure dialect, the refusal behaviour, the routing table and the Codex
-harness facts. A model file holds only what that model changes.
+file (`gpt-6-astra.md`, `gpt-6-1-terra.md`, `gpt-5-6.md`, `gpt-image-2-5.md`). GPT-6.1 Sol and
+GPT-6 Luna have no file yet: use this file plus the GPT-6 blocks in `gpt-6-astra.md`, which OpenAI
+calls a starting point for the whole GPT-6 family. `gpt-5-6.md` covers the GPT-5.6 tiers for
+dispatches that pin them. This file holds the API conventions, the effort ladder, the structure
+dialect, the refusal behavior, the routing table and the Codex harness facts. A model file holds
+only what that model changes.
 
 Last verified 2026-09-18 against OpenAI's latest-model, reasoning, prompt-engineering, prompt-caching
 and structured-outputs guides, the model pages for `gpt-6-astra` and the four `gpt-5.6-*` tiers, the
-Codex AGENTS.md and subagents docs, and this machine's `~/.codex/models_cache.json`.
+Codex AGENTS.md and subagents docs, and this machine's `~/.codex/models_cache.json`. The routing
+table, effort ladder, caching and Codex facts were verified again on 2026-10-29 against the
+models catalog, the `gpt-6.1-sol`, `gpt-6.1-terra` and `gpt-6-luna` model pages, the latest-model
+and prompt-caching guides, the Codex subagents doc and the models cache.
 Sources: https://developers.openai.com/api/docs/guides/latest-model, .../guides/reasoning,
 .../guides/prompt-engineering, .../guides/prompt-caching, .../guides/structured-outputs,
 https://developers.openai.com/api/docs/models, https://learn.chatgpt.com/docs/agent-configuration/agents-md,
@@ -22,14 +28,18 @@ floor in SKILL.md applies to the configured Codex level.
 | Tier | ID | Price in / cached / out per MTok | Pick it for | Effort |
 |---|---|---|---|---|
 | Flagship | `gpt-6-astra` | $10 / $1 / $50 | The hardest end-to-end work: long agentic coding, computer use, browsing, research and document creation | `high` to start, `xhigh` or `max` for hard architecture and debugging loops |
-| Default for substantive work | `gpt-5.6-sol` (alias `gpt-5.6`) | $4 / $0.40 / $20 | Planning, review, multi-file features, professional writing where quality outweighs cost | `medium` default, `high` for planning and review, `reasoning.mode: "pro"` when latency permits |
-| Execution | `gpt-5.6-terra` | $2 / $0.20 / $12 | Implement to a spec, exploration, scans, document review at half Sol's price | `medium`, `high` for harder specs |
-| Mechanical | `gpt-5.6-luna` | $0.20 / $0.02 / $1.20 | Classification, routing, extraction, repeatable narrow tasks | `none` or `low` |
-| Authorized security | `gpt-5.6-cyber` | $12.50 / $1.25 / $75 | Vulnerability research, exploit validation and security testing by approved defenders only | Responses API only, 400k context |
+| Default for substantive work | `gpt-6.1-sol` | $2 / $0.10 / $10 | Near-Astra performance for complex coding, computer use, planning, review and professional work | `medium` default, `high` for planning and review. No `none` |
+| Vision, computer use, execution | `gpt-6.1-terra` | $1 / $0.05 / $5 | Visual recognition and reasoning, screen and form work, natural writing, high-volume drafting, implementing a clear spec | `medium` to start, `low` for perception, `none` for latency-critical work |
+| Mechanical | `gpt-6-luna` | $0.10 / $0.01 / $0.50 | Classification, routing, extraction, repeatable narrow tasks | `none` or `low` |
+| Authorized security | `gpt-5.6-cyber` | $12.50 / $1.25 / $75 | Vulnerability research, exploit validation and security testing by approved defenders only | Responses API only, 400k context. Price last verified 2026-09-18 |
+
+The GPT-5.6 tiers (`gpt-5.6-sol`, `gpt-5.6-terra`, `gpt-5.6-luna`) and `gpt-6-sol` remain
+available as older models. Pick one only when a dispatch pins it.
 
 Stage routing for multi-step work: plan and review on Sol or Astra, execute on Terra, grade on
-Luna with fresh context and the artifact plus rubric only. Requests over 272K input tokens cost
-2x input and 1.5x output on every tier, so compact before that boundary on long runs.
+Luna with fresh context and the artifact plus rubric only, and grade anything visual
+(screenshots, renders, scans) on Terra. Requests over 272K input tokens cost 2x input and 1.5x
+output on every tier, so compact before that boundary on long runs.
 
 ## Core shift vs the GPT-5 generation
 
@@ -47,9 +57,10 @@ an API parameter, so the prompt carries clarity and the parameter carries effort
 - Instructions repeated across the system prompt, `AGENTS.md` and skills. OpenAI reported that
   leaner system prompts improved evaluation scores by roughly 10 to 15% while cutting total
   tokens by 41 to 66% (secondary source attributing the figure to OpenAI).
-- `temperature`, `top_p`, `top_logprobs` and `logprobs`. Removed on GPT-6 Astra and rejected
-  or ignored depending on SDK version (secondary source for the SDK detail).
-- `prompt_cache_retention`. Replaced by `prompt_cache_options.ttl: "30m"`.
+- `temperature`, `top_p`, `top_logprobs` and `logprobs` whenever reasoning effort is above
+  `none`. The latest-model guide says to remove them, and SDKs reject or ignore them depending
+  on version (secondary source for the SDK detail).
+- `prompt_cache_retention`. Replaced by `prompt_cache_options.ttl`, `"30m"` or `"12h"`.
 - Chat Completions for tool calling. Tool calling on GPT-6 Astra needs the Responses API.
 
 ## Refusal / safety hazards
@@ -92,9 +103,9 @@ the schema field unconditionally. Image models return `moderation_blocked` with 
 
 ## Dispatch settings
 
-- **Effort ladder.** `reasoning.effort` takes `none | low | medium | high | xhigh | max` on the
-  GPT-5.6 family (default `medium`). GPT-6 Astra takes `low` through `max` and returns HTTP 400
-  on `none`. OpenAI's semantics: `none` for latency-critical tasks that gain nothing from
+- **Effort ladder.** `reasoning.effort` takes `none | low | medium | high | xhigh | max` on
+  GPT-6.1 Terra, GPT-6 Luna and the GPT-5.6 tiers (default `medium`). GPT-6 Astra and GPT-6.1 Sol
+  take `low` through `max` and return HTTP 400 on `none`. OpenAI's semantics: `none` for latency-critical tasks that gain nothing from
   reasoning, `low` for speed and cost, `medium` for most workloads, `high` for complex debugging
   and deep planning, `xhigh` for deep research and asynchronous workflows, `max` for the hardest
   problems. Reasoning tokens bill as output tokens and count against `max_output_tokens`, so
@@ -102,13 +113,14 @@ the schema field unconditionally. Image models return `moderation_blocked` with 
 - **Pro mode.** `reasoning.mode: "pro"` on the GPT-5.6 family spends more compute before one
   final answer and stacks on any effort level at standard token rates (reasoning guide names the
   modes, the effort-stacking detail is a secondary source).
-- **Change effort per phase.** On GPT-6 Astra insert a `configuration_update` item with a new
-  `reasoning.effort` between responses. It keeps the cached prefix, cannot sit next to another
+- **Change effort per phase.** On GPT-6 Astra and GPT-6.1 Terra insert a `configuration_update`
+  item with a new `reasoning.effort` between responses, and keep the request-level effort as it
+  was. It keeps the cached prefix, cannot sit next to another
   update, and is incompatible with automatic compaction and truncation.
 - **Reasoning items.** Stateless calls carry `encrypted_content` to pass back. `reasoning.summary`
   of `auto`, `concise` or `detailed` returns a readable summary. Never ask for a reasoning transcript.
 - **Verifiers.** Maker never grades. A fresh Luna or Terra context with the artifact and rubric
-  only is the cheap grader.
+  only is the cheap grader, and Terra is the one for anything visual.
 
 ### Codex
 
@@ -117,10 +129,13 @@ the schema field unconditionally. Image models return `moderation_blocked` with 
   `model_reasoning_effort`), layered with a project `.codex/config.toml`, and overridden by `-m`,
   `--reasoning-effort` or `/model`. If the session settings are not visible, read the config file
   and state that as an assumption.
-- Models on this account per `~/.codex/models_cache.json`: `gpt-6-astra`, `gpt-reserve`,
-  `gpt-5.6-sol`, `gpt-5.6-terra`, `gpt-5.6-luna`, `gpt-5.5`, `codex-auto-review`. Astra, Sol
-  and Terra expose an extra `ultra` effort described as "Maximum reasoning with automatic task
-  delegation". `ultra` is Codex-only and is not an API value.
+- Models on this account per `~/.codex/models_cache.json` (2026-10-29): `gpt-6.1-sol`,
+  `gpt-6-astra`, `gpt-6.1-terra`, `gpt-6-sol`, `gpt-6-luna`, `gpt-5.6-sol`, `gpt-5.6-terra`,
+  `gpt-5.6-luna`, plus the hidden `gpt-reserve` and `codex-auto-review`. Codex offers `low` to
+  `max` on all of them and no `none`. `gpt-6.1-sol`, `gpt-6.1-terra` and `gpt-5.6-sol` default to
+  `low` and the rest to `medium`. Astra, both Sols and both Terras add `ultra`, described as
+  "Maximum reasoning with automatic task delegation". `ultra` is Codex-only and is not an API
+  value.
 - Subagents inherit the parent's model and reasoning effort. Resolution order: the explicit
   spawn request, then `[agents]` defaults (`default_subagent_model`,
   `default_subagent_reasoning_effort`, `max_concurrent_threads_per_session`), then the parent's
@@ -129,8 +144,9 @@ the schema field unconditionally. Image models return `moderation_blocked` with 
 - Custom agents live in `.codex/agents/*.toml` (project) or `~/.codex/agents/` with `name`,
   `description`, `developer_instructions` and optional keys such as `model`, `model_reasoning_effort`
   and `sandbox_mode`. Built-ins: `default`, `worker`, `explorer`. OpenAI's subagent guidance:
-  `gpt-5.6` for demanding multi-step work, `gpt-5.6-terra` for exploration and review,
-  `gpt-5.6-luna` for narrow repeatable work.
+  start with `gpt-6.1-sol`, which is also the model for demanding multi-step agents, and use
+  `gpt-6-luna` for narrow, repeatable or high-volume work and fast scans. It names no model for
+  vision. Give Terra the subagents that read screenshots, drawings or scans.
 - Subagents share the parent's sandbox, permission mode and workspace. Give each bounded
   ownership and acceptance criteria, tell it to preserve other agents' edits, and keep parallel
   write-heavy work rare. Read-heavy fan-out (exploration, triage, summarization) is the sweet
@@ -147,13 +163,18 @@ the schema field unconditionally. Image models return `moderation_blocked` with 
 - Endpoints on every text tier: Chat Completions, Responses and Batch. Realtime, Live, Assistants,
   fine-tuning, embeddings and media endpoints are unsupported. `gpt-5.6-cyber` is Responses only.
 - Context is 1,050,000 tokens and max output 128,000 on every tier, with 922,000 max input on the
-  GPT-5.6 tiers. Knowledge cutoff 2026-02-16 for GPT-5.6 and 2026-04-30 for GPT-6 Astra.
+  GPT-5.6 and GPT-6.1 tiers and GPT-6 Luna. Knowledge cutoff 2026-02-16 for GPT-5.6, 2026-04-30 for
+  GPT-6 Astra and GPT-6.1 Sol, 2026-05-18 for GPT-6 Luna and 2026-06-01 for GPT-6.1 Terra.
 - Tools on every text tier: web search, file search, image generation, code interpreter, hosted
   shell, apply patch, skills, computer use, MCP, tool search. Features: streaming, structured
   outputs, function calling, image input, prompt caching.
-- Caching on GPT-5.6 and later: minimum 1,024 visible input tokens, `prompt_cache_options.ttl`
-  accepts only `"30m"`, reads cost 0.1x and writes 1.25x, and `prompt_cache_key` only separates
-  accounting. GPT-5.6 adds explicit cache breakpoints.
+- Caching on GPT-5.6 and later: minimum 1,024 visible input tokens. `prompt_cache_options.ttl`
+  accepts `"30m"` (default, writes 1.25x input) or `"12h"` (writes 2.5x), and anything else
+  returns HTTP 400. Reads cost 0.1x input, or 0.05x on GPT-6.1 Sol and Terra.
+  `prompt_cache_key` only separates accounting. Explicit breakpoints
+  (`prompt_cache_options.mode: "explicit"`) allow up to four cache writes per request.
+- Fast mode supports EU data residency on GPT-6.1 Sol, GPT-6.1 Terra and GPT-6 Luna. On Luna and
+  GPT-6 Sol, Chat Completions function calling works only at `reasoning_effort: "none"`.
 - `text.verbosity` exists as a request setting (it appears in the cache-invalidation list). Its
   documented values are `low | medium | high` from the GPT-5 generation and were not re-verified
   for GPT-5.6.

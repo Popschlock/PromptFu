@@ -43,7 +43,7 @@ The user's configured session model and effort are a floor. Recommending a highe
 - **Respect `PROMPTFU_NEVER_DOWNGRADE`.** When set (the hooks inject a reminder when it is), do not propose a downgrade at all, auto mode included.
 - **Offer to make it stick.** If the user declines a downgrade more than once, offer to set `PROMPTFU_NEVER_DOWNGRADE` in their settings env.
 
-Effort names line up across vendors as follows. Claude `effort` and OpenAI `reasoning.effort` both run `low | medium | high | xhigh | max` (GPT-5.6 also has `none`, GPT-6 Astra does not, and Codex adds `ultra`, which is `max` plus automatic delegation). Gemini `thinking_level` runs `minimal | low | medium | high`, and which levels a model accepts varies (3.8 Flash rejects `minimal`, see the family file), so Claude or GPT `xhigh` and `max` map to Gemini `high`, with Deep Think (an app mode, no public API ID) for the hardest problems. The floor carries across that mapping when a prompt changes vendor.
+Effort names line up across vendors as follows. Claude `effort` and OpenAI `reasoning.effort` both run `low | medium | high | xhigh | max` (GPT-6.1 Terra, GPT-6 Luna and GPT-5.6 also take `none`, Astra and GPT-6.1 Sol do not, and Codex adds `ultra`, `max` plus automatic delegation). Gemini `thinking_level` runs `minimal | low | medium | high`, and which levels a model accepts varies (3.8 Flash rejects `minimal`, see the family file), so Claude or GPT `xhigh` and `max` map to Gemini `high`, with Deep Think for the hardest problems. The floor carries across that mapping when a prompt changes vendor.
 
 ## Token budget
 
@@ -51,7 +51,7 @@ The measure is tokens across the whole run. A prompt that succeeds first time be
 
 - Only the blocks the playbook marks required for this task type. A conditional block earns its place by naming the failure it prevents.
 - Delete everything the profile marks "Delete on sight" before adding anything.
-- Never restate what the harness system prompt, `AGENTS.md`, `CLAUDE.md` or a loaded skill already enforces, and that includes a profile's "Always add" block when the harness already carries it. Skip it and say so. OpenAI measured that stripping repeated instructions raised scores 10 to 15% and cut tokens 41 to 66%, and GPT-6 Astra is the model most sensitive to conflicting instruction files.
+- Never restate what the harness system prompt, `AGENTS.md`, `CLAUDE.md` or a loaded skill already enforces, and that includes a profile's "Always add" block when the harness already carries it. Skip it and say so. GPT-6 Astra is the model most sensitive to conflicting instruction files.
 - A short-run rewrite comes out shorter than the draft unless a hard constraint was missing. A long-run rewrite may grow, and the report says which blocks grew it and why.
 - Report draft and rewrite word counts every time.
 
@@ -94,7 +94,7 @@ One line per vendor. The routing table and the auto-mode ladder live in the fami
 | Vendor | Family file | Default and the exceptions |
 |---|---|---|
 | Anthropic | `models/anthropic/_family.md` | Opus 5.5 default. Fable 5.1 on named exceptions. Sonnet 5 execution, Haiku 4.5 mechanical. Opus 5 only when pinned |
-| OpenAI | `models/openai/_family.md` | GPT-6 Astra for the hardest end-to-end and agentic work, GPT-5.6 Sol default substantive, Terra execution, Luna mechanical, Cyber for authorized security |
+| OpenAI | `models/openai/_family.md` | GPT-6.1 Sol default, GPT-6 Astra for the hardest end-to-end work, GPT-6.1 Terra for vision, computer use and execution, GPT-6 Luna mechanical, Cyber for authorized security |
 | Google | `models/google/_family.md` | Gemini 3.8 Flash workhorse, 3.1 Pro preview hardest reasoning, Deep Think (app mode) beyond that, 3.5 Flash-Lite mechanical |
 | Unknown or future model | nearest family plus `models/_TEMPLATE.md` | Research and add a profile before optimizing |
 
