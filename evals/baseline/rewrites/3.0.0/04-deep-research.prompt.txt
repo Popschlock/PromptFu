@@ -1,0 +1,47 @@
+## Research question
+For e-bike conversion kits sold in the EU: who are the main brands, what do they cost, what are the legal limits, and what do people complain about?
+
+## Decision / outcome
+This research will be used to: help my boss decide whether we should stock these kits in our 3 shops in the Netherlands.
+
+## Scope
+Include: e-bike conversion kits sold in the EU.
+Timeframe: Only use sources from 2024 or later.
+Assumption: a law or standard that predates 2024 and is still in force is cited through a 2024-or-later official page that states it.
+Geography: the EU. Our 3 shops are in the Netherlands.
+
+## Source strategy
+Prioritize:
+- Legal limits: regulators, government pages and official legal texts.
+- Brands, kit types, motor power and prices: official company documentation, checked against independent industry analysis, established journalism and price aggregators.
+- Complaints: established journalism and independent reviews, plus community discussion as qualitative evidence only.
+
+Avoid: Don't just trust the manufacturer sites. Treat what a manufacturer says about its own kit as a vendor claim until another source confirms it.
+
+## Evidence rules
+- Cite important factual claims
+- Prefer primary sources for direct facts
+- Date time-sensitive claims
+- Separate verified facts, vendor claims, estimates, forecasts, user reports, inference
+- When credible sources disagree, show disagreement and explain scope/methodology
+- Do not invent missing information
+- Mark unresolved questions explicitly
+
+## Research tasks
+- Discover: the main brands selling e-bike conversion kits in the EU and the kit types each offers.
+- Verify: the legal limits. I think they are 250W / 25 km/h, but I have not checked, so confirm or correct that from a regulator or the legal text.
+- Analyze: what people complain about, and which complaints recur across brands or kit types.
+- Challenge: look for evidence that contradicts what manufacturers say about their own kits, their legality included.
+
+## Analysis framework
+Compare findings on: kit type, motor power (W), price (EUR), legality in the EU, and reported complaints.
+
+## Output
+Return a report that answers the research question and contains, in this order:
+1. A comparison table with exactly these columns: Brand, Kit type, Motor power (W), Price (EUR), Legal in EU (Y/N), Source.
+2. A 1 page summary for my boss.
+
+Assumption: Y in the table means the kit as sold meets the legal limits you verified. Where that depends on a setting or cannot be established, say so under the table instead of guessing.
+
+## Stop condition
+Stop when these questions are answered well enough to support the decision. Do not continue researching merely to increase source count.

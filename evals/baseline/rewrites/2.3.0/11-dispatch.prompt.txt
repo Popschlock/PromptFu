@@ -1,0 +1,30 @@
+<intent>
+Inventory for replacing the old logger with the new `logger` API. I review and apply it later, so a missed call or a guessed level costs more than an UNSURE.
+</intent>
+
+<scope>
+Go through the src/ folder. Skip src/vendor/ and anything under __generated__. Don't change any files.
+Not verified: if src/ is missing or unreadable, say so in one line, with no table.
+</scope>
+
+<task>
+Find every place we call the old logger (log.write or Logger.legacy) by text search, one row per call. Match the whole name: `catalog.write(...)` is not a hit.
+The new call is logger.info / logger.warn / logger.error depending on the level arg. If you're not sure about the level just say UNSURE.
+- Level arg names info, warn, warning or error (string or constant, any case): that method.
+- Anything else (another level, a variable, a number, no level arg): UNSURE.
+Assumption: the new call drops the level arg and keeps the other arguments as written.
+Illustrations, not real rows:
+`log.write("warn", "disk low")` gives `logger.warn("disk low")`
+`Logger.legacy(lvl, msg)` gives UNSURE
+Only report calls that appear in the files. Do not ask or guess.
+</task>
+
+<output>
+A markdown table and nothing before it: file | line | old call | new call
+Copy each old call exactly as written, level arg included: that is the evidence for its mapping.
+Then one line: `Search hits: <n>. Rows: <n>.` If they differ, name the hits left out.
+</output>
+
+<limits>
+Stop after three identical failures or 40 tool calls and return the rows so far, ending with PARTIAL.
+</limits>

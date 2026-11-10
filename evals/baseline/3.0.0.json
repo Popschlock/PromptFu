@@ -1,0 +1,1092 @@
+{
+ "version": "3.0.0",
+ "measured": "2026-11-10",
+ "how": "Read cost and hooks: measure.py on this tree. Runs: one rewrite per draft by a fresh subagent on the session model (Fable 5.2), following a copy of the skill with the two Claude Code variables filled in the way the Skill tool fills them. Blind comparison: for each draft two fresh-context graders on Opus got the draft, the 2.3.0 and 3.0.0 rewrites under the names A and B (order swapped between the two graders), and rubric.md. SKILL.md changed twice during the comparison, and the drafts each change aimed at were rewritten and graded again: 01, 09 and 11 after the gap rule (round 2), 02 and 12 after the long-run playbook fix (round 3). The other eight grades are from round 1. For image and video drafts each rewrite was shown with the API parameters its report set outside the prompt. Trigger cases and the rewrite suite: claude plugin eval.",
+ "read_cost": {
+  "skill_md": {
+   "bytes": 8679,
+   "claude_tokens": 3472,
+   "o200k_tokens": null
+  },
+  "description": {
+   "bytes": 465,
+   "claude_tokens": 186,
+   "o200k_tokens": null
+  },
+  "paths": {
+   "anthropic: family file alone": {
+    "reads": 3,
+    "no_playbook": {
+     "bytes": 14674,
+     "claude_tokens": 5870,
+     "o200k_tokens": null
+    },
+    "representative": {
+     "bytes": 19278,
+     "claude_tokens": 7712,
+     "o200k_tokens": null
+    },
+    "max": {
+     "bytes": 19278,
+     "claude_tokens": 7712,
+     "o200k_tokens": null
+    }
+   },
+   "anthropic: fable-5-2": {
+    "reads": 4,
+    "no_playbook": {
+     "bytes": 22394,
+     "claude_tokens": 8958,
+     "o200k_tokens": null
+    },
+    "representative": {
+     "bytes": 26998,
+     "claude_tokens": 10800,
+     "o200k_tokens": null
+    },
+    "max": {
+     "bytes": 26998,
+     "claude_tokens": 10800,
+     "o200k_tokens": null
+    }
+   },
+   "anthropic: haiku-5-5": {
+    "reads": 4,
+    "no_playbook": {
+     "bytes": 19664,
+     "claude_tokens": 7866,
+     "o200k_tokens": null
+    },
+    "representative": {
+     "bytes": 24268,
+     "claude_tokens": 9708,
+     "o200k_tokens": null
+    },
+    "max": {
+     "bytes": 24268,
+     "claude_tokens": 9708,
+     "o200k_tokens": null
+    }
+   },
+   "anthropic: legacy": {
+    "reads": 4,
+    "no_playbook": {
+     "bytes": 19166,
+     "claude_tokens": 7667,
+     "o200k_tokens": null
+    },
+    "representative": {
+     "bytes": 23770,
+     "claude_tokens": 9509,
+     "o200k_tokens": null
+    },
+    "max": {
+     "bytes": 23770,
+     "claude_tokens": 9509,
+     "o200k_tokens": null
+    }
+   },
+   "anthropic: opus-5-5": {
+    "reads": 4,
+    "no_playbook": {
+     "bytes": 21628,
+     "claude_tokens": 8652,
+     "o200k_tokens": null
+    },
+    "representative": {
+     "bytes": 26232,
+     "claude_tokens": 10494,
+     "o200k_tokens": null
+    },
+    "max": {
+     "bytes": 26232,
+     "claude_tokens": 10494,
+     "o200k_tokens": null
+    }
+   },
+   "anthropic: sonnet-5-5": {
+    "reads": 4,
+    "no_playbook": {
+     "bytes": 20534,
+     "claude_tokens": 8214,
+     "o200k_tokens": null
+    },
+    "representative": {
+     "bytes": 25138,
+     "claude_tokens": 10056,
+     "o200k_tokens": null
+    },
+    "max": {
+     "bytes": 25138,
+     "claude_tokens": 10056,
+     "o200k_tokens": null
+    }
+   },
+   "google: family file alone": {
+    "reads": 3,
+    "no_playbook": {
+     "bytes": 14673,
+     "claude_tokens": 5870,
+     "o200k_tokens": null
+    },
+    "representative": {
+     "bytes": 19277,
+     "claude_tokens": 7712,
+     "o200k_tokens": null
+    },
+    "max": {
+     "bytes": 19277,
+     "claude_tokens": 7712,
+     "o200k_tokens": null
+    }
+   },
+   "google: gemini-3-8-flash": {
+    "reads": 4,
+    "no_playbook": {
+     "bytes": 18536,
+     "claude_tokens": 7416,
+     "o200k_tokens": null
+    },
+    "representative": {
+     "bytes": 23140,
+     "claude_tokens": 9258,
+     "o200k_tokens": null
+    },
+    "max": {
+     "bytes": 23140,
+     "claude_tokens": 9258,
+     "o200k_tokens": null
+    }
+   },
+   "google: gemini-4-argon": {
+    "reads": 4,
+    "no_playbook": {
+     "bytes": 19225,
+     "claude_tokens": 7691,
+     "o200k_tokens": null
+    },
+    "representative": {
+     "bytes": 23829,
+     "claude_tokens": 9533,
+     "o200k_tokens": null
+    },
+    "max": {
+     "bytes": 23829,
+     "claude_tokens": 9533,
+     "o200k_tokens": null
+    }
+   },
+   "google: gemini-image": {
+    "reads": 4,
+    "no_playbook": {
+     "bytes": 20499,
+     "claude_tokens": 8201,
+     "o200k_tokens": null
+    },
+    "representative": {
+     "bytes": 25103,
+     "claude_tokens": 10043,
+     "o200k_tokens": null
+    },
+    "max": {
+     "bytes": 25103,
+     "claude_tokens": 10043,
+     "o200k_tokens": null
+    }
+   },
+   "google: gemini-omni-flash": {
+    "reads": 4,
+    "no_playbook": {
+     "bytes": 19425,
+     "claude_tokens": 7771,
+     "o200k_tokens": null
+    },
+    "representative": {
+     "bytes": 24029,
+     "claude_tokens": 9613,
+     "o200k_tokens": null
+    },
+    "max": {
+     "bytes": 24029,
+     "claude_tokens": 9613,
+     "o200k_tokens": null
+    }
+   },
+   "google: legacy": {
+    "reads": 4,
+    "no_playbook": {
+     "bytes": 17532,
+     "claude_tokens": 7014,
+     "o200k_tokens": null
+    },
+    "representative": {
+     "bytes": 22136,
+     "claude_tokens": 8856,
+     "o200k_tokens": null
+    },
+    "max": {
+     "bytes": 22136,
+     "claude_tokens": 8856,
+     "o200k_tokens": null
+    }
+   },
+   "midjourney: family file alone": {
+    "reads": 3,
+    "no_playbook": {
+     "bytes": 12727,
+     "claude_tokens": 5092,
+     "o200k_tokens": null
+    },
+    "representative": {
+     "bytes": 17331,
+     "claude_tokens": 6934,
+     "o200k_tokens": null
+    },
+    "max": {
+     "bytes": 17331,
+     "claude_tokens": 6934,
+     "o200k_tokens": null
+    }
+   },
+   "openai: family file alone": {
+    "reads": 3,
+    "no_playbook": {
+     "bytes": 15845,
+     "claude_tokens": 6339,
+     "o200k_tokens": null
+    },
+    "representative": {
+     "bytes": 20449,
+     "claude_tokens": 8181,
+     "o200k_tokens": null
+    },
+    "max": {
+     "bytes": 20449,
+     "claude_tokens": 8181,
+     "o200k_tokens": null
+    }
+   },
+   "openai: gpt-6-1-terra": {
+    "reads": 4,
+    "no_playbook": {
+     "bytes": 21516,
+     "claude_tokens": 8608,
+     "o200k_tokens": null
+    },
+    "representative": {
+     "bytes": 26120,
+     "claude_tokens": 10450,
+     "o200k_tokens": null
+    },
+    "max": {
+     "bytes": 26120,
+     "claude_tokens": 10450,
+     "o200k_tokens": null
+    }
+   },
+   "openai: gpt-6-astra": {
+    "reads": 4,
+    "no_playbook": {
+     "bytes": 21841,
+     "claude_tokens": 8738,
+     "o200k_tokens": null
+    },
+    "representative": {
+     "bytes": 26445,
+     "claude_tokens": 10580,
+     "o200k_tokens": null
+    },
+    "max": {
+     "bytes": 26445,
+     "claude_tokens": 10580,
+     "o200k_tokens": null
+    }
+   },
+   "openai: gpt-image": {
+    "reads": 4,
+    "no_playbook": {
+     "bytes": 21570,
+     "claude_tokens": 8629,
+     "o200k_tokens": null
+    },
+    "representative": {
+     "bytes": 26174,
+     "claude_tokens": 10471,
+     "o200k_tokens": null
+    },
+    "max": {
+     "bytes": 26174,
+     "claude_tokens": 10471,
+     "o200k_tokens": null
+    }
+   },
+   "openai: legacy": {
+    "reads": 4,
+    "no_playbook": {
+     "bytes": 18745,
+     "claude_tokens": 7499,
+     "o200k_tokens": null
+    },
+    "representative": {
+     "bytes": 23349,
+     "claude_tokens": 9341,
+     "o200k_tokens": null
+    },
+    "max": {
+     "bytes": 23349,
+     "claude_tokens": 9341,
+     "o200k_tokens": null
+    }
+   },
+   "runway: family file alone": {
+    "reads": 3,
+    "no_playbook": {
+     "bytes": 12744,
+     "claude_tokens": 5098,
+     "o200k_tokens": null
+    },
+    "representative": {
+     "bytes": 17348,
+     "claude_tokens": 6940,
+     "o200k_tokens": null
+    },
+    "max": {
+     "bytes": 17348,
+     "claude_tokens": 6940,
+     "o200k_tokens": null
+    }
+   }
+  },
+  "median_path_bytes": 23829,
+  "largest_path_bytes": 26998,
+  "skill_folder": {
+   "files": 32,
+   "bytes": 157439
+  }
+ },
+ "hooks": [
+  {
+   "case": "session start",
+   "event": "SessionStart",
+   "result": "speaks",
+   "chars": 272
+  },
+  {
+   "case": "session start, PROMPTFU_NEVER_DOWNGRADE",
+   "event": "SessionStart",
+   "result": "speaks",
+   "chars": 382
+  },
+  {
+   "case": "session start, PROMPTFU_DISABLE",
+   "event": "SessionStart",
+   "result": "silent",
+   "chars": 0
+  },
+  {
+   "case": "session start, .promptfu off",
+   "event": "SessionStart",
+   "result": "silent",
+   "chars": 0
+  },
+  {
+   "case": "after compaction",
+   "event": "SessionStart",
+   "result": "speaks",
+   "chars": 272
+  },
+  {
+   "case": "resume",
+   "event": "SessionStart",
+   "result": "silent",
+   "chars": 0
+  },
+  {
+   "case": "short prompt",
+   "event": "UserPromptSubmit",
+   "result": "silent",
+   "chars": 0
+  },
+  {
+   "case": "long prompt",
+   "event": "UserPromptSubmit",
+   "result": "speaks",
+   "chars": 289
+  },
+  {
+   "case": "long prompt, PROMPTFU_DISABLE",
+   "event": "UserPromptSubmit",
+   "result": "silent",
+   "chars": 0
+  },
+  {
+   "case": "long prompt, .promptfu off from the start",
+   "event": "UserPromptSubmit",
+   "result": "silent",
+   "chars": 0
+  },
+  {
+   "case": "slash command",
+   "event": "UserPromptSubmit",
+   "result": "silent",
+   "chars": 0
+  },
+  {
+   "case": "prompt naming promptfu",
+   "event": "UserPromptSubmit",
+   "result": "silent",
+   "chars": 0
+  },
+  {
+   "case": "switch turned off mid-session",
+   "event": "UserPromptSubmit",
+   "result": "speaks",
+   "chars": 159
+  },
+  {
+   "case": "next prompt, still off",
+   "event": "UserPromptSubmit",
+   "result": "silent",
+   "chars": 0
+  },
+  {
+   "case": "switch turned back on",
+   "event": "UserPromptSubmit",
+   "result": "speaks",
+   "chars": 272
+  },
+  {
+   "case": "next prompt, still on",
+   "event": "UserPromptSubmit",
+   "result": "silent",
+   "chars": 0
+  },
+  {
+   "case": "first prompt of a session that got no start hook",
+   "event": "UserPromptSubmit",
+   "result": "speaks",
+   "chars": 272
+  },
+  {
+   "case": "unstructured dispatch over the threshold",
+   "event": "PreToolUse",
+   "result": "speaks",
+   "chars": 194
+  },
+  {
+   "case": "second one in the same session",
+   "event": "PreToolUse",
+   "result": "silent",
+   "chars": 0
+  },
+  {
+   "case": "short brief",
+   "event": "PreToolUse",
+   "result": "silent",
+   "chars": 0
+  },
+  {
+   "case": "structured dispatch",
+   "event": "PreToolUse",
+   "result": "silent",
+   "chars": 0
+  },
+  {
+   "case": "workflow run by name",
+   "event": "PreToolUse",
+   "result": "silent",
+   "chars": 0
+  },
+  {
+   "case": "dispatch, PROMPTFU_DISPATCH_MODE=off",
+   "event": "PreToolUse",
+   "result": "silent",
+   "chars": 0
+  },
+  {
+   "case": "dispatch, PROMPTFU_DISABLE",
+   "event": "PreToolUse",
+   "result": "silent",
+   "chars": 0
+  },
+  {
+   "case": "dispatch, .promptfu off",
+   "event": "PreToolUse",
+   "result": "silent",
+   "chars": 0
+  },
+  {
+   "case": "gate mode, first attempt",
+   "event": "PreToolUse",
+   "result": "denies",
+   "chars": 391
+  },
+  {
+   "case": "gate mode, second attempt",
+   "event": "PreToolUse",
+   "result": "silent",
+   "chars": 0
+  },
+  {
+   "case": "gate mode, short brief",
+   "event": "PreToolUse",
+   "result": "silent",
+   "chars": 0
+  }
+ ],
+ "runs": {
+  "01-short-run": {
+   "tokens": 89745,
+   "tool_uses": 8,
+   "duration_ms": 211607,
+   "skill_files": 3
+  },
+  "02-long-run-agentic": {
+   "tokens": 101274,
+   "tool_uses": 9,
+   "duration_ms": 368596,
+   "skill_files": 4
+  },
+  "03-tool-agents": {
+   "tokens": 101591,
+   "tool_uses": 10,
+   "duration_ms": 336798,
+   "skill_files": 3
+  },
+  "04-deep-research": {
+   "tokens": 94851,
+   "tool_uses": 12,
+   "duration_ms": 261351,
+   "skill_files": 4
+  },
+  "05-image-generation": {
+   "tokens": 91476,
+   "tool_uses": 10,
+   "duration_ms": 246765,
+   "skill_files": 4
+  },
+  "06-video-generation": {
+   "tokens": 89590,
+   "tool_uses": 10,
+   "duration_ms": 266655,
+   "skill_files": 4
+  },
+  "07-multimodal-input": {
+   "tokens": 99925,
+   "tool_uses": 9,
+   "duration_ms": 338428,
+   "skill_files": 4
+  },
+  "08-structured-output": {
+   "tokens": 100452,
+   "tool_uses": 9,
+   "duration_ms": 329705,
+   "skill_files": 4
+  },
+  "09-instruction-files": {
+   "tokens": 109273,
+   "tool_uses": 12,
+   "duration_ms": 361302,
+   "skill_files": 4
+  },
+  "10-prompt-debugging": {
+   "tokens": 91573,
+   "tool_uses": 9,
+   "duration_ms": 238149,
+   "skill_files": 4
+  },
+  "11-dispatch": {
+   "tokens": 85260,
+   "tool_uses": 6,
+   "duration_ms": 181330,
+   "skill_files": 3
+  },
+  "12-auto-mode": {
+   "tokens": 98241,
+   "tool_uses": 8,
+   "duration_ms": 298306,
+   "skill_files": 4
+  },
+  "13-video-current": {
+   "tokens": 92600,
+   "tool_uses": 8,
+   "duration_ms": 250653,
+   "skill_files": 4
+  }
+ },
+ "run_means_cases_01_to_12": {
+  "2.3.0": {
+   "tokens": 118058.2,
+   "tool_uses": 12.1,
+   "duration_ms": 385006.3,
+   "skill_files": 4.2
+  },
+  "3.0.0": {
+   "tokens": 96104.2,
+   "tool_uses": 9.3,
+   "duration_ms": 286582.7,
+   "skill_files": 3.8
+  }
+ },
+ "rewrites": [
+  {
+   "id": "01-short-run",
+   "draft_words": 116,
+   "rewrite_words": 85,
+   "lost": [],
+   "carried": []
+  },
+  {
+   "id": "02-long-run-agentic",
+   "draft_words": 151,
+   "rewrite_words": 657,
+   "lost": [],
+   "carried": []
+  },
+  {
+   "id": "03-tool-agents",
+   "draft_words": 100,
+   "rewrite_words": 603,
+   "lost": [],
+   "carried": []
+  },
+  {
+   "id": "04-deep-research",
+   "draft_words": 110,
+   "rewrite_words": 439,
+   "lost": [],
+   "carried": []
+  },
+  {
+   "id": "05-image-generation",
+   "draft_words": 79,
+   "rewrite_words": 78,
+   "lost": [],
+   "carried": []
+  },
+  {
+   "id": "06-video-generation",
+   "draft_words": 93,
+   "rewrite_words": 87,
+   "lost": [],
+   "carried": []
+  },
+  {
+   "id": "07-multimodal-input",
+   "draft_words": 94,
+   "rewrite_words": 115,
+   "lost": [],
+   "carried": []
+  },
+  {
+   "id": "08-structured-output",
+   "draft_words": 109,
+   "rewrite_words": 201,
+   "lost": [],
+   "carried": []
+  },
+  {
+   "id": "09-instruction-files",
+   "draft_words": 128,
+   "rewrite_words": 296,
+   "lost": [],
+   "carried": []
+  },
+  {
+   "id": "10-prompt-debugging",
+   "draft_words": 111,
+   "rewrite_words": 59,
+   "lost": [],
+   "carried": []
+  },
+  {
+   "id": "11-dispatch",
+   "draft_words": 88,
+   "rewrite_words": 127,
+   "lost": [],
+   "carried": [
+    "show your reasoning"
+   ]
+  },
+  {
+   "id": "12-auto-mode",
+   "draft_words": 52,
+   "rewrite_words": 552,
+   "lost": [],
+   "carried": []
+  },
+  {
+   "id": "13-video-current",
+   "draft_words": 93,
+   "rewrite_words": 86,
+   "lost": [
+    "(8|eight)[- ]second",
+    "16:9"
+   ],
+   "carried": []
+  }
+ ],
+ "rewrite_to_draft_words": {
+  "2.3.0": {
+   "all": 2.45,
+   "agents_and_system_prompts": 3.35,
+   "one_shot_media_dispatch": 1.58
+  },
+  "3.0.0": {
+   "all": 2.56,
+   "agents_and_system_prompts": 4.23,
+   "one_shot_media_dispatch": 0.95
+  }
+ },
+ "blind_comparison": {
+  "cases": {
+   "01-short-run": "new",
+   "02-long-run-agentic": "new",
+   "03-tool-agents": "new",
+   "04-deep-research": "split",
+   "05-image-generation": "split",
+   "06-video-generation": "split",
+   "07-multimodal-input": "new",
+   "08-structured-output": "new",
+   "09-instruction-files": "split",
+   "10-prompt-debugging": "new",
+   "11-dispatch": "new",
+   "12-auto-mode": "new",
+   "13-video-current": "split"
+  },
+  "verdicts": {
+   "3.0.0": 21,
+   "2.3.0": 5
+  },
+  "criterion_means": {
+   "2.3.0": {
+    "intent": 4.42,
+    "hard_constraints": 4.58,
+    "nothing_invented": 2.88,
+    "conflicts": 4.19,
+    "executable": 4.5,
+    "economy": 3.77,
+    "fit": 4.62
+   },
+   "3.0.0": {
+    "intent": 4.81,
+    "hard_constraints": 4.96,
+    "nothing_invented": 4.31,
+    "conflicts": 4.15,
+    "executable": 4.46,
+    "economy": 4,
+    "fit": 4.35
+   }
+  },
+  "overall": {
+   "2.3.0": 4.14,
+   "3.0.0": 4.43
+  },
+  "graders": [
+   {
+    "grader": "03-tool-agents/g1",
+    "round": 1,
+    "pick": "3.0.0",
+    "total_old": 31,
+    "total_new": 32,
+    "hard_old": 5,
+    "hard_new": 5
+   },
+   {
+    "grader": "03-tool-agents/g2",
+    "round": 1,
+    "pick": "3.0.0",
+    "total_old": 30,
+    "total_new": 30,
+    "hard_old": 5,
+    "hard_new": 5
+   },
+   {
+    "grader": "04-deep-research/g1",
+    "round": 1,
+    "pick": "3.0.0",
+    "total_old": 31,
+    "total_new": 31,
+    "hard_old": 5,
+    "hard_new": 5
+   },
+   {
+    "grader": "04-deep-research/g2",
+    "round": 1,
+    "pick": "2.3.0",
+    "total_old": 32,
+    "total_new": 30,
+    "hard_old": 5,
+    "hard_new": 4
+   },
+   {
+    "grader": "05-image-generation/g1",
+    "round": 1,
+    "pick": "2.3.0",
+    "total_old": 32,
+    "total_new": 32,
+    "hard_old": 5,
+    "hard_new": 5
+   },
+   {
+    "grader": "05-image-generation/g2",
+    "round": 1,
+    "pick": "3.0.0",
+    "total_old": 31,
+    "total_new": 33,
+    "hard_old": 5,
+    "hard_new": 5
+   },
+   {
+    "grader": "06-video-generation/g1",
+    "round": 1,
+    "pick": "3.0.0",
+    "total_old": 27,
+    "total_new": 31,
+    "hard_old": 4,
+    "hard_new": 5
+   },
+   {
+    "grader": "06-video-generation/g2",
+    "round": 1,
+    "pick": "2.3.0",
+    "total_old": 29,
+    "total_new": 30,
+    "hard_old": 5,
+    "hard_new": 5
+   },
+   {
+    "grader": "07-multimodal-input/g1",
+    "round": 1,
+    "pick": "3.0.0",
+    "total_old": 20,
+    "total_new": 31,
+    "hard_old": 3,
+    "hard_new": 5
+   },
+   {
+    "grader": "07-multimodal-input/g2",
+    "round": 1,
+    "pick": "3.0.0",
+    "total_old": 20,
+    "total_new": 31,
+    "hard_old": 3,
+    "hard_new": 5
+   },
+   {
+    "grader": "08-structured-output/g1",
+    "round": 1,
+    "pick": "3.0.0",
+    "total_old": 30,
+    "total_new": 32,
+    "hard_old": 4,
+    "hard_new": 5
+   },
+   {
+    "grader": "08-structured-output/g2",
+    "round": 1,
+    "pick": "3.0.0",
+    "total_old": 28,
+    "total_new": 32,
+    "hard_old": 4,
+    "hard_new": 5
+   },
+   {
+    "grader": "10-prompt-debugging/g1",
+    "round": 1,
+    "pick": "3.0.0",
+    "total_old": 29,
+    "total_new": 30,
+    "hard_old": 5,
+    "hard_new": 5
+   },
+   {
+    "grader": "10-prompt-debugging/g2",
+    "round": 1,
+    "pick": "3.0.0",
+    "total_old": 29,
+    "total_new": 30,
+    "hard_old": 5,
+    "hard_new": 5
+   },
+   {
+    "grader": "13-video-current/g1",
+    "round": 1,
+    "pick": "2.3.0",
+    "total_old": 31,
+    "total_new": 31,
+    "hard_old": 5,
+    "hard_new": 5
+   },
+   {
+    "grader": "13-video-current/g2",
+    "round": 1,
+    "pick": "3.0.0",
+    "total_old": 30,
+    "total_new": 32,
+    "hard_old": 5,
+    "hard_new": 5
+   },
+   {
+    "grader": "01-short-run/g1",
+    "round": 2,
+    "pick": "3.0.0",
+    "total_old": 34,
+    "total_new": 34,
+    "hard_old": 5,
+    "hard_new": 5
+   },
+   {
+    "grader": "01-short-run/g2",
+    "round": 2,
+    "pick": "3.0.0",
+    "total_old": 32,
+    "total_new": 34,
+    "hard_old": 5,
+    "hard_new": 5
+   },
+   {
+    "grader": "09-instruction-files/g1",
+    "round": 2,
+    "pick": "2.3.0",
+    "total_old": 31,
+    "total_new": 30,
+    "hard_old": 5,
+    "hard_new": 5
+   },
+   {
+    "grader": "09-instruction-files/g2",
+    "round": 2,
+    "pick": "3.0.0",
+    "total_old": 29,
+    "total_new": 31,
+    "hard_old": 4,
+    "hard_new": 5
+   },
+   {
+    "grader": "11-dispatch/g1",
+    "round": 2,
+    "pick": "3.0.0",
+    "total_old": 28,
+    "total_new": 31,
+    "hard_old": 4,
+    "hard_new": 5
+   },
+   {
+    "grader": "11-dispatch/g2",
+    "round": 2,
+    "pick": "3.0.0",
+    "total_old": 30,
+    "total_new": 31,
+    "hard_old": 5,
+    "hard_new": 5
+   },
+   {
+    "grader": "02-long-run-agentic/g1",
+    "round": 3,
+    "pick": "3.0.0",
+    "total_old": 27,
+    "total_new": 28,
+    "hard_old": 4,
+    "hard_new": 5
+   },
+   {
+    "grader": "02-long-run-agentic/g2",
+    "round": 3,
+    "pick": "3.0.0",
+    "total_old": 25,
+    "total_new": 29,
+    "hard_old": 4,
+    "hard_new": 5
+   },
+   {
+    "grader": "12-auto-mode/g1",
+    "round": 3,
+    "pick": "3.0.0",
+    "total_old": 29,
+    "total_new": 30,
+    "hard_old": 5,
+    "hard_new": 5
+   },
+   {
+    "grader": "12-auto-mode/g2",
+    "round": 3,
+    "pick": "3.0.0",
+    "total_old": 28,
+    "total_new": 31,
+    "hard_old": 5,
+    "hard_new": 5
+   }
+  ]
+ },
+ "trigger_eval": {
+  "trigger-dispatch": "3 of 3: Skill called before Agent",
+  "trigger-quiet-lookup": "3 of 3: Skill not called",
+  "trigger-quiet-long-simple": "3 of 3: Skill not called",
+  "cost_usd": 1.33,
+  "seconds": 169
+ },
+ "plugin_eval": {
+  "command": "claude plugin eval . --tag rewrite --runs 1 --allow-tools Write",
+  "claude_version": "2.1.322",
+  "cost_usd": 4.45,
+  "seconds": 518,
+  "overall_score_with_plugin": 0.974,
+  "mean_delta": 0.295,
+  "cases": {
+   "01-short-run": {
+    "with": 1,
+    "delta": 0.33333333333333337
+   },
+   "02-long-run-agentic": {
+    "with": 1,
+    "delta": 1
+   },
+   "03-tool-agents": {
+    "with": 1,
+    "delta": 0.33333333333333337
+   },
+   "04-deep-research": {
+    "with": 1,
+    "delta": 0.33333333333333337
+   },
+   "05-image-generation": {
+    "with": 1,
+    "delta": 0.25
+   },
+   "06-video-generation": {
+    "with": 1,
+    "delta": 0.5
+   },
+   "07-multimodal-input": {
+    "with": 1,
+    "delta": 0.5
+   },
+   "08-structured-output": {
+    "with": 1,
+    "delta": 0
+   },
+   "09-instruction-files": {
+    "with": 0.6666666666666666,
+    "delta": -0.33333333333333337
+   },
+   "10-prompt-debugging": {
+    "with": 1,
+    "delta": 0
+   },
+   "11-dispatch": {
+    "with": 1,
+    "delta": 0
+   },
+   "12-auto-mode": {
+    "with": 1,
+    "delta": 0.6666666666666667
+   },
+   "13-video-current": {
+    "with": 1,
+    "delta": 0.25
+   }
+  },
+  "note": "One run per case, so single cases are noisy. Case 02 scored 0 without the plugin because that run ended on a safeguard API error. Case 09 scored lower with the plugin: its rewrite carried one of the thinking cues on the drop list. An earlier run with the first judge rubric failed nearly every run in both arms, and the rubric was rewritten."
+ }
+}

@@ -1,0 +1,5 @@
+Take the changelog entry below and rewrite it so that normal users can understand it, right now it's way too technical. Be concise. It needs to be 2 sentences max and it must keep the version number v3.4.1 exactly and must not mention the internal ticket ID. Include only facts that are in the entry. Reply with the rewritten entry alone.
+
+<entry>
+v3.4.1: fix race in SyncQueue.flush() where concurrent enqueue during drain dropped the tail batch (PLAT-2291); bump retry backoff ceiling 30s -> 120s
+</entry>

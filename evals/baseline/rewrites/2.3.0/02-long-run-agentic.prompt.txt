@@ -1,0 +1,39 @@
+<intent>
+I'm migrating our test suite from unittest to pytest. The repo is at services/billing. I'll be away for the whole run, so the result must be finished and checkable without me.
+</intent>
+
+<context>
+The repo's layout was not checked for this prompt, so look before you convert.
+</context>
+
+<scope>
+May change: the test suite in services/billing, plus the fixtures, runner config and dev dependencies pytest needs.
+Out: services/billing/legacy/, and any vendored, third-party or generated tree you find (vendor/, node_modules/, build/, a virtualenv).
+</scope>
+
+<constraints>
+- NEVER touch anything under services/billing/legacy/ because it is frozen for the audit.
+- Coverage must stay at or above 85% (we check with `make cov`). You may point `make cov` at pytest, but not change what it measures.
+- Don't change any test names because the CI dashboard keys on them. File, class and function names all count.
+</constraints>
+
+<autonomy>
+Make reasonable assumptions for non-critical details and note them. Reversible in-scope work is authorized; my approval comes last, on the finished table. Leave undone, and note, anything irreversible or needing my decision.
+Fix other broken things you notice only when the fix is small and reversible; otherwise note them.
+</autonomy>
+
+<completion>
+Done means every in-scope test file runs under pytest, every test that ran before still runs and passes under its old name, and `make cov` shows 85% or more. Do not end with a plan for work you can still perform.
+</completion>
+
+<verification>
+Record the `make cov` figure and the collected test names first. Run the tests after each converted file so a failure points at that file. At the end, compare both to that baseline from real output.
+</verification>
+
+<limits>
+After three identical failures on a file, restore its last passing state, mark it blocked and continue. Stop and report after three identical `make cov` failures, or once the whole run passes 20 tool calls per in-scope test file.
+</limits>
+
+<output>
+Your final message is a table with columns file | status | notes and nothing else: first a row for the whole suite with before and after `make cov` figures, then one row per test file. Notes carry evidence, assumptions and blockers.
+</output>

@@ -2,7 +2,7 @@
 
 Your prompts are often hurting your results. Each model has prompting habits of its own, and what helps one costs another. Tell Claude Fable 5.2 how many tokens a task may use, and the size of that number changes how much it spends. Ask Claude Sonnet 5.5 to "show your reasoning" and the request can be declined. Give Claude Haiku 5.5 a blanket "always search" rule and it searches on half the prompts that needed none. Repeat "ask first" to a GPT model and it starts asking permission for safe steps. Send Gemini 4 the temperature you tuned and it is ignored. Every one of those comes from the vendor's own prompting guide.
 
-Crafting each prompt for the model you are on, and for what you are trying to do, is slow. That is PromptFu's job.
+Writing each prompt for the model you are on, and for what you are trying to do, is slow, so PromptFu does it for you.
 
 PromptFu rewrites subagent, workflow and long prompts to fit the model that will run them and the kind of task they describe. It has three aims: a prompt that works on the first try, fewer tokens across the run, and no time spent on prompts that would not benefit. In Claude Code it comes up on its own when a prompt carries real work, Codex runs it from an `AGENTS.md` line, and you can call it by hand with `/promptfu`.
 
@@ -27,6 +27,8 @@ Every model fact comes from the vendor's official documentation, with the date a
 | Anthropic | Opus 5.5 | Fable 5.2 when Opus 5.5 at higher effort still falls short, for hours-long agent sessions and multistep research | Sonnet 5.5 for everyday building, Haiku 5.5 for high-volume work and subagents | Fable 5.1, Fable 5, Opus 5, Opus 4.8, Sonnet 5 and Haiku 4.5 as short legacy entries |
 | OpenAI | GPT-6 Astra in the API docs, GPT-6.1 Sol in the Codex docs | Higher effort before a bigger model | GPT-6.1 Terra for visual work, computer use and writing, GPT-6 Luna for focused high-volume tasks | GPT-6-Cyber for authorized security work, GPT Image 2.6 and 2.5, GPT-6 Sol and GPT-5.6 as legacy entries |
 | Google | Gemini 3.8 Flash | Gemini 4 Argon for complex reasoning | Gemini 3.5 Flash-Lite | Nano Banana image models, Gemini Omni Flash for video, Deep Research, Veo 3.1 and older models as legacy entries |
+
+Midjourney and Runway each have a family file as well, for prompts you paste into those products.
 
 Auto mode picks within the vendor you are running on, says why, and names the runner-up. Claude and OpenAI share five effort names from `low` to `max`, Codex adds `ultra`, and Gemini's `thinking_level` runs from `minimal` to `high`.
 
@@ -57,7 +59,7 @@ In a Claude Code session:
 /plugin install promptfu@promptfu
 ```
 
-Run `/reload-plugins` or restart the session so the hooks register. Update later with `/plugin marketplace update promptfu`. The hooks need `node` on your PATH.
+Run `/reload-plugins` or restart the session so the hooks register. Update later with `/plugin marketplace update promptfu`. The hooks need `node` on your PATH. Without it they fail but block nothing, and `/promptfu` still works by name.
 
 For Codex, copy `skills/promptfu/` to `~/.agents/skills/promptfu/` and add one line to `~/.codex/AGENTS.md`: "apply the `promptfu` skill to a prompt over ~50 words that asks for multi-step or judgment work, before running it." Gemini CLI reads the same `~/.agents/skills/` folder.
 
@@ -65,7 +67,7 @@ For Codex, copy `skills/promptfu/` to `~/.agents/skills/promptfu/` and add one l
 
 Most of the time you do nothing and see nothing. In Claude Code three hooks do the prompting:
 
-- **Once per session,** and again after a compaction, the model is told to apply PromptFu to any subagent or workflow prompt that asks for multi-step or judgment work, without narrating the rewrite, and to skip it for lookups. Nothing is added to your later prompts.
+- **Once per session,** and again after a compaction, a hook tells the model to apply PromptFu to any subagent or workflow prompt that asks for multi-step or judgment work, without narrating the rewrite, and to skip it for lookups. Nothing is added to your later prompts.
 - **A typed prompt over the word threshold** (50 words by default, counting only what you typed) gets one line asking the model to judge the work: optimize first when it is multi-step or needs judgment, run it as typed when it is a lookup, a simple edit or already clear.
 - **The first unstructured dispatch of a session** over the same threshold gets a short note on its tool result, so the next one is written properly. `PROMPTFU_DISPATCH_MODE=gate` makes that a hard hold instead: the call is denied once and always passes on its second attempt, and the hold shows as a hook error in the transcript. `off` skips dispatch checks.
 
@@ -87,7 +89,7 @@ To run it by hand, type `/promptfu` and paste your draft, or say which model or 
 Sometimes the rewrite pass is the wrong trade: a live tabletop session, a demo, any moment where latency matters more than a tuned prompt. Two switches:
 
 - Set the `PROMPTFU_DISABLE` environment variable (`1`, `true`, `yes` or `on`) and no hook fires anywhere on the machine.
-- Put a `.promptfu` file at a project's root with `off` as its first line and the hooks stay quiet for that project. The file is read on every prompt, so a script or a skill can create and delete it to toggle PromptFu mid-session. The model is told once when the switch changes.
+- Put a `.promptfu` file at a project's root with `off` as its first line and the hooks stay quiet for that project. The file is read on every prompt, so a script or a skill can create and delete it to toggle PromptFu mid-session. A hook tells the model once when the switch changes.
 
 Either way `/promptfu` still works when you call it by name. The switch only stops the automatic firing.
 

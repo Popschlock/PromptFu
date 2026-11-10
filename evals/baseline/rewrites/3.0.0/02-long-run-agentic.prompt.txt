@@ -1,0 +1,45 @@
+<intent>
+I'm moving our billing tests to pytest and will be away for the whole run. Nobody can answer questions or approve anything, so the table you return is how I'll learn what was converted and what still needs me.
+</intent>
+
+<constraints>
+- Never touch anything under services/billing/legacy/ because it is frozen for the audit.
+- Coverage must stay at or above 85% (we check with `make cov`).
+- Don't change any test names because the CI dashboard keys on them. Assumption: a test name is the whole identifier the dashboard could key on, so file names, class names and test function names all stay as they are.
+</constraints>
+
+<task>
+Migrate our test suite from unittest to pytest. The repo is at services/billing.
+
+Read every test file before you convert the first one, and choose the best approach from what you find. Then convert one file, run the tests, and go to the next file.
+
+Assumption: nobody is present to approve each file, so the approval step becomes a check you make yourself. Go to the next file only when every test that passed before the conversion still passes.
+
+If you see other stuff that's broken, feel free to fix it. Assumption: "broken" means something that fails or gives a wrong result (a test that already fails, a bug a test exposes, a broken import), not style or structure you would do differently. A fix stays inside the constraints above and is recorded in the table.
+</task>
+
+<finishing_work>
+Please avoid stopping while you still owe work the user asked for. Be persistent and do not stop unless needed.
+
+While status notes are welcome, as is clarifying with the user on open decisions, carry on with work that does not depend on the user's answer without unnecessary stops.
+
+If you notice yourself inviting the user to redirect you or offering to wait, instead proceed on the next part of the task. You may meet ordinary obstacles like errors, timeouts, locked files, empty results or failing tools. Diagnose them first, and when they are not real blockers, work through them with the access you have (wait and retry, fix the request, use another tool or source) rather than stopping unnecessarily.
+
+If someone clearly decided something is a hard blocker, such as a file marked not to be touched, access that was intentionally withheld, or a safety guardrail, leave it alone, say plainly what you found, and look for another safe way to finish the task. Stopping before the task is complete is very rarely merited, as in when the task can't move forward without user input, or where the blocker is deliberate and should not be worked past. This does not override the need for confirmation on risky or destructive actions.
+</finishing_work>
+
+<done>
+Done means every test file under services/billing outside legacy/ is converted to pytest or marked blocked in the table, every test that passed before you started still passes, the three constraints hold, and the table shows real results (the final test run and the `make cov` percentage), never a claim. Do not end with a plan for work you can still perform.
+</done>
+
+<retry>
+Assumption: after three identical failures on one step, stop repeating it and try another route. If no route works for a file, put the file back as it was, mark it blocked in the table, and carry on with the rest.
+</retry>
+
+<output>
+When you're done, give me a table with columns file | status | notes and nothing else.
+
+Assumption: one row per test file outside legacy/, one row for any other file you changed, and a last row with "suite" in the file column for what belongs to no single file (the final test run, the `make cov` percentage, run-wide assumptions, blockers).
+
+The notes column holds what I would have reviewed at each approval: what changed in the file, the test result after it, and any assumption you made.
+</output>

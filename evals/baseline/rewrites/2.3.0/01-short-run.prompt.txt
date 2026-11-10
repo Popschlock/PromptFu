@@ -1,0 +1,11 @@
+<task>
+Rewrite the changelog entry in <context> so that normal users can understand it; right now it is too technical for them.
+</task>
+
+<context>
+Entry: "v3.4.1: fix race in SyncQueue.flush() where concurrent enqueue during drain dropped the tail batch (PLAT-2291); bump retry backoff ceiling 30s -> 120s"
+</context>
+
+<output>
+Return only the rewritten entry, 2 sentences max. It must keep the version number v3.4.1 exactly and must not mention the internal ticket ID. Use only what the entry states; where it does not say how a change affects users, keep that part general.
+</output>

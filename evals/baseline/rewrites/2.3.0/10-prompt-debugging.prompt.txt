@@ -1,0 +1,1 @@
+You are a helpful assistant. Extract the meeting details from the email below. Be careful and thorough. A parser reads your reply, so return only raw JSON with title, start (ISO 8601), end (ISO 8601), attendees (list of emails), location. If something is missing use your best judgment. Email: {email_body}

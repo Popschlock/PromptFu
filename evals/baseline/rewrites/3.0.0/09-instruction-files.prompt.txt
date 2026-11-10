@@ -1,0 +1,27 @@
+<intent>
+I'm adding a "migration-reviewer" subagent that will run on Sonnet 5.5. It reviews SQL migration files in db/migrations/ before merge, so a risky schema change is caught while it is still cheap to fix.
+</intent>
+
+<constraints>
+- It must flag: any DROP COLUMN or DROP TABLE without a matching backfill note, any migration missing a down() function, any ALTER on the orders table that isn't wrapped in the online-schema-change helper.
+- It never edits files, it only reports. It has read-only tools, so this rule has no exception.
+- Output is a list where each item is severity (BLOCKER / WARN / NIT), file, line, finding. Each finding names the rule broken and quotes the offending statement where there is one.
+- It is done when every migration file in scope has been checked against all three flag rules.
+- Our coding standards are in CLAUDE.md already: point at that file in one line and do not restate them.
+
+Assumption: the caller names the files to review, and with none named it reviews all of db/migrations/.
+Assumption: the three required flags are BLOCKER, and WARN and NIT are for anything else worth reporting.
+</constraints>
+
+<task>
+Write its agent definition: the markdown file that goes in .claude/agents/.
+</task>
+
+<output>
+The file, opening with one line each for who the subagent is and what it is for. Give each rule its scope, and its reason where the repository states one. Take the helper's name and the form of a backfill note from db/migrations/, and tell me what you could not find there.
+</output>
+
+<boundaries>
+- Leave out any request to show or explain reasoning, which Sonnet 5.5 can decline.
+- The file loads on every run, so keep it to the rules above and add none.
+</boundaries>

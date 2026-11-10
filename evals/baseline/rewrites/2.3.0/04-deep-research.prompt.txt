@@ -1,0 +1,52 @@
+DEEP RESEARCH BRIEF
+
+RESEARCH QUESTION
+For e-bike conversion kits sold in the EU: who are the main brands, what do they cost, what are the legal limits, and what do people complain about?
+
+DECISION / OUTCOME
+This research will be used to: help my boss decide whether we should stock them in our 3 shops in the Netherlands.
+
+SCOPE
+Include: e-bike conversion kits sold in the EU, including kits over the legal limits.
+Exclude: complete e-bikes, kits not offered to EU buyers, market history.
+Timeframe: Only use sources from 2024 or later. Assumption: a law adopted earlier counts when a source from 2024 or later shows it still applies.
+Geography: EU. Flag any Dutch rule that differs from the EU-level limits.
+Population/customer/domain: retail buyers, the customers our shops would sell to.
+
+SOURCE STRATEGY
+Prioritize:
+1. EU and Dutch legislation and regulators, for the legal limits.
+2. Independent tests, consumer organizations and established journalism, to check claimed power and legality.
+3. Trade press and EU retailer listings, for the main brands and current prices.
+4. Forums and owner reviews, for complaints, as qualitative evidence only.
+Avoid: Don't just trust the manufacturer sites. Back each manufacturer claim with a source that is not the manufacturer, or label it a vendor claim.
+
+EVIDENCE RULES
+- Cite important factual claims
+- Prefer primary sources for direct facts
+- Date time-sensitive claims
+- Separate verified facts, vendor claims, estimates, forecasts, user reports, inference
+- When credible sources disagree, show disagreement and explain scope/methodology
+- Do not invent missing information
+- Mark unresolved questions explicitly
+
+RESEARCH TASKS
+1. Discover: the main brands and their kits, and the basis for calling a brand main.
+2. Verify: the legal limits. I think 250W / 25 km/h, but check, and report any other condition that decides legality.
+3. Compare: the kits, on the framework below.
+4. Analyze: which complaints recur, and for which brands or kit types.
+5. Challenge: evidence against stocking, including kits marketed as legal that are not.
+
+ANALYSIS FRAMEWORK
+Compare findings on: kit type, motor power, price, legal status, recurring complaints.
+
+OUTPUT
+Return, in this order:
+1. A comparison table with exactly these columns: Brand, Kit type, Motor power (W), Price (EUR), Legal in EU (Y/N), Source. Assumptions: one row per kit, Price is the dated EU retail price, and Legal in EU holds Y or N only, for the kit as sold. Anything else, such as whether a battery is included or a status that depends on a setting, goes in numbered notes under the table, never in an extra column.
+2. A 1 page summary for my boss: what the evidence supports on stocking the kits first, then main brands, price range, legal limits, commonest complaints, risks and next steps.
+3. Contradictions or disagreements
+4. Unknowns
+5. Source list
+
+STOP CONDITION
+Stop when the table covers the main brands and the summary's claims rest on cited evidence strong enough for the stocking decision. Do not continue researching merely to increase source count.

@@ -1,0 +1,17 @@
+TASK
+Analyze the customer review in the user message for a program that routes reviews and escalates the risky ones.
+
+FIELD SEMANTICS
+sentiment: how the customer feels, on a 1-5 scale (1 is furious, 5 is delighted).
+topics: up to 3 topics from this list only: shipping, price, quality, support, app, other.
+escalate: boolean, true if they mention a chargeback, a lawyer, or a safety issue. Anger alone does not set it.
+summary: a short summary, max 20 words.
+
+EVIDENCE
+Use only the review text.
+
+UNCERTAINTY
+If the review is empty or not in a language you understand, set sentiment to null. Assumed default unless told otherwise: then topics is an empty list, escalate false, summary an empty string.
+
+OUTPUT
+Conform to the schema attached through Structured Outputs. Only output the JSON, no markdown fences, no explanation.

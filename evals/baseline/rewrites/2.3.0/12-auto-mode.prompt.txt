@@ -1,0 +1,37 @@
+<intent>
+I'm making the payment retry backoff policy injectable so callers and tests can supply their own. I will review the PR in the morning.
+</intent>
+
+<context>
+There are 14 call sites. This runs overnight with nobody to answer questions.
+</context>
+
+<constraints>
+- All existing tests in tests/payments/ must pass unchanged.
+- Public function signatures in payments/retry/__init__.py must not change.
+- Today's backoff behavior stays the default.
+</constraints>
+
+<task>
+Refactor the payment retry module (payments/retry/) so the backoff policy is injectable. Add tests for the new injection point.
+</task>
+
+<scope>
+May change: payments/retry/, call sites the refactor requires, new tests. Out: vendored, third-party and generated trees, and fixes the task does not name. If the call-site count is not 14, cover what you find and report the difference.
+</scope>
+
+<autonomy>
+Make reasonable assumptions for non-critical missing details. Reversible in-scope work is authorized; anything irreversible, including merging, waits for my review. Do the work in this session, without subagents. Do not end with a plan for work you can still perform, an offer to continue, or a question that blocks nothing.
+</autonomy>
+
+<completion>
+Done means an open PR, tests/payments/ and the new tests passing with output shown, and failures your change caused fixed.
+</completion>
+
+<limits>
+After three identical failures or 300 tool calls, stop and report the blocker.
+</limits>
+
+<output>
+PR description, outcome first: the injection design and why, files changed, test output, assumptions, follow-ups left alone. No filler sections.
+</output>

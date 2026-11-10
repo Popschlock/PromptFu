@@ -1,0 +1,17 @@
+DELIVERABLE  Event poster for a studio's open studio day.
+
+SUBJECT  A ceramic vase and a pair of scissors as the illustration, one of each.
+
+SCENE  None. Off white paper fills the whole frame, with no wall, table or mockup.
+
+COMPOSITION  Lettering across the upper third as the largest element, the illustration centered below it. Leave the bottom 15% empty, bare paper with nothing printed there, because the sponsor logos are added later.
+
+LIGHT  Flat print, no light source or cast shadows.
+PALETTE  Two colors only: fluorescent orange and navy on off white paper.
+MATERIALS  Risograph style: grainy, uneven ink, shading only as halftone dots of those two inks.
+
+TEXT  "OPEN STUDIO" in big hand drawn letters, rendered exactly once. Under it, smaller, "SAT 14 JUNE, 11:00-17:00", rendered exactly once with its comma, colons and hyphen. No other text or logos anywhere.
+
+EXCLUDE  No people, no photos.
+
+OUTPUT  Portrait 4:5.

@@ -1,0 +1,16 @@
+<intent>
+We're moving off the old logger, and I'll make the edits later from your table.
+</intent>
+
+<task>
+Go through the src/ folder and find every place we call the old logger (log.write or Logger.legacy). For each one tell me the file and line and what the new call should be (logger.info / logger.warn / logger.error depending on the level arg).
+</task>
+
+<constraints>
+Don't change any files. Skip src/vendor/ and anything under __generated__.
+</constraints>
+
+<output>
+Give me the results as a markdown table: file | line | old call | new call. If you're not sure about the level just say UNSURE. Show your reasoning for each mapping.
+Assumption: the reasoning goes under the table, one line per row, so the table keeps its four columns.
+</output>

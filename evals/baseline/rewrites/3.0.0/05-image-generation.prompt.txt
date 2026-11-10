@@ -1,0 +1,7 @@
+Deliverable: poster for our open studio day.
+Subject: illustration of a ceramic vase and a pair of scissors.
+Composition: leave the bottom 15% empty; we add the sponsor logos there later.
+Style: Risograph style, two colors only: fluorescent orange and navy on off white paper.
+Text: big hand drawn letters that say exactly "OPEN STUDIO" and, under it, smaller, "SAT 14 JUNE, 11:00-17:00". Each rendered exactly once; no other text.
+Exclude: no people, no photos.
+Output: portrait 4:5.
