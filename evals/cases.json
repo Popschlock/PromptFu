@@ -1,5 +1,5 @@
 {
-  "note": "Fixed draft set for PromptFu. keep = regexes every rewrite must still match (the draft's hard constraints). drop = regexes a rewrite must not carry into the prompt it sends. Both are matched case-insensitively against the rewritten prompt. `python evals/measure.py gen` turns this file and drafts/ into the case folders under cases/.",
+  "note": "Fixed draft set for PromptFu. keep = regexes every rewrite must still match (the draft's hard constraints). drop = regexes a rewrite must not carry into the prompt it sends. Both are matched case-insensitively against the rewritten prompt. reply = regexes the final reply must match: a fact the model card supplies, such as a parameter name or a shutdown. judge_note = one line of context for the judge model. `python evals/measure.py gen` turns this file and drafts/ into the case folders under cases/.",
   "cases": [
     {
       "id": "01-short-run",
@@ -101,6 +101,10 @@
         "8k",
         "masterpiece",
         "artstation"
+      ],
+      "reply": [
+        "quality",
+        "size"
       ]
     },
     {
@@ -119,6 +123,9 @@
       ],
       "drop": [
         "award[- ]winning"
+      ],
+      "reply": [
+        "shut ?down|deprecat|no longer|2026-10-22|Omni"
       ]
     },
     {
@@ -140,6 +147,9 @@
       "drop": [
         "step by step",
         "extremely careful"
+      ],
+      "reply": [
+        "thinking[_ ]level"
       ]
     },
     {
@@ -215,7 +225,8 @@
       ],
       "drop": [
         "feel free to ask"
-      ]
+      ],
+      "judge_note": "The draft is a report about a failing prompt, quoted inside it, and the text you are judging is the fixed version of that quoted prompt."
     },
     {
       "id": "11-dispatch",
@@ -237,7 +248,8 @@
       "drop": [
         "think carefully",
         "show your reasoning"
-      ]
+      ],
+      "judge_note": "The draft is a brief one agent was about to send to a subagent."
     },
     {
       "id": "12-auto-mode",
@@ -251,7 +263,11 @@
         "14 call sites",
         "backoff"
       ],
-      "drop": []
+      "drop": [],
+      "reply": [
+        "Opus 5\\.5|Fable 5\\.2|Sonnet 5\\.5",
+        "runner[- ]up|alternative|second choice"
+      ]
     },
     {
       "id": "13-video-current",
@@ -269,6 +285,10 @@
       ],
       "drop": [
         "award[- ]winning"
+      ],
+      "reply": [
+        "duration",
+        "aspect[_ ]ratio"
       ]
     }
   ]

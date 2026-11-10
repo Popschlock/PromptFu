@@ -37,7 +37,9 @@ curl -sSL https://platform.claude.com/docs/en/build-with-claude/prompt-engineeri
 python evals/measure.py quotes --docs docs
 ```
 
-**`claude plugin eval`** makes real model calls on your account, about two runs per case with `--runs 1`. Each rewrite case asks for the prompt in a file named `rewrite.txt`, which is why the Write grant is needed. Its graders check the kept constraints and dropped cues by regex, whether the skill fired, and a short rubric by a judge model. The report also shows each score without the plugin, so the difference is what PromptFu adds over the bare model.
+**`claude plugin eval`** makes real model calls on your account, about two runs per case with `--runs 1`. Each rewrite case asks for the prompt in a file named `rewrite.txt`, which is why the Write grant is needed. Its graders check the kept constraints and dropped cues by regex, whether the skill fired, one pass-or-fail question put to a judge model, and for some cases a fact the model card supplies, looked for in the reply. The report also shows each score without the plugin, so the difference is what PromptFu adds over the bare model.
+
+One run per case is noisy, so use `--runs 3` before trusting a single case. A run that ends on a safeguard API error scores 0 in that arm: draft 02 holds a "show me your full reasoning" line that some models flag when it arrives in a user message. Run it again, or pass `--model`.
 
 The three `trigger-` cases cover when the skill should fire at all: before a subagent dispatch that carries real work, and not on a lookup, however long the question runs. Run them alone with `--tag trigger`.
 
@@ -49,7 +51,7 @@ The three `trigger-` cases cover when the skill should fire at all: before a sub
 2. `python evals/measure.py rewrites --dir <folder>` checks each folder against the keep and drop lists and counts words.
 3. Give a fresh-context grader the draft, the two rewrites under neutral names and `rubric.md`, and nothing else. Use at least two graders per draft and swap the order between them.
 
-The 3.0.0 release was checked this way against 2.3.0, and the result is in `baseline/`.
+The 3.0.0 release was checked this way against 2.3.0. The result is in `baseline/3.0.0.json`, next to that release's `claude plugin eval` scores.
 
 ## When a model ships
 
@@ -59,4 +61,4 @@ The 3.0.0 release was checked this way against 2.3.0, and the result is in `base
 4. Add a draft that targets the new model to `cases.json` and `drafts/` when it brings a new kind of prompt, then run `python evals/measure.py gen`.
 5. Run the three commands at the top. Record the numbers in `baseline/` with the release.
 
-`SKILL.md`, `harnesses.md` and the playbooks hold no model names, so a model release does not touch them.
+`SKILL.md`, `harnesses.md` and the playbooks hold no model names, so a model release does not touch them. It touches six files: the card, the family table, `legacy.md`, the README's model table and the two manifests.

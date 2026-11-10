@@ -3,11 +3,13 @@ type: llm
 focus: { source: file, path: rewrite.txt }
 ---
 
-The text you are judging is a rewrite of the draft prompt below, meant for GPT Image 2.5.
+The text you are judging is a prompt meant for GPT Image 2.5. It is a rewrite of the draft below. 
 
-PASS if the rewrite asks for the same deliverable as the draft, keeps every format, name, path, count, limit and quoted text the draft states, and adds no requirement the draft did not state unless that addition is labeled as an assumption. Dropping a request to think harder, think step by step, show reasoning or double-check is fine and does not count against it.
+PASS if it asks for the same deliverable as the draft and someone could act on it without seeing the draft.
 
-FAIL if the rewrite drops or changes something the draft asked for, adds unlabeled requirements such as budgets, caps or extra outputs, or pads the prompt with role play or filler.
+FAIL if it asks for a different deliverable, if it describes or critiques the draft and is not itself a usable prompt, or if it tells the model to think step by step, think harder or show its reasoning.
+
+Added structure, added detail and lines labeled as assumptions are not reasons to fail.
 
 The draft:
 

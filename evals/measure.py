@@ -433,16 +433,23 @@ def case_files(case):
         ),
         "graders/criteria.md": (
             "---\ntype: llm\nfocus: { source: file, path: rewrite.txt }\n---\n\n"
-            f"The text you are judging is a rewrite of the draft prompt below, meant for {case['target']}.\n\n"
-            "PASS if the rewrite asks for the same deliverable as the draft, keeps every format, name, path, "
-            "count, limit and quoted text the draft states, and adds no requirement the draft did not state "
-            "unless that addition is labeled as an assumption. Dropping a request to think harder, think step "
-            "by step, show reasoning or double-check is fine and does not count against it.\n\n"
-            "FAIL if the rewrite drops or changes something the draft asked for, adds unlabeled requirements "
-            "such as budgets, caps or extra outputs, or pads the prompt with role play or filler.\n\n"
+            f"The text you are judging is a prompt meant for {case['target']}. It is a rewrite of the draft below. "
+            f"{case.get('judge_note', '')}\n\n"
+            "PASS if it asks for the same deliverable as the draft and someone could act on it without seeing "
+            "the draft.\n\n"
+            "FAIL if it asks for a different deliverable, if it describes or critiques the draft and is not "
+            "itself a usable prompt, or if it tells the model to think step by step, think harder or show its "
+            "reasoning.\n\n"
+            "Added structure, added detail and lines labeled as assumptions are not reasons to fail.\n\n"
             f"The draft:\n\n{draft}\n"
         ),
     }
+    if case.get("reply"):
+        # Facts the model card supplies, looked for in the final reply. A run without the plugin rarely has them.
+        files["graders/reply-facts.md"] = (
+            "---\ntype: regex\nflags: is\npattern: "
+            + yaml_quote("^" + "".join(f"(?=.*(?:{r}))" for r in case["reply"])) + "\n---\n"
+        )
     if case["drop"]:
         files["graders/drops-cues.md"] = (
             f"---\ntype: regex\n{target}\nflags: i\nmatch: not_contains\n"

@@ -1,7 +1,7 @@
 # Rubric for prompt rewrites
 
 You get a draft prompt, the model or product it will be sent to, and one or two rewrites of it.
-Judge each rewrite as the prompt that will actually be sent. You are not told where a rewrite
+Judge each rewrite as the prompt that will be sent. You are not told where a rewrite
 came from, and the order means nothing.
 
 Score each criterion from 1 to 5, where 5 is the best.
