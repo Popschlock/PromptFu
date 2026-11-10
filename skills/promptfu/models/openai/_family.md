@@ -1,7 +1,7 @@
 # OpenAI family
 
 Verified 2026-11-10 against the pages under Sources.
-Sources: https://developers.openai.com/api/docs/ (models, guides/latest-model/gpt-6-astra, guides/latest-model/gpt-5.6, guides/prompt-guidance-gpt-5p6, guides/model-selection, guides/reasoning, guides/reasoning-best-practices, guides/deployment-checklist, guides/daybreak) and https://learn.chatgpt.com/docs/ (models, cyber-safety, agent-configuration/subagents)
+Sources: https://developers.openai.com/api/docs/ (models, guides/latest-model/gpt-6-astra, guides/latest-model/gpt-5.6, guides/prompt-guidance-gpt-5p6, guides/model-selection, guides/reasoning, guides/reasoning-best-practices, guides/deployment-checklist, guides/daybreak, guides/video-generation) and https://learn.chatgpt.com/docs/ (models, cyber-safety, agent-configuration/subagents)
 Unverified: which Codex models offer `ultra`, default efforts inside Codex, GPT-6-Cyber's effort values, that "Extra high" is `xhigh`, and whether the Structure guidance was retested on GPT-6.
 
 ## Models
@@ -14,14 +14,15 @@ Unverified: which Codex models offer `ultra`, default efforts inside Codex, GPT-
 | GPT-6 Luna | `gpt-6-luna` | family file alone | Focused, high-volume tasks |
 | GPT-6-Cyber | `gpt-6-cyber` | family file alone | Authorized vulnerability work (Daybreak Red) |
 | GPT Image 2.6, 2.5 | `gpt-image-2.6-*`, `gpt-image-2.5-*` | `gpt-image.md` | Image generation and editing |
-| ChatGPT apps, Deep Research included | none | the card of the model in the picker, else family file alone | A prompt pasted into the app |
-| GPT-6 Sol, GPT-5.6, older | their own IDs | `legacy.md` | Only when a request pins one |
+| Video | none | none | Sora 2 and the Videos API shut down 2026-09-24, no replacement API |
+| ChatGPT apps, Deep Research included | none | the picker model's card, else family file alone | A prompt pasted into the app |
+| GPT-6 Sol, GPT-5.6, older | their own IDs | `legacy.md` | Only when pinned |
 
-The default depends on the surface: the API docs start at GPT-6 Astra, the Codex docs at GPT-6.1 Sol. OpenAI's GPT-6 prompt blocks are in `gpt-6-astra.md`. It wrote them from Astra's behavior as a starting point for the family, so take one for Sol, Terra or Luna only when a prompt shows the behavior it fixes.
+By default the API docs start at GPT-6 Astra and the Codex docs at GPT-6.1 Sol. OpenAI's GPT-6 prompt blocks are in `gpt-6-astra.md`, written from Astra's behavior as a starting point for the family, so take one for Sol, Terra or Luna only when a prompt shows the behavior it fixes.
 
 ## Dialect
 
-Markdown headers and lists mark a prompt's sections. XML tags mark where content such as a reference document begins and ends. A developer message runs identity, instructions, examples, context, and outranks user messages.
+Markdown headers and lists mark a prompt's sections, XML tags where content such as a reference document begins and ends. A developer message runs identity, instructions, examples, context, and outranks user messages.
 
 ## Structure
 
@@ -63,14 +64,14 @@ or a material expansion of scope.
 
 **Stop conditions.** Ask for the fewest useful tool loops, never at the cost of correctness or required evidence. When evidence is missing, the model names the missing fact and takes the smallest fallback.
 
-**Preambles,** when a person watches multi-step work: one or two sentences before the first tool call, then updates only at a major phase change, with no narration of routine calls.
+**Preambles,** when a person watches multi-step work: one or two sentences before the first tool call, then updates only at a major phase change, never for routine calls.
 
 **Verbosity.** `text.verbosity` sets default detail. A broad "be concise" can cut too much, so say what a short answer keeps and drops.
 
 ## Effort
 
 - `reasoning.effort` runs `low`, `medium`, `high`, `xhigh`, `max`. Terra and Luna also take `none`. Astra and GPT-6.1 Sol reject it, so use `low`. The API default is `medium` (Astra's page states none).
-- `low` for extraction, routing, classification and routine rewrites, `medium` or `high` to diagnose, compare, plan or reason through code, `xhigh` or `max` only when tests show the gain is worth the cost.
+- `low` for extraction, routing, classification and routine rewrites, `medium` or `high` to diagnose, compare, plan or reason through code, `xhigh` or `max` only when tests show a gain worth the cost.
 - Before raising effort, check the prompt for a missing success criterion or verification loop. Levels do not map exactly between model generations.
 - Across vendors: `low` through `max` are the names Anthropic uses. `none` maps to a vendor's lowest level and Codex's `ultra` to `max`. Where a vendor has fewer levels, `xhigh` and `max` map to its top level.
 
@@ -80,11 +81,11 @@ OpenAI calls "think step by step" and "explain your reasoning" unnecessary for r
 
 ## Hazards
 
-The GPT-5.6 guide names cyber and biology classifiers that can block or refuse a request, legitimate dual-use work included. On GPT-6, reduced refusals for security work need approval under OpenAI's Daybreak programs, so do not try to word around a refusal. OpenAI's example prompts for approved work name the lab, the testing window and a stop line.
+The GPT-5.6 guide names cyber and biology classifiers that can block or refuse a request, even legitimate dual-use work. On GPT-6, reduced refusals for security work need approval under OpenAI's Daybreak programs, so never word around a refusal. OpenAI's example prompts for approved work name the lab, the testing window and a stop line.
 
 ## Routing
 
-OpenAI's pairs of model and effort. Keep the lightest that meets the quality bar.
+OpenAI's model and effort pairs. Keep the lightest that meets the quality bar.
 
 - **Luna.** Low: fine-grained edits, simple extraction. Extra high: finding context across apps, problems with clear constraints.
 - **GPT-6.1 Sol.** Medium: complex technical work, deliverables you expect to revise. Extra high: polished deliverables, decisions from conflicting evidence.
