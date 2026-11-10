@@ -1,0 +1,275 @@
+{
+  "note": "Fixed draft set for PromptFu. keep = regexes every rewrite must still match (the draft's hard constraints). drop = regexes a rewrite must not carry into the prompt it sends. Both are matched case-insensitively against the rewritten prompt. `python evals/measure.py gen` turns this file and drafts/ into the case folders under cases/.",
+  "cases": [
+    {
+      "id": "01-short-run",
+      "playbook": "short-run",
+      "target": "Claude Opus 5.5",
+      "request": "Optimize this prompt for Claude Opus 5.5.",
+      "keep": [
+        "v3\\.4\\.1",
+        "SyncQueue\\.flush\\(\\)",
+        "PLAT-2291",
+        "(2|two) sentences",
+        "ticket"
+      ],
+      "drop": [
+        "world-class",
+        "step by step",
+        "show your reasoning",
+        "hallucinat",
+        "20 years"
+      ]
+    },
+    {
+      "id": "02-long-run-agentic",
+      "playbook": "long-run-agentic",
+      "target": "Claude Fable 5.2",
+      "request": "Optimize this prompt for Claude Fable 5.2. It will run unattended in Claude Code.",
+      "keep": [
+        "services/billing/legacy/",
+        "85\\s?%",
+        "make cov",
+        "file \\| status \\| notes",
+        "test names",
+        "unittest",
+        "pytest"
+      ],
+      "drop": [
+        "think hard",
+        "full reasoning",
+        "double check everything twice",
+        "wait for me to approve",
+        "IMPORTANT!!!"
+      ]
+    },
+    {
+      "id": "03-tool-agents",
+      "playbook": "tool-agents",
+      "target": "GPT-6.1 Sol",
+      "request": "Optimize this for GPT-6.1 Sol. The result is the system prompt for an API agent.",
+      "keep": [
+        "lookup_order",
+        "issue_refund",
+        "send_email",
+        "escalate_to_human",
+        "5000 cents",
+        "(3|three) tool calls",
+        "language"
+      ],
+      "drop": [
+        "chain of thought",
+        "step by step",
+        "friendly!!"
+      ]
+    },
+    {
+      "id": "04-deep-research",
+      "playbook": "deep-research",
+      "target": "ChatGPT Deep Research",
+      "request": "Optimize this for ChatGPT Deep Research. I will paste it into the app.",
+      "keep": [
+        "Brand, Kit type, Motor power \\(W\\), Price \\(EUR\\), Legal in EU \\(Y/N\\), Source",
+        "2024",
+        "250\\s?W",
+        "25 km/h",
+        "Netherlands",
+        "(1|one)[- ]page"
+      ],
+      "drop": [
+        "no stone unturned",
+        "think deeply"
+      ]
+    },
+    {
+      "id": "05-image-generation",
+      "playbook": "image-generation",
+      "target": "GPT Image 2.5",
+      "request": "Optimize this for GPT Image 2.5.",
+      "keep": [
+        "OPEN STUDIO",
+        "SAT 14 JUNE, 11:00-17:00",
+        "4:5",
+        "fluorescent orange",
+        "navy",
+        "15\\s?%",
+        "risograph",
+        "vase",
+        "scissors"
+      ],
+      "drop": [
+        "8k",
+        "masterpiece",
+        "artstation"
+      ]
+    },
+    {
+      "id": "06-video-generation",
+      "playbook": "video-generation",
+      "target": "Veo 3.1",
+      "request": "Optimize this for Veo 3.1. I will attach the cafe photo as the reference image.",
+      "keep": [
+        "first one of the day",
+        "(8|eight)[- ]second",
+        "16:9",
+        "green tiles",
+        "brass lamp",
+        "no music|without music|includes? only|only the (sound|water)",
+        "kettle"
+      ],
+      "drop": [
+        "award[- ]winning"
+      ]
+    },
+    {
+      "id": "07-multimodal-input",
+      "playbook": "multimodal-input",
+      "target": "Gemini 4 Argon",
+      "request": "Optimize this for Gemini 4 Argon through the API.",
+      "keep": [
+        "invoice_number",
+        "supplier",
+        "total_incl_vat",
+        "currency",
+        "matches_po",
+        "yes/no/unclear|yes, no,? or unclear|`yes`.{0,12}`no`.{0,12}`unclear`",
+        "UNREADABLE",
+        "quantit",
+        "price"
+      ],
+      "drop": [
+        "step by step",
+        "extremely careful"
+      ]
+    },
+    {
+      "id": "08-structured-output",
+      "playbook": "structured-output",
+      "target": "GPT-6.1 Terra",
+      "request": "Optimize this for GPT-6.1 Terra through the API.",
+      "keep": [
+        "sentiment",
+        "topics",
+        "escalate",
+        "summary",
+        "1-5|1 to 5",
+        "shipping",
+        "price",
+        "quality",
+        "support",
+        "app",
+        "other",
+        "20 words",
+        "null",
+        "chargeback",
+        "lawyer",
+        "safety"
+      ],
+      "drop": [
+        "expert sentiment analysis AI",
+        "double check",
+        "explanation!!!"
+      ]
+    },
+    {
+      "id": "09-instruction-files",
+      "playbook": "instruction-files",
+      "target": "Claude Sonnet 5.5",
+      "request": "Optimize this. The agent definition it produces will run on Claude Sonnet 5.5 in Claude Code.",
+      "keep": [
+        "migration-reviewer",
+        "db/migrations/",
+        "BLOCKER",
+        "WARN",
+        "NIT",
+        "DROP COLUMN",
+        "DROP TABLE",
+        "down\\(\\)",
+        "orders",
+        "online-schema-change",
+        "severity",
+        "file",
+        "line",
+        "finding"
+      ],
+      "drop": [
+        "step by step",
+        "explain its reasoning",
+        "ALWAYS check everything",
+        "extremely thorough"
+      ]
+    },
+    {
+      "id": "10-prompt-debugging",
+      "playbook": "prompt-debugging",
+      "target": "GPT-6 Astra",
+      "request": "This prompt keeps failing. Debug it and give me the fixed prompt.",
+      "keep": [
+        "title",
+        "start",
+        "end",
+        "attendees",
+        "location",
+        "\\{email_body\\}",
+        "ISO 8601"
+      ],
+      "drop": [
+        "feel free to ask"
+      ]
+    },
+    {
+      "id": "11-dispatch",
+      "playbook": "long-run-agentic",
+      "target": "Agent tool, model: haiku",
+      "request": "Silent dispatch pass: you are about to send this prompt in an Agent call with subagent_type general-purpose and model haiku. Apply the skill to it first, the way the plugin's hook asks, and send the result.",
+      "keep": [
+        "log\\.write",
+        "Logger\\.legacy",
+        "logger\\.info",
+        "logger\\.warn",
+        "logger\\.error",
+        "src/vendor/",
+        "__generated__",
+        "file \\| line \\| old call \\| new call",
+        "UNSURE",
+        "src/"
+      ],
+      "drop": [
+        "think carefully",
+        "show your reasoning"
+      ]
+    },
+    {
+      "id": "12-auto-mode",
+      "playbook": "long-run-agentic",
+      "target": "auto (Claude Code session)",
+      "request": "Which model and effort should I use for this in Claude Code, and optimize the prompt for that pick.",
+      "keep": [
+        "payments/retry/",
+        "tests/payments/",
+        "payments/retry/__init__\\.py",
+        "14 call sites",
+        "backoff"
+      ],
+      "drop": []
+    },
+    {
+      "id": "13-video-current",
+      "playbook": "video-generation",
+      "target": "Gemini Omni Flash",
+      "request": "Optimize this for Gemini Omni Flash. I will attach the cafe photo as the reference image.",
+      "keep": [
+        "first one of the day",
+        "(8|eight)[- ]second",
+        "16:9",
+        "green tiles",
+        "brass lamp",
+        "no music|without music|includes? only|only the (sound|water)",
+        "kettle"
+      ],
+      "drop": [
+        "award[- ]winning"
+      ]
+    }
+  ]
+}

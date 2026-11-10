@@ -1,123 +1,69 @@
-# Family: Google Gemini
+# Google family
 
-This file holds what every Google target shares. The model files beside it (`gemini-3-8-flash.md`,
-`gemini-image.md`, `veo-3-1.md`) are deltas on it and assume you have read this first.
+Verified 2026-11-10 against Google's latest models page, prompt design guide, thinking guide, What's new guides for Gemini 3.6, 3.8 and 4 Argon, and function calling, safety settings, Deep Research and deprecations pages.
+Sources: https://aistudio.google.com/docs/latest-model, https://aistudio.google.com/docs/prompting-strategies, https://aistudio.google.com/docs/deep-research
+Unverified: Deep Think. The API docs give it no model page, ID or thinking level, so it is not routed here.
 
-Last verified 2026-09-18 against the Gemini API models catalog, the thinking guide, the prompting
-strategies guide, the Gemini 3 developer guide, the pricing page and the deep research guide.
-Sources: https://ai.google.dev/gemini-api/docs/models, https://ai.google.dev/gemini-api/docs/thinking,
-https://ai.google.dev/gemini-api/docs/prompting-strategies, https://ai.google.dev/gemini-api/docs/gemini-3,
-https://ai.google.dev/gemini-api/docs/pricing, https://ai.google.dev/gemini-api/docs/deep-research,
-https://www.philschmid.de/gemini-3-prompt-practices (secondary),
-https://promptessor.com/blog/gemini-3-8-flash-prompting-guide (secondary).
+## Models
 
-## Where this family fits
-
-Route within Google by the judgment the task needs, then set `thinking_level` for the depth. Prices
-are per MTok of input and output on the paid tier.
-
-| Target | ID | Pick it for | Thinking | Price |
+| Model | ID | Card | Use it for | Thinking levels |
 |---|---|---|---|---|
-| Gemini 3.8 Flash (default) | `gemini-3.8-flash` | coding, agents, long-horizon work, most substantive tasks | `low`, `medium` (default), `high` | $0.75 / $3.75 until 2026-12-31, then $1.50 / $7.50 |
-| Gemini 3.1 Pro preview | `gemini-3.1-pro-preview` | the hardest reasoning and precise multi-step tool use | `low`, `medium`, `high` (default) | $2 / $12 up to 200k tokens, $4 / $18 above |
-| Gemini 3 Deep Think | app mode, API by early access only | the very hardest math and science questions | n/a | Google AI Ultra, or enterprise access |
-| Gemini 3.5 Flash-Lite | `gemini-3.5-flash-lite` | mechanical work: classify, label, route, extract | `minimal` (default) to `high` | $0.30 / $2.50 |
-| Gemini 3.1 Flash-Lite | `gemini-3.1-flash-lite` | the cheapest text path | `minimal` (default) | $0.25 / $1.50 |
-| Deep Research | `deep-research-preview-04-2026`, `deep-research-max-preview-04-2026` | autonomous cited research, background only | n/a | about $1 to $3 per task, $3 to $7 on max |
-| Image | `gemini-3.1-flash-image`, `gemini-3-pro-image`, `gemini-3.1-flash-lite-image` | see `gemini-image.md` | `minimal`, `high` | per image |
-| Video | `veo-3.1-generate-preview`, `veo-3.1-fast-generate-preview`, `veo-3.1-lite-generate-preview` | see `veo-3-1.md` | n/a | per second |
+| Gemini 4 Argon | `gemini-4-argon` | `gemini-4-argon.md` | Complex reasoning, hard coding, math and science | `low`, `medium` (default), `high` |
+| Gemini 3.8 Flash | `gemini-3.8-flash` | `gemini-3-8-flash.md` | The default: everyday apps and agents | `low`, `medium` (default), `high` |
+| Gemini 3.5 Flash-Lite | `gemini-3.5-flash-lite` | family file alone | Subagents, routing, extraction, document parsing | `minimal` (default), `low`, `medium`, `high` |
+| Gemini 3.1 Pro preview | `gemini-3.1-pro-preview`, `gemini-3.1-pro-preview-customtools` | family file alone | Only when pinned | `low`, `medium`, `high` (default) |
+| Nano Banana 2.1, Pro, 2 Lite, 2 | `gemini-nano-banana-2.1`, `gemini-3-pro-image`, `gemini-3.1-flash-lite-image`, `gemini-3.1-flash-image` | `gemini-image.md` | Images | see the card |
+| Gemini Omni Flash | `gemini-omni-1.2-flash`, `gemini-omni-1.1-flash` | `gemini-omni-flash.md` | Video | none documented |
+| Deep Research, Deep Research Max | `deep-research-preview-04-2026`, `deep-research-max-preview-04-2026` | family file alone | Cited reports | none documented |
+| Antigravity agent | `antigravity-preview-09-2026` | its model's card, `gemini-3.8-flash` by default | Managed coding agent | that card's |
+| Older | `gemini-3.7-flash` and older Flash IDs, `gemini-3.1-flash-lite`, `gemini-2.5-*`, `veo-*`, `imagen-*` | `legacy.md` | Only when pinned | see the entry |
 
-Older Flash models (`gemini-3.7-flash`, `gemini-3.6-flash`, `gemini-3.5-flash`) stay available and
-are covered in the sibling table of `gemini-3-8-flash.md`. Deep Think has no public model ID as of
-this date. It runs in the Gemini app for AI Ultra subscribers, and the API opened to select
-enterprises in February 2026 (secondary source).
+Live, speech, embedding, music and robotics IDs have no card.
 
-Stage routing: plan and review on 3.1 Pro preview or 3.8 Flash at `high`, execute on 3.8 Flash at
-`medium`, grade on 3.5 Flash-Lite with fresh context, artifacts and rubric only.
+## Dialect
 
-## Core shift vs predecessor
+Direct, well-structured prompts. Separate the parts with XML-style tags (`<role>`, `<constraints>`, `<context>`, `<task>`, `<output_format>`) or Markdown headings, one style per prompt. Role, behavioral constraints and output format go in the system instruction or the first lines. Large context goes first and the question at the very end, joined by a phrase like "Based on the information above...". Define ambiguous terms and name each image, audio or video input. Answers are brief by default, so ask in words for a conversational or detailed one. Leave out persuasive language. Add a few identically formatted examples. Too many cause overfitting. For an agent, state the risk rule (reads low, writes high), when to ask instead of assume, how hard to retry, and how much to narrate.
 
-Gemini 3 reasons on its own and answers briefly. Google's guide says the models "respond best to
-direct, clear instructions" and "may over-analyze verbose or overly complex prompt engineering
-techniques used for older models". Chain-of-thought scripts and persuasive framing written for
-Gemini 2.5 now cost tokens and can degrade output. The controls moved from prose into settings:
-`thinking_level` sets depth, and the prompt states the outcome, the evidence and the contract.
+## Effort
 
-## Delete on sight
+- `thinking_level` is the control: `minimal`, `low`, `medium`, `high`. `minimal` errors on 3.8 Flash and never guarantees thinking is off.
+- To spend less, lower the level. `max_output_tokens` counts thinking, and a reply that hits it ends `incomplete`, cut short or empty. On Gemini 3 models higher levels also call more tools.
+- Replace `thinking_budget` with `thinking_level`. Sending both returns a 400.
+- Across vendors: `low`, `medium` and `high` map by name, `xhigh` and `max` map to `high`, and `minimal` sits below `low`.
 
-- Step-by-step reasoning scripts and "think carefully" prose. Set `thinking_level` instead.
-- Any `temperature` below 1.0, and any changed `topP` or `topK`. Google says changing these on
-  3.x models "can cause unexpected behavior" including looping.
-- "World's best expert" and other persuasive framing. Replace it with decision criteria.
-- "Be detailed" or "be concise" without a definition. State the format and a length in words.
-- A question placed before or inside a large block of context.
-- Two structure systems in one prompt, such as XML tags mixed with Markdown headings.
-- A request to show reasoning traces. The model already thinks and only summaries come back.
-- `thinking_budget` alongside `thinking_level`. The pair returns a 400.
+## Thinking cues
 
-## Refusal / safety hazards
+- **"Show your reasoning", "outline your plan".** Generally unnecessary, the guide says. Delete the request unless the reader needs the steps.
+- **"Think step by step", "think very hard".** Turn the wish for depth into the level. One short cue may stay on a heavy-reasoning problem, where the guide says it can help.
 
-Standard Gemini safety filters apply and the text models document no Fable-style dual-use
-categories. Veo can block a clip on an audio safety filter, and `personGeneration` is limited by
-region and mode (see `veo-3-1.md`). Grounding with Google Search is Google's answer to obscure or
-recent facts, so add it when a prompt depends on them rather than warning the model about
-hallucination.
+## Hazards
 
-## Always add
+- **Sampling parameters.** Remove `temperature`, `top_p` and `top_k`: Gemini 4 and 3.6 and later ignore them, and earlier Gemini 3 models want the defaults. `candidate_count` is unsupported. For determinism, put explicit rules in the system instruction.
+- **Prefilled model turns.** A request that ends on a model turn returns a 400 on 3.6 Flash, 3.5 Flash-Lite and everything newer. Use the system instruction or structured outputs.
+- **Structured text required right before a tool call** (an `<UPDATE>` block, YAML, JSON) can fail the call with `Malformed_Function_Call`. Ask for Markdown headers, or for no text before tool calls.
+- **Safety filters.** A block is an HTTP 400 with the code `safety`, `jailbreak`, `prohibited_content` or `blocklist`.
 
-The shared content set goes in every rewrite: intent, hard constraints verbatim, boundaries with
-named exclusions, the evidence rule, and the exact output contract. The Google form is direct prose
-under one structure system, with the rules first and the question last. Add these blocks:
+## Routing
 
-- Critical rules in the system instruction or the first lines, including persona and format.
-- A definitions block for any term a rubric turns on, for example "HIGH = a customer cannot use a
-  core paid function, MEDIUM = a major workflow degraded with a workaround, LOW = cosmetic".
-- A verbosity line whenever the default terse answer is wrong for the reader. Google's own example
-  is "Explain this as a friendly, talkative assistant". Name the format and a word count.
-- For large context, the order SYSTEM RULES, CONTEXT, ANCHOR, TASK, OUTPUT. The anchor is one
-  transition sentence, verbatim from Google: "Based on the information above...".
-- A tool policy with conditions for use, the values it must never invent (IDs, dates, prices,
-  account state, authorization), a recovery rule for failed calls, and a stop condition.
-- A freshness clause when dates matter. Google's guide suggests "Remember it is 2026 this year".
-- Few-shot examples when they teach a boundary or a format, with identical formatting across
-  examples. Too many examples make the model overfit to them.
-- For multimodal inputs, a label per input and an instruction that names each modality. Google
-  says to "treat them as equal-class inputs".
+- **3.8 Flash at `medium`** first. The docs suggest a lower level for everyday tasks. Argon for complex reasoning.
+- **3.5 Flash-Lite** at `minimal` for extraction, routing and classification, and at `medium` or `high` as a subagent with tool calls, code execution or multi-step reasoning, where a low level can end tool use early.
+- **The `-customtools` ID** favors your own tools in agents that mix them with bash. Quality can vary elsewhere.
+- **Tools.** Search grounding for recent or obscure facts, code execution for any arithmetic, counting or calculation. At most 10 to 20 active tools.
 
-## Dispatch settings
+Any pick below the configured session model or level is a recommendation under the effort floor in `SKILL.md`.
 
-- `thinking_level` is the depth dial. Start at each model's default, then test one level down and
-  one up on the same prompt. Test a prompt change and a level change separately.
-- Route by level: `low` for latency-bound chat and drafts, `medium` for complex coding and agent
-  loops, `high` for multi-step planning, math and verified code generation.
-- `max_output_tokens` counts thought tokens too. A limit hit during reasoning returns status
-  `incomplete`, so raise it before lowering the thinking level.
-- Multi-turn without server state must resend every `thought` block unmodified, including across a
-  model switch. Set `store: true` to let the server keep the signatures instead.
-- Maker-never-grader holds: graders get artifacts and rubric only, on a cheaper Flash-Lite call.
-- Use Structured Output (a JSON schema on the request) for the response shape and keep the
-  semantic rules in the prompt. The schema field name differs between `generateContent` and the
-  Interactions API, so check the call you are building.
-- Deep Research runs only through the Interactions API with `background=true` and `store=true`,
-  takes up to 60 minutes, and accepts MCP servers but no custom function tools and no structured
-  output. Put the brief's section list and the missing-data rule in the prompt.
+## Deep Research
 
-## API notes
+Deep Research is the faster agent, Max the comprehensive one.
 
-- Context is 1,048,576 tokens in and 65,536 out on the 3.x text models. Inputs are text, image,
-  video, audio and PDF.
-- `thinking_level` values are `minimal`, `low`, `medium`, `high`, but support varies per model.
-  `gemini-3.8-flash` and `gemini-3.7-flash` reject `minimal` with an error. Dynamic thinking is
-  on by default. `thinking_summaries` is `auto` or `none`. Pricing charges the full thought
-  tokens even though only a summary is returned.
-- Keep `temperature` at 1.0 and leave `topP` and `topK` at defaults on every 3.x model.
-- Context caching is priced per model (3.8 Flash $0.075 per MTok until 2026-12-31). Search
-  grounding and Maps grounding each give 5,000 free requests a month, then $14 per 1,000.
-- 3.1 Pro preview has a `gemini-3.1-pro-preview-customtools` endpoint tuned for bash and custom
-  tools. Google warns of quality variation where custom tools do not help.
-- Gemini CLI: settings live in `settings.json`, the model is switched with `/model`, and
-  `thinkingLevel` is set through `modelConfigs` custom aliases in the config (secondary source).
-  Skills are discovered in `.gemini/skills` and `~/.gemini/skills` (secondary source). Whether it
-  reads `.agents/skills` is unverified. Antigravity: `antigravity-preview-05-2026` is the managed
-  agent model, and its local state on this machine sits under `~/.gemini/antigravity/`. How it
-  names its model to the session is unverified.
+- Interactions API only, with `background=true` and `store=true`, for up to 60 minutes.
+- No structured outputs and no custom function tools (remote MCP servers work). Drop any schema and write the format into the prompt: sections, required tables, tone.
+- Give background and constraints. Ask for charts in words: it draws them only on request.
+- Say what to do about missing data. Google's example:
+
+```text
+If specific figures for 2025 are not available, explicitly state they are projections or unavailable rather than estimating
+```
+
+- `collaborative_planning` returns a plan to review before a complex run.
+- What it reads can carry injected instructions. Give it trusted files only.

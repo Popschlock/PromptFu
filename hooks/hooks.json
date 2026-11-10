@@ -1,15 +1,13 @@
 {
   "hooks": {
-    "PreToolUse": [
+    "SessionStart": [
       {
-        "matcher": "Agent|Workflow",
         "hooks": [
           {
             "type": "command",
             "command": "node",
-            "args": ["${CLAUDE_PLUGIN_ROOT}/hooks/dispatch-gate.js"],
-            "timeout": 10,
-            "statusMessage": "PromptFu dispatch check"
+            "args": ["${CLAUDE_PLUGIN_ROOT}/hooks/session-start.js"],
+            "timeout": 10
           }
         ]
       }
@@ -21,8 +19,20 @@
             "type": "command",
             "command": "node",
             "args": ["${CLAUDE_PLUGIN_ROOT}/hooks/long-prompt-check.js"],
-            "timeout": 15,
-            "statusMessage": "PromptFu length check"
+            "timeout": 10
+          }
+        ]
+      }
+    ],
+    "PreToolUse": [
+      {
+        "matcher": "Agent|Workflow",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "node",
+            "args": ["${CLAUDE_PLUGIN_ROOT}/hooks/dispatch-gate.js"],
+            "timeout": 10
           }
         ]
       }

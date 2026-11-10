@@ -1,0 +1,14 @@
+---
+max_turns: 25
+timeout_seconds: 900
+allowed_tools: [Read, Glob, Grep, Skill]
+tags: [rewrite]
+---
+
+Optimize this for GPT-6.1 Sol. The result is the system prompt for an API agent.
+
+Save the prompt you would send, and nothing else, to a file named rewrite.txt in the current directory. Nobody is here to answer questions, and the files the draft names do not exist on this machine.
+
+The draft:
+
+Write me a system prompt for our support bot. It has these tools: lookup_order(order_id), issue_refund(order_id, amount_cents), send_email(to, subject, body), escalate_to_human(reason). It should help customers with order problems. Refunds over 5000 cents need a human, anything under that it can just do. It must never email anyone except the address on the order. If it doesn't know the order id it should ask, not guess. Be helpful and friendly!! Think step by step before every tool call and explain your chain of thought to the customer so they trust us. Reply in the customer's language. Max 3 tool calls per turn.

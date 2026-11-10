@@ -1,0 +1,639 @@
+{
+ "version": "2.3.0",
+ "commit": "1ec14e9",
+ "measured": "2026-11-10",
+ "how": "Read cost: measure.py over the 2.3.0 skill folder with the read sets in layout. Hooks: each hook run against sample events. Runs: one rewrite per draft by a fresh subagent on the session model, twelve at once; tokens, tool calls and duration are what the harness reported for each subagent. Grades: one fresh-context grader per rewrite, given the draft, the rewrite and the first version of rubric.md.",
+ "layout": {
+  "note": "Read sets for PromptFu 2.3.0, traced from SKILL.md workflow steps 1 to 3: the family file, the model file, and the predecessor when the model file is a delta. A model with no file takes the family alone; an unknown model takes the nearest profile chain plus _TEMPLATE.md. harnesses.md is read when the target comes from the session or a dispatch, which is what both hook lines ask for.",
+  "entry": [
+   "SKILL.md"
+  ],
+  "session_extra": [
+   "harnesses.md"
+  ],
+  "playbooks": "tasks",
+  "representative_playbook": "tasks/long-run-agentic.md",
+  "targets": {
+   "Anthropic default, Opus 5.5": [
+    "models/anthropic/_family.md",
+    "models/anthropic/opus-5-5.md",
+    "models/anthropic/opus-5.md"
+   ],
+   "Anthropic newest, Fable 5.2 (no profile: family plus template, as case 02 ran)": [
+    "models/anthropic/_family.md",
+    "models/_TEMPLATE.md"
+   ],
+   "Anthropic, Fable 5.1 (newest with a profile)": [
+    "models/anthropic/_family.md",
+    "models/anthropic/fable-5-1.md",
+    "models/anthropic/fable-5.md"
+   ],
+   "OpenAI default, GPT-6.1 Sol (family points it at the Astra file, as case 03 ran)": [
+    "models/openai/_family.md",
+    "models/openai/gpt-6-astra.md"
+   ],
+   "OpenAI newest profile, GPT-6.1 Terra": [
+    "models/openai/_family.md",
+    "models/openai/gpt-6-1-terra.md"
+   ],
+   "OpenAI, GPT-6 Astra": [
+    "models/openai/_family.md",
+    "models/openai/gpt-6-astra.md"
+   ],
+   "Google default, Gemini 3.8 Flash": [
+    "models/google/_family.md",
+    "models/google/gemini-3-8-flash.md"
+   ],
+   "Google newest, Gemini 4 Argon (no profile: family plus template)": [
+    "models/google/_family.md",
+    "models/_TEMPLATE.md"
+   ]
+  }
+ },
+ "read_cost": {
+  "skill_md": {
+   "bytes": 14813
+  },
+  "description": {
+   "bytes": 472,
+   "claude_tokens": 189,
+   "o200k_tokens": 108
+  },
+  "paths": {
+   "Anthropic default, Opus 5.5": {
+    "files": [
+     "SKILL.md",
+     "models/anthropic/_family.md",
+     "models/anthropic/opus-5-5.md",
+     "models/anthropic/opus-5.md"
+    ],
+    "reads": 5,
+    "representative": {
+     "bytes": 59392,
+     "claude_tokens": 23744,
+     "o200k_tokens": 14108
+    },
+    "min": {
+     "bytes": 57539,
+     "claude_tokens": 23003,
+     "o200k_tokens": 13705
+    },
+    "max": {
+     "bytes": 59636,
+     "claude_tokens": 23842,
+     "o200k_tokens": 14058
+    }
+   },
+   "Anthropic newest, Fable 5.2 (no profile: family plus template, as case 02 ran)": {
+    "files": [
+     "SKILL.md",
+     "models/anthropic/_family.md",
+     "models/_TEMPLATE.md"
+    ],
+    "reads": 4,
+    "representative": {
+     "bytes": 35474,
+     "claude_tokens": 14191,
+     "o200k_tokens": 8517
+    },
+    "min": {
+     "bytes": 33621,
+     "claude_tokens": 13450,
+     "o200k_tokens": 8114
+    },
+    "max": {
+     "bytes": 35718,
+     "claude_tokens": 14289,
+     "o200k_tokens": 8467
+    }
+   },
+   "Anthropic, Fable 5.1 (newest with a profile)": {
+    "files": [
+     "SKILL.md",
+     "models/anthropic/_family.md",
+     "models/anthropic/fable-5-1.md",
+     "models/anthropic/fable-5.md"
+    ],
+    "reads": 5,
+    "representative": {
+     "bytes": 58598,
+     "claude_tokens": 23394,
+     "o200k_tokens": 13836
+    },
+    "min": {
+     "bytes": 56745,
+     "claude_tokens": 22653,
+     "o200k_tokens": 13433
+    },
+    "max": {
+     "bytes": 58842,
+     "claude_tokens": 23492,
+     "o200k_tokens": 13786
+    }
+   },
+   "OpenAI default, GPT-6.1 Sol (family points it at the Astra file, as case 03 ran)": {
+    "files": [
+     "SKILL.md",
+     "models/openai/_family.md",
+     "models/openai/gpt-6-astra.md"
+    ],
+    "reads": 4,
+    "representative": {
+     "bytes": 50973,
+     "claude_tokens": 20390,
+     "o200k_tokens": 12090
+    },
+    "min": {
+     "bytes": 49120,
+     "claude_tokens": 19649,
+     "o200k_tokens": 11687
+    },
+    "max": {
+     "bytes": 51217,
+     "claude_tokens": 20488,
+     "o200k_tokens": 12040
+    }
+   },
+   "OpenAI newest profile, GPT-6.1 Terra": {
+    "files": [
+     "SKILL.md",
+     "models/openai/_family.md",
+     "models/openai/gpt-6-1-terra.md"
+    ],
+    "reads": 4,
+    "representative": {
+     "bytes": 49422,
+     "claude_tokens": 19770,
+     "o200k_tokens": 12148
+    },
+    "min": {
+     "bytes": 47569,
+     "claude_tokens": 19029,
+     "o200k_tokens": 11745
+    },
+    "max": {
+     "bytes": 49666,
+     "claude_tokens": 19868,
+     "o200k_tokens": 12098
+    }
+   },
+   "OpenAI, GPT-6 Astra": {
+    "files": [
+     "SKILL.md",
+     "models/openai/_family.md",
+     "models/openai/gpt-6-astra.md"
+    ],
+    "reads": 4,
+    "representative": {
+     "bytes": 50973,
+     "claude_tokens": 20390,
+     "o200k_tokens": 12090
+    },
+    "min": {
+     "bytes": 49120,
+     "claude_tokens": 19649,
+     "o200k_tokens": 11687
+    },
+    "max": {
+     "bytes": 51217,
+     "claude_tokens": 20488,
+     "o200k_tokens": 12040
+    }
+   },
+   "Google default, Gemini 3.8 Flash": {
+    "files": [
+     "SKILL.md",
+     "models/google/_family.md",
+     "models/google/gemini-3-8-flash.md"
+    ],
+    "reads": 4,
+    "representative": {
+     "bytes": 37285,
+     "claude_tokens": 14915,
+     "o200k_tokens": 9044
+    },
+    "min": {
+     "bytes": 35432,
+     "claude_tokens": 14174,
+     "o200k_tokens": 8641
+    },
+    "max": {
+     "bytes": 37529,
+     "claude_tokens": 15013,
+     "o200k_tokens": 8994
+    }
+   },
+   "Google newest, Gemini 4 Argon (no profile: family plus template)": {
+    "files": [
+     "SKILL.md",
+     "models/google/_family.md",
+     "models/_TEMPLATE.md"
+    ],
+    "reads": 4,
+    "representative": {
+     "bytes": 33835,
+     "claude_tokens": 13535,
+     "o200k_tokens": 7982
+    },
+    "min": {
+     "bytes": 31982,
+     "claude_tokens": 12794,
+     "o200k_tokens": 7579
+    },
+    "max": {
+     "bytes": 34079,
+     "claude_tokens": 13633,
+     "o200k_tokens": 7932
+    }
+   }
+  },
+  "median_path_bytes": 50197.5,
+  "largest_path_bytes": 59392,
+  "skill_folder": {
+   "files": 31,
+   "bytes": 249796
+  }
+ },
+ "hooks": [
+  {
+   "hook": "PreToolUse:dispatch-gate.js",
+   "case": "Agent call, unstructured prompt",
+   "chars": 567,
+   "claude_tokens": 227,
+   "o200k_tokens": 119
+  },
+  {
+   "hook": "PreToolUse:dispatch-gate.js",
+   "case": "gate mode, first attempt",
+   "chars": 676,
+   "claude_tokens": 271,
+   "o200k_tokens": 144
+  },
+  {
+   "hook": "UserPromptSubmit:long-prompt-check.js",
+   "case": "short prompt",
+   "chars": 400,
+   "claude_tokens": 160,
+   "o200k_tokens": 86
+  },
+  {
+   "hook": "UserPromptSubmit:long-prompt-check.js",
+   "case": "long prompt",
+   "chars": 847,
+   "claude_tokens": 339,
+   "o200k_tokens": 180
+  },
+  {
+   "hook": "UserPromptSubmit:long-prompt-check.js",
+   "case": "short prompt, PROMPTFU_NEVER_DOWNGRADE",
+   "chars": 563,
+   "claude_tokens": 226,
+   "o200k_tokens": 121
+  }
+ ],
+ "runs": {
+  "01-short-run": {
+   "tokens": 97946,
+   "tool_uses": 10,
+   "duration_ms": 151204,
+   "skill_files": 5
+  },
+  "02-long-run-agentic": {
+   "tokens": 135884,
+   "tool_uses": 12,
+   "duration_ms": 583042,
+   "skill_files": 4
+  },
+  "03-tool-agents": {
+   "tokens": 139316,
+   "tool_uses": 15,
+   "duration_ms": 541005,
+   "skill_files": 4
+  },
+  "04-deep-research": {
+   "tokens": 109720,
+   "tool_uses": 9,
+   "duration_ms": 329616,
+   "skill_files": 3
+  },
+  "05-image-generation": {
+   "tokens": 107591,
+   "tool_uses": 11,
+   "duration_ms": 279097,
+   "skill_files": 4
+  },
+  "06-video-generation": {
+   "tokens": 107235,
+   "tool_uses": 10,
+   "duration_ms": 318055,
+   "skill_files": 4
+  },
+  "07-multimodal-input": {
+   "tokens": 111749,
+   "tool_uses": 11,
+   "duration_ms": 366200,
+   "skill_files": 4
+  },
+  "08-structured-output": {
+   "tokens": 124398,
+   "tool_uses": 11,
+   "duration_ms": 423352,
+   "skill_files": 4
+  },
+  "09-instruction-files": {
+   "tokens": 133337,
+   "tool_uses": 19,
+   "duration_ms": 539557,
+   "skill_files": 4
+  },
+  "10-prompt-debugging": {
+   "tokens": 124273,
+   "tool_uses": 9,
+   "duration_ms": 445557,
+   "skill_files": 4
+  },
+  "11-dispatch": {
+   "tokens": 106879,
+   "tool_uses": 12,
+   "duration_ms": 307593,
+   "skill_files": 5
+  },
+  "12-auto-mode": {
+   "tokens": 118370,
+   "tool_uses": 16,
+   "duration_ms": 335798,
+   "skill_files": 5
+  }
+ },
+ "run_means": {
+  "tokens": 118058.2,
+  "tool_uses": 12.1,
+  "duration_ms": 385006.3,
+  "skill_files": 4.2
+ },
+ "rewrites": [
+  {
+   "id": "01-short-run",
+   "draft_words": 116,
+   "rewrite_words": 94,
+   "lost": [],
+   "carried": []
+  },
+  {
+   "id": "02-long-run-agentic",
+   "draft_words": 151,
+   "rewrite_words": 362,
+   "lost": [],
+   "carried": []
+  },
+  {
+   "id": "03-tool-agents",
+   "draft_words": 100,
+   "rewrite_words": 372,
+   "lost": [],
+   "carried": []
+  },
+  {
+   "id": "04-deep-research",
+   "draft_words": 110,
+   "rewrite_words": 498,
+   "lost": [],
+   "carried": []
+  },
+  {
+   "id": "05-image-generation",
+   "draft_words": 79,
+   "rewrite_words": 149,
+   "lost": [],
+   "carried": []
+  },
+  {
+   "id": "06-video-generation",
+   "draft_words": 93,
+   "rewrite_words": 126,
+   "lost": [],
+   "carried": []
+  },
+  {
+   "id": "07-multimodal-input",
+   "draft_words": 94,
+   "rewrite_words": 272,
+   "lost": [],
+   "carried": []
+  },
+  {
+   "id": "08-structured-output",
+   "draft_words": 109,
+   "rewrite_words": 137,
+   "lost": [],
+   "carried": []
+  },
+  {
+   "id": "09-instruction-files",
+   "draft_words": 128,
+   "rewrite_words": 568,
+   "lost": [],
+   "carried": []
+  },
+  {
+   "id": "10-prompt-debugging",
+   "draft_words": 111,
+   "rewrite_words": 50,
+   "lost": [],
+   "carried": []
+  },
+  {
+   "id": "11-dispatch",
+   "draft_words": 88,
+   "rewrite_words": 260,
+   "lost": [],
+   "carried": []
+  },
+  {
+   "id": "12-auto-mode",
+   "draft_words": 52,
+   "rewrite_words": 240,
+   "lost": [],
+   "carried": []
+  }
+ ],
+ "grades": [
+  {
+   "id": "01-short-run",
+   "scores": {
+    "intent": 4,
+    "hard_constraints": 3,
+    "nothing_invented": 3,
+    "conflicts": 4,
+    "executable": 5,
+    "economy": 5,
+    "fit": 4
+   },
+   "send": "marginal",
+   "defects": 3
+  },
+  {
+   "id": "02-long-run-agentic",
+   "scores": {
+    "intent": 4,
+    "hard_constraints": 4,
+    "nothing_invented": 2,
+    "conflicts": 4,
+    "executable": 4,
+    "economy": 4,
+    "fit": 4
+   },
+   "send": "yes",
+   "defects": 10
+  },
+  {
+   "id": "03-tool-agents",
+   "scores": {
+    "intent": 4,
+    "hard_constraints": 5,
+    "nothing_invented": 2,
+    "conflicts": 4,
+    "executable": 4,
+    "economy": 3,
+    "fit": 5
+   },
+   "send": "yes",
+   "defects": 9
+  },
+  {
+   "id": "04-deep-research",
+   "scores": {
+    "intent": 4,
+    "hard_constraints": 5,
+    "nothing_invented": 3,
+    "conflicts": 5,
+    "executable": 4,
+    "economy": 3,
+    "fit": 5
+   },
+   "send": "yes",
+   "defects": 11
+  },
+  {
+   "id": "05-image-generation",
+   "scores": {
+    "intent": 5,
+    "hard_constraints": 5,
+    "nothing_invented": 3,
+    "conflicts": 5,
+    "executable": 5,
+    "economy": 4,
+    "fit": 5
+   },
+   "send": "yes",
+   "defects": 7
+  },
+  {
+   "id": "06-video-generation",
+   "scores": {
+    "intent": 4,
+    "hard_constraints": 3,
+    "nothing_invented": 2,
+    "conflicts": 4,
+    "executable": 4,
+    "economy": 4,
+    "fit": 4
+   },
+   "send": "marginal",
+   "defects": 6
+  },
+  {
+   "id": "07-multimodal-input",
+   "scores": {
+    "intent": 4,
+    "hard_constraints": 4,
+    "nothing_invented": 2,
+    "conflicts": 3,
+    "executable": 4,
+    "economy": 2,
+    "fit": 4
+   },
+   "send": "marginal",
+   "defects": 13
+  },
+  {
+   "id": "08-structured-output",
+   "scores": {
+    "intent": 5,
+    "hard_constraints": 4,
+    "nothing_invented": 2,
+    "conflicts": 5,
+    "executable": 4,
+    "economy": 4,
+    "fit": 4
+   },
+   "send": "marginal",
+   "defects": 6
+  },
+  {
+   "id": "09-instruction-files",
+   "scores": {
+    "intent": 4,
+    "hard_constraints": 5,
+    "nothing_invented": 3,
+    "conflicts": 5,
+    "executable": 4,
+    "economy": 4,
+    "fit": 5
+   },
+   "send": "yes",
+   "defects": 10
+  },
+  {
+   "id": "10-prompt-debugging",
+   "scores": {
+    "intent": 4,
+    "hard_constraints": 5,
+    "nothing_invented": 5,
+    "conflicts": 4,
+    "executable": 4,
+    "economy": 3,
+    "fit": 4
+   },
+   "send": "yes",
+   "defects": 4
+  },
+  {
+   "id": "11-dispatch",
+   "scores": {
+    "intent": 3,
+    "hard_constraints": 4,
+    "nothing_invented": 2,
+    "conflicts": 3,
+    "executable": 4,
+    "economy": 3,
+    "fit": 4
+   },
+   "send": "marginal",
+   "defects": 8
+  },
+  {
+   "id": "12-auto-mode",
+   "scores": {
+    "intent": 5,
+    "hard_constraints": 5,
+    "nothing_invented": 2,
+    "conflicts": 4,
+    "executable": 5,
+    "economy": 3,
+    "fit": 4
+   },
+   "send": "yes",
+   "defects": 7
+  }
+ ],
+ "grade_means": {
+  "intent": 4.17,
+  "hard_constraints": 4.33,
+  "nothing_invented": 2.58,
+  "conflicts": 4.17,
+  "executable": 4.25,
+  "economy": 3.5,
+  "fit": 4.33
+ }
+}

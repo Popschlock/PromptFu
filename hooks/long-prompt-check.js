@@ -1,25 +1,22 @@
 #!/usr/bin/env node
 // PromptFu: UserPromptSubmit hook.
-// Every typed prompt gets one quiet line telling the model to apply the
-// PromptFu skill to any subagent or workflow prompt it writes this turn, before
-// the call and without narrating the rewrite. That is the only hook timing that
-// runs ahead of a dispatch: a PreToolUse note arrives with the tool result.
-// A prompt over the word threshold also gets the long-prompt reminder, so the
-// ask itself is tuned to the model in use and the task type while keeping the
-// spirit of what was typed.
+// Stays silent on an ordinary prompt. It speaks in two cases:
+//
+//   1. The typed prompt runs over the word threshold. The model gets one line
+//      asking it to judge the work: optimize first when it is multi-step or
+//      needs judgment, run it as typed when it is a lookup, a simple edit or
+//      already clear. Length alone never forces a rewrite.
+//   2. The kill switch changed since the session started (a `.promptfu` file
+//      was written or removed), or the session never got its start-of-session
+//      reminder. The model is told once.
 //
 // Only the text the user typed is counted. Claude Code appends its own blocks
 // to the prompt field (system reminders, background-task notifications,
-// slash-command output); those are stripped first so a one-word reply that
+// slash-command output), and those are stripped first so a one-word reply that
 // arrives with a long notification does not trip the threshold.
 //
-// Threshold is configurable with the PROMPTFU_WORD_THRESHOLD env var (default 50).
-// Silenced entirely by the kill switch in gate.js (PROMPTFU_DISABLE env var, or
-// a project `.promptfu` file with `off`).
-const { disabled } = require('./gate');
-
-const THRESHOLD = Number(process.env.PROMPTFU_WORD_THRESHOLD) || 50;
-const NEVER_DOWNGRADE = /^(1|true|yes|on)$/i.test(process.env.PROMPTFU_NEVER_DOWNGRADE || '');
+// The threshold is PROMPTFU_WORD_THRESHOLD (default 50).
+const { disabled, threshold, words, readState, writeState, reminder, main, addContext } = require('./gate');
 
 // Blocks the harness injects into the prompt field alongside the typed text.
 const INJECTED =
@@ -35,45 +32,37 @@ function typedText(prompt) {
   return text.trim();
 }
 
-const DISPATCH_LINE =
-  'If this turn dispatches a subagent or workflow, apply the PromptFu skill (promptfu) to its prompt ' +
-  'before the call: resolve the target per harnesses.md, read that model\'s family file and profile and ' +
-  'the task playbook, state the intent, preserve any hard constraints verbatim, and set the effort. Do this ' +
-  'silently: send the rewritten prompt and skip the report unless the user asked to see the rewrite.';
+const OFF_NOTE =
+  'PromptFu is switched off for this project (.promptfu). Do not apply the promptfu skill on your own ' +
+  'until it is switched back on. /promptfu by name still works.';
 
-let raw = '';
-process.stdin.on('data', (c) => (raw += c));
-process.stdin.on('end', () => {
-  let data = {};
-  try {
-    data = JSON.parse(raw);
-  } catch {
-    process.exit(0);
-  }
-  if (disabled(data.cwd)) process.exit(0);
+main((data) => {
   const prompt = typedText(data.prompt);
-  if (!prompt) process.exit(0);
-  // Skip slash commands and prompts that already mention PromptFu.
-  if (/^\//.test(prompt) || /promptfu/i.test(prompt)) process.exit(0);
-  const words = prompt.split(/\s+/).filter(Boolean).length;
-  let context = DISPATCH_LINE;
-  if (words > THRESHOLD) {
-    context =
-      'This prompt runs long (over ' + THRESHOLD + ' words). Before executing it, apply the PromptFu ' +
-      'skill (promptfu) to restructure the ask for the model in use: resolve the target per harnesses.md, ' +
-      'pick the task playbook, state the intent, preserve any hard constraints verbatim (ask if a ' +
-      'constraint is ambiguous and the user is present), and apply the matching family file and model ' +
-      'profile. Then execute the optimized version, keeping the spirit of what was typed. ' + DISPATCH_LINE;
+  if (!prompt) return;
+  // Slash commands and prompts that already name PromptFu need no nudge.
+  if (/^\//.test(prompt) || /promptfu/i.test(prompt)) return;
+
+  const off = disabled(data.cwd);
+  const parts = [];
+
+  // Tell the model once when the switch state differs from what it was last told.
+  const session = data.session_id;
+  if (session) {
+    const now = off ? 'off' : 'on';
+    const before = readState('session', session);
+    if (before !== now && writeState('session', session, now)) {
+      if (!off) parts.push(reminder());
+      else if (before === 'on') parts.push(OFF_NOTE);
+    }
   }
-  if (NEVER_DOWNGRADE) {
-    context +=
-      ' PROMPTFU_NEVER_DOWNGRADE is set: do not propose or apply an effort level or model tier' +
-      ' below what is currently configured; hold at the configured level or higher.';
+
+  if (!off && words(prompt) > threshold()) {
+    parts.push(
+      'This prompt is over ' + threshold() + ' words. If the work is multi-step or needs judgment, apply the ' +
+        'promptfu skill first (hard constraints verbatim, ask only if a missing piece would change the work), ' +
+        'then run the rewrite. If it is a lookup, a simple edit, or already clear and complete, run it as typed.'
+    );
   }
-  process.stdout.write(
-    JSON.stringify({
-      suppressOutput: true,
-      hookSpecificOutput: { hookEventName: 'UserPromptSubmit', additionalContext: context },
-    })
-  );
+
+  if (parts.length) addContext('UserPromptSubmit', parts.join(' '));
 });

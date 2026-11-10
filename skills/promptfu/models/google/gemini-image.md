@@ -1,94 +1,94 @@
-# Profile: Gemini image models (3 Pro Image, 3.1 Flash Image, 3.1 Flash Lite Image)
+# Gemini image models (Nano Banana 2.1, `gemini-nano-banana-2.1`, and siblings)
 
-Delta on `_family.md`. Read that file first. This profile covers image generation and editing on
-`gemini-3-pro-image`, `gemini-3.1-flash-image` and `gemini-3.1-flash-lite-image`.
+Verified 2026-11-10 against Google's "Nano Banana image generation" guide, the four image model pages, the changelog and the deprecations page.
+Sources: https://aistudio.google.com/docs/image-generation, https://aistudio.google.com/docs/models/gemini-nano-banana-2.1, https://aistudio.google.com/docs/models/gemini-3-pro-image, https://aistudio.google.com/docs/models/gemini-3.1-flash-lite-image
+Unverified: the thinking levels `gemini-3-pro-image` takes (its page says thinking is supported and the level table omits it), and 2 Lite's aspect ratios beyond the ten its page lists (the same page counts 14).
 
-Last verified 2026-09-18 against the Gemini API image generation guide, the models catalog and
-the pricing page.
-Sources: https://ai.google.dev/gemini-api/docs/image-generation, https://ai.google.dev/gemini-api/docs/models,
-https://ai.google.dev/gemini-api/docs/pricing,
-https://promptessor.com/blog/best-gemini-prompts-for-work-writing-research-coding-and-images-in-2026 (secondary),
-https://promptessor.com/blog/multimodal-prompting-guide (secondary).
+## Fit
 
-## Where this model fits
+Nano Banana 2.1 is Google's default image model for generation and conversational editing, recommended for all new projects. It replaced Nano Banana 2. The thinking level is its quality control and starts at `medium`.
 
-| Model | ID | Sizes | Price | Pick it for |
-|---|---|---|---|---|
-| Gemini 3.1 Flash Image (default) | `gemini-3.1-flash-image` | 0.5K, 1K, 2K, 4K | $0.067 per 1K image | the "generalist workhorse": most generation, edits, multi-turn work |
-| Gemini 3 Pro Image | `gemini-3-pro-image` | 1K, 2K, 4K | $0.134 at 1K or 2K, $0.24 at 4K | the "premium choice for most complex visual tasks", precise text, brand consistency |
-| Gemini 3.1 Flash Lite Image | `gemini-3.1-flash-lite-image` | 1K only | $0.0336 per image | speed and cost, single-turn edits, many object references |
+| Model | ID | Use it for | Thinking | Sizes | References, inputs, grounding |
+|---|---|---|---|---|---|
+| Nano Banana 2.1 | `gemini-nano-banana-2.1` | Most generation and editing | `minimal`, `medium` (default), `high` | 1K (default), 2K, 4K | 14 reference images: 10 objects, 4 characters. Video and PDF in. Web and image search |
+| Nano Banana Pro | `gemini-3-pro-image` | Professional assets: complex layouts, precise text, brand consistency, studio 4K | levels not documented | 1K, 2K, 4K | 14 reference images: 6 objects, 5 characters, 3 style. Image and text in only. Web search |
+| Nano Banana 2 Lite | `gemini-3.1-flash-lite-image` | Speed and cost at volume, fast local edits | `minimal` (default), `high` | 1K only | Not optimized for several references or sequential edits. Video and PDF in. No search |
+| Nano Banana 2 | `gemini-3.1-flash-image` | Deprecated, no shutdown date. Only when pinned, or for 0.5K output | `minimal` (default), `high` | 0.5K, 1K, 2K, 4K | As 2.1 |
 
-Google calls `gemini-3.1-flash-image` the "most versatile model" and `gemini-3-pro-image` the one
-with "advanced localization and brand consistency". `gemini-2.5-flash-image` is legacy and Google
-points it at 3.1 Flash Lite. Pick Flash Lite when many object references matter more than
-resolution. Pick Pro when text must be exact or a brand asset must survive edits.
+## Delete
 
-## Core shift vs predecessor
+- **Generic nouns** ("fantasy armor", "a logo"). Describe the thing in detail and say what the image is for.
+- **Bare negatives** ("no cars"). Describe the scene you want: "an empty, deserted street with no signs of traffic."
+- **A full re-description to change one thing.** Google recommends multi-turn conversation for iterating.
+- **An exact count of output images.** The model does not always return the number asked for.
+- **Lowercase sizes** (`2k`). Rejected. Write `1K`, `2K`, `4K`.
+- **Audio inputs.** Not supported. Pro takes no video either.
+- **On 2 Lite:** Search grounding, 2K and 4K. They do not exist there.
 
-The 3.x image models think before they draw. Complex prompts get a planning pass by default, and
-`thinking_level` can be set to `minimal` for speed or `high` for composition work. Prompts written
-as keyword lists for 2.5 lose to prompts written as one scene description with a subject, a
-setting, lighting, camera and style. Edits are conversational on Flash and Pro, so a change is a
-sentence on the prior turn rather than a full re-description.
+## Add
 
-## Delete on sight
+**Every prompt.** Plain descriptive sentences, with none of the family file's tags. The purpose of the image, then the scene in specifics, with camera terms where framing matters (`wide-angle shot`, `macro shot`, `low-angle perspective`). Break a complex scene into steps: first the background, then the foreground, finally the key object.
 
-- Keyword soup ("8k, trending, masterpiece"). Describe the scene instead.
-- Style adjectives first ("premium, cinematic") ahead of the subject and use.
-- "Keep everything else the same". List what to preserve by name.
-- Several major edits in one turn. One narrow change per turn on Flash and Pro.
-- Reference images without a stated job. Assign each one a role.
-- Lowercase size values. The API rejects `2k`, so write `2K` and `4K`.
-- On Flash Lite: Google Search grounding, multi-turn editing and any size above 1K. None exist.
+**Photorealistic scene:**
 
-## Refusal / safety hazards
+```text
+A photorealistic [type of shot] of a [subject description] in a [setting
+description]. [Description of the light]. Shot from a [camera angle]
+with a [lens type].
+```
 
-Standard image safety filters apply. Every output carries a SynthID watermark. Google asks you to
-verify usage rights for any uploaded reference image. None of the text-model hazards apply.
+**Text in the image.** Give the exact text and describe the font. When the wording is not settled, generate the text first and then ask for the image. Google points professional assets at Pro.
 
-## Always add
+```text
+Create a [image type] for [brand/concept] with the text "[text to render]"
+in a [font style]. The design should be [style description], with a
+[color scheme].
+```
 
-The family file's text blocks (prose dialect, long-context ordering, verbosity) do not apply to an image request. Only the routing table, `thinking_level` where the model takes it, and the API conventions carry over.
+**Edit one element and keep the rest:**
 
-- The deliverable and its use first, then the scene. Google's photorealistic template, verbatim:
-  "A photorealistic [shot type] of a [subject] in a [setting]. [Lighting description]. Shot from a
-  [angle] with a [lens]."
-- For product work, Google's template, verbatim: "High-resolution, studio-lit product photo of
-  [item] on [surface]. Lighting: [setup]. Camera angle: [position]. Focus: [detail]."
-- For text in the image, quote the exact copy, name the font style and say how many times it
-  appears. Google's template, verbatim: "Create a [image type] with text '[specific words]' in
-  [font style]. Design should be [aesthetic], [color scheme]."
-- For an edit: a CHANGE list, a PRESERVE list (geometry, label wording, logo placement, colors,
-  camera angle, crop) and an EXCLUDE list (no watermark, no extra products, no generated text
-  unless asked).
-- For multiple references, an INPUT MAP with one role each: product identity, character
-  consistency, style only, composition only. Say which properties must not transfer.
-- The output line: `aspect_ratio`, `image_size` and background needs, plus copy-safe space when
-  a designer will add text later.
+```text
+Using the provided image, change only the [specific element] to [new
+element/description]. Keep everything else in the image exactly the same,
+preserving the original style, lighting, and composition.
+```
 
-## Dispatch settings
+**Add or remove something:**
 
-- `thinking_level` on image models is `minimal` or `high`. Use `high` for layouts, posters and
-  scenes with several subjects, `minimal` for simple single-subject renders.
-- Multi-turn editing keeps context through `previous_interaction_id`. Keep one thread per asset
-  and restate a preserve list when drift appears.
-- Reference limits: Flash Image up to 10 object images plus 4 character images plus 3 style
-  references. Pro Image up to 6 object images plus 5 character images. Flash Lite up to 14
-  object images.
-- Grounding: `tools=[{"type": "google_search"}]` pulls real-time facts (weather, charts, events)
-  into the image on Flash and Pro. Image search grounding (`search_types` with `image_search`)
-  is Flash Image only. Flash and Flash Lite accept a YouTube URL or an uploaded video as context
-  for posters and thumbnails.
-- The Batch API takes high-volume jobs with up to 24-hour turnaround.
-- Measure cost per accepted image across the edit sequence, then choose the tier.
+```text
+Using the provided image of [subject], please [add/remove/modify] [element]
+to/from the scene. Ensure the change is [description of how the change should
+integrate].
+```
 
-## API notes
+**Combine several images.** Say which element comes from which image:
 
-- Aspect ratios documented for 3.1 Flash Lite: `1:1`, `3:2`, `2:3`, `3:4`, `4:3`, `4:5`, `5:4`,
-  `9:16`, `16:9`, `21:9`. The guide lists the same set only for Flash Lite, so confirm the
-  value on Flash and Pro before relying on the rarer ratios.
-- Sizes: Flash Lite 1K. Flash Image 512px (0.5K), 1K, 2K, 4K. Pro Image 1K, 2K, 4K. Uppercase
-  `K` only.
-- Generation settings go in `generation_config`, including `thinking_level`.
-- Pricing per image: Flash Image $0.067 at 1K, Flash Lite $0.0336 at 1K, Pro $0.134 at 1K or 2K
-  and $0.24 at 4K. Prices at other Flash sizes were not listed on the pricing page.
+```text
+Create a new image by combining the elements from the provided images. Take
+the [element from image 1] and place it with/on the [element from image 2].
+The final image should be a [description of the final scene].
+```
+
+**A face or logo that must survive an edit.** Describe it in detail next to the edit request, and state that its features "remain completely unchanged".
+
+**The same character across images.** Include the earlier generated images in the next prompt.
+
+The guide also has templates for stickers, product shots, negative space, style transfer, sketch to photo and comic panels.
+
+## Hazards
+
+- Every image carries a SynthID watermark.
+- Google asks that you hold the rights to any image you upload.
+- Search grounding on 2.1 and 2 does not use web images of real people.
+- Best results come in English and the 14 other locales the guide lists.
+
+## Dispatch
+
+- **Thinking** cannot be turned off and is billed. Set `thinking_level` in `generation_config`. The docs say only that it trades quality against latency.
+- **Size and shape** go in `response_format` as `image_size` and `aspect_ratio`. Without them the output is 1K, in the input image's proportions or 1:1.
+- **Aspect ratios.** Pro: 1:1, 2:3, 3:2, 3:4, 4:3, 4:5, 5:4, 9:16, 16:9, 21:9. 2 Lite's page lists the same ten. 2.1 and 2 add 1:4, 4:1, 1:8, 8:1.
+- **Text comes back with the image by default.** Ask for image only in `response_format`.
+- **Multi-turn edits** continue through `previous_interaction_id`.
+- **Search grounding** (`google_search`) draws real-time facts such as weather, charts and events. Image search (`search_types` with `image_search`) is on 2.1 and 2 only.
+- **Video as context** (a YouTube URL or an uploaded file) works on 2.1, 2 and 2 Lite for thumbnails, posters and infographics.
+- **Volume** can run through the Batch API.

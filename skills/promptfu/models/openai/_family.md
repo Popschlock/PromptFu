@@ -1,180 +1,99 @@
-# OpenAI family: what every GPT profile shares
+# OpenAI family
 
-Every profile in `models/openai/` is a delta on this file. Read this file first, then the model
-file (`gpt-6-astra.md`, `gpt-6-1-terra.md`, `gpt-5-6.md`, `gpt-image-2-5.md`). GPT-6.1 Sol and
-GPT-6 Luna have no file yet: use this file plus the GPT-6 blocks in `gpt-6-astra.md`, which OpenAI
-calls a starting point for the whole GPT-6 family. `gpt-5-6.md` covers the GPT-5.6 tiers for
-dispatches that pin them. This file holds the API conventions, the effort ladder, the structure
-dialect, the refusal behavior, the routing table and the Codex harness facts. A model file holds
-only what that model changes.
+Verified 2026-11-10 against the pages under Sources.
+Sources: https://developers.openai.com/api/docs/ (models, guides/latest-model/gpt-6-astra, guides/latest-model/gpt-5.6, guides/prompt-guidance-gpt-5p6, guides/model-selection, guides/reasoning, guides/reasoning-best-practices, guides/deployment-checklist, guides/daybreak) and https://learn.chatgpt.com/docs/ (models, cyber-safety, agent-configuration/subagents)
+Unverified: which Codex models offer `ultra`, default efforts inside Codex, GPT-6-Cyber's effort values, that "Extra high" is `xhigh`, and whether the Structure guidance was retested on GPT-6.
 
-Last verified 2026-09-18 against OpenAI's latest-model, reasoning, prompt-engineering, prompt-caching
-and structured-outputs guides, the model pages for `gpt-6-astra` and the four `gpt-5.6-*` tiers, the
-Codex AGENTS.md and subagents docs, and this machine's `~/.codex/models_cache.json`. The routing
-table, effort ladder, caching and Codex facts were verified again on 2026-10-29 against the
-models catalog, the `gpt-6.1-sol`, `gpt-6.1-terra` and `gpt-6-luna` model pages, the latest-model
-and prompt-caching guides, the Codex subagents doc and the models cache.
-Sources: https://developers.openai.com/api/docs/guides/latest-model, .../guides/reasoning,
-.../guides/prompt-engineering, .../guides/prompt-caching, .../guides/structured-outputs,
-https://developers.openai.com/api/docs/models, https://learn.chatgpt.com/docs/agent-configuration/agents-md,
-.../agent-configuration/subagents, https://prompt-architects.com/blog/551-how-to-prompt-gpt-5-6-sol-terra-and-luna-compared
-(secondary), https://codex.danielvaughan.com/2026/09/04/gpt-6-astra-codex-cli-integration-guide-critical-cyber-threshold/ (secondary).
+## Models
 
-## Where the family fits: the OpenAI routing table
+| Model | ID | Card | The docs start it on |
+|---|---|---|---|
+| GPT-6 Astra | `gpt-6-astra` | `gpt-6-astra.md` | The most demanding reasoning, coding and research |
+| GPT-6.1 Sol | `gpt-6.1-sol` | family file alone | Complex coding and professional work at lower cost |
+| GPT-6.1 Terra | `gpt-6.1-terra` | `gpt-6-1-terra.md` | Visual reasoning, computer use, clear writing |
+| GPT-6 Luna | `gpt-6-luna` | family file alone | Focused, high-volume tasks |
+| GPT-6-Cyber | `gpt-6-cyber` | family file alone | Authorized vulnerability work (Daybreak Red) |
+| GPT Image 2.6, 2.5 | `gpt-image-2.6-*`, `gpt-image-2.5-*` | `gpt-image.md` | Image generation and editing |
+| ChatGPT apps, Deep Research included | none | the card of the model in the picker, else family file alone | A prompt pasted into the app |
+| GPT-6 Sol, GPT-5.6, older | their own IDs | `legacy.md` | Only when a request pins one |
 
-Route inside the vendor. A Codex session cannot hand work to Claude or Gemini, and the effort
-floor in SKILL.md applies to the configured Codex level.
+The default depends on the surface: the API docs start at GPT-6 Astra, the Codex docs at GPT-6.1 Sol. OpenAI's GPT-6 prompt blocks are in `gpt-6-astra.md`. It wrote them from Astra's behavior as a starting point for the family, so take one for Sol, Terra or Luna only when a prompt shows the behavior it fixes.
 
-| Tier | ID | Price in / cached / out per MTok | Pick it for | Effort |
-|---|---|---|---|---|
-| Flagship | `gpt-6-astra` | $10 / $1 / $50 | The hardest end-to-end work: long agentic coding, computer use, browsing, research and document creation | `high` to start, `xhigh` or `max` for hard architecture and debugging loops |
-| Default for substantive work | `gpt-6.1-sol` | $2 / $0.10 / $10 | Near-Astra performance for complex coding, computer use, planning, review and professional work | `medium` default, `high` for planning and review. No `none` |
-| Vision, computer use, execution | `gpt-6.1-terra` | $1 / $0.05 / $5 | Visual recognition and reasoning, screen and form work, natural writing, high-volume drafting, implementing a clear spec | `medium` to start, `low` for perception, `none` for latency-critical work |
-| Mechanical | `gpt-6-luna` | $0.10 / $0.01 / $0.50 | Classification, routing, extraction, repeatable narrow tasks | `none` or `low` |
-| Authorized security | `gpt-5.6-cyber` | $12.50 / $1.25 / $75 | Vulnerability research, exploit validation and security testing by approved defenders only | Responses API only, 400k context. Price last verified 2026-09-18 |
+## Dialect
 
-The GPT-5.6 tiers (`gpt-5.6-sol`, `gpt-5.6-terra`, `gpt-5.6-luna`) and `gpt-6-sol` remain
-available as older models. Pick one only when a dispatch pins it.
+Markdown headers and lists mark a prompt's sections. XML tags mark where content such as a reference document begins and ends. A developer message runs identity, instructions, examples, context, and outranks user messages.
 
-Stage routing for multi-step work: plan and review on Sol or Astra, execute on Terra, grade on
-Luna with fresh context and the artifact plus rubric only, and grade anything visual
-(screenshots, renders, scans) on Terra. Requests over 272K input tokens cost 2x input and 1.5x
-output on every tier, so compact before that boundary on long runs.
+## Structure
 
-## Core shift vs the GPT-5 generation
+From "Prompting guidance for GPT-5.6 Sol", OpenAI's latest guide on building a prompt (the GPT-6 guide covers behavior only). Its skeleton for a complex prompt:
 
-Every current model is a reasoning model. OpenAI's reasoning guide says to give the model the
-task, the constraints and the desired output format, and to treat `reasoning.effort` as a tuning
-knob rather than the main way to recover quality. It also says to define what counts as done and
-how the model should verify its work, and to avoid prescribing every intermediate step. Depth is
-an API parameter, so the prompt carries clarity and the parameter carries effort.
+```text
+Role: [the model's function and context]
 
-## Delete on sight (family-wide)
+Personality: [tone and collaboration style]
 
-- Prose that simulates configuration, such as "think extremely hard" or "use maximum
-  intelligence". Set `reasoning.effort` and leave the prompt for the task.
-- Step-by-step reasoning scripts and "think step by step". The model reasons before answering.
-- Instructions repeated across the system prompt, `AGENTS.md` and skills. OpenAI reported that
-  leaner system prompts improved evaluation scores by roughly 10 to 15% while cutting total
-  tokens by 41 to 66% (secondary source attributing the figure to OpenAI).
-- `temperature`, `top_p`, `top_logprobs` and `logprobs` whenever reasoning effort is above
-  `none`. The latest-model guide says to remove them, and SDKs reject or ignore them depending
-  on version (secondary source for the SDK detail).
-- `prompt_cache_retention`. Replaced by `prompt_cache_options.ttl`, `"30m"` or `"12h"`.
-- Chat Completions for tool calling. Tool calling on GPT-6 Astra needs the Responses API.
+Goal: [user-visible outcome]
 
-## Refusal / safety hazards
+Success criteria: [what must be true before the final answer]
 
-GPT-6 Astra was assessed at the Critical tier for cybersecurity under OpenAI's Preparedness
-Framework, so restricted variants decline advanced offensive security tasks for standard users
-while defensive workflows stay supported (secondary source citing OpenAI's safety overview).
-Frame security work as review, hardening and authorized testing of systems the user owns, and
-route exploit validation to `gpt-5.6-cyber` when the account has Daybreak approval. Structured
-Outputs return a `refusal` item instead of the schema when the model declines, so never read
-the schema field unconditionally. Image models return `moderation_blocked` with a
-`moderation_details` object, and a retry without changing the prompt or images will fail again.
+Constraints: [policy, safety, business, evidence, and side-effect limits]
 
-## Always add (family-wide form)
+Tools: [which tools to use, when, and what not to use]
 
-- **Role hierarchy.** `developer` messages are prioritized ahead of `user` messages. The
-  `instructions` parameter is equivalent to a developer message for the current request only.
-  Put standing rules in the developer message and the task in the user message.
-- **Section order.** OpenAI's guide orders a developer message as identity, instructions,
-  examples, then context, with proprietary data near the end. Markdown headers and lists mark
-  sections. XML tags delimit where a piece of content begins and ends. ALL-CAPS section labels
-  (GOAL, CONTEXT, CONSTRAINTS, OUTPUT) are a cheap Markdown-compatible dialect that PrompTessor's
-  guides use (secondary source). Pick one system per prompt.
-- **Prose style block.** OpenAI publishes one for GPT-6 Astra and it applies to the whole family
-  when the output is prose. Verbatim:
-  > Default to using clear, concise paragraphs, each developing one main idea. Use lists only when the information is genuinely parallel, sequential, or easier to compare, and avoid nested lists unless the hierarchy cannot be expressed clearly in prose. Use plain, simple language: familiar words, concrete examples, and precise verbs. Prefer active voice and direct statements. Make sure to state the main point clearly and early, then develop it with the explanation and detail the reader needs. Let each sentence build on what came before. Develop the points that matter and provide enough support to be useful.
-- **Slop blocklist.** Also from OpenAI's Astra guide, verbatim:
-  > Avoid using slop words or phrases like 'Bottom Line:', 'delve,' 'foster,' 'leverage,' 'it's worth noting,' 'importantly,' 'Question? Answer.' or 'This isn't about X. It's about Y.', 'genuinely' or hyphenated compound descriptions and adjectives. Do not use concluding summary statements such as 'In short:..', 'The simplest mental model is:...'. State the intended action directly. Avoid adding what you won't do, what will remain unchanged, or how you'll separate or categorize results. Do not use contrastive framing such as 'X, not Y' or 'X—not Y' that introduces an unprompted alternative that the user didn't ask about. Avoid invented compound labels like 'exact-head checks' and 'editorial-row layouts', vague qualifiers, and canned transitions; use plain verbs and prepositions to state the actual relationship directly.
-- **Shape in the schema, meaning in the prompt.** Request JSON with
-  `text.format: {type: "json_schema", strict: true, schema}` and mark function tools
-  `strict: true`. The prompt defines the decision rules and what to do when the input cannot
-  produce a valid response.
-- **Few-shot only when evaluation shows a gain.** A handful of diverse input and output pairs in
-  the developer message. Zero-shot first on reasoning models.
-- **Cache-stable prefix.** Reused content goes at the start of the prompt and among the first
-  parameters in the request body. Changing the model, tool definitions or order,
-  `parallel_tool_calls`, `text.format`, `text.verbosity`, `reasoning.effort` or
-  `context_management` breaks the prefix, and so does editing an earlier message instead of
-  appending.
+Output: [sections, length, format, and tone]
 
-## Dispatch settings
+Stop rules: [when to retry, fallback, abstain, ask, or stop]
+```
 
-- **Effort ladder.** `reasoning.effort` takes `none | low | medium | high | xhigh | max` on
-  GPT-6.1 Terra, GPT-6 Luna and the GPT-5.6 tiers (default `medium`). GPT-6 Astra and GPT-6.1 Sol
-  take `low` through `max` and return HTTP 400 on `none`. OpenAI's semantics: `none` for latency-critical tasks that gain nothing from
-  reasoning, `low` for speed and cost, `medium` for most workloads, `high` for complex debugging
-  and deep planning, `xhigh` for deep research and asynchronous workflows, `max` for the hardest
-  problems. Reasoning tokens bill as output tokens and count against `max_output_tokens`, so
-  reserve at least 25,000 tokens for reasoning plus output and watch for `incomplete` status.
-- **Pro mode.** `reasoning.mode: "pro"` on the GPT-5.6 family spends more compute before one
-  final answer and stacks on any effort level at standard token rates (reasoning guide names the
-  modes, the effort-stacking detail is a secondary source).
-- **Change effort per phase.** On GPT-6 Astra and GPT-6.1 Terra insert a `configuration_update`
-  item with a new `reasoning.effort` between responses, and keep the request-level effort as it
-  was. It keeps the cached prefix, cannot sit next to another
-  update, and is incompatible with automatic compaction and truncation.
-- **Reasoning items.** Stateless calls carry `encrypted_content` to pass back. `reasoning.summary`
-  of `auto`, `concise` or `detailed` returns a readable summary. Never ask for a reasoning transcript.
-- **Verifiers.** Maker never grades. A fresh Luna or Terra context with the artifact and rubric
-  only is the cheap grader, and Terra is the one for anything visual.
+**Outcome first.** State the destination and what success means, and leave the path to the model. Keep ALWAYS, NEVER and "must" for true invariants.
 
-### Codex
+**Autonomy and approval,** stated once. Repeating "ask first" can cause approval requests for safe actions:
 
-- Codex's base instructions say "You are Codex, an agent based on GPT-6" and nothing more specific.
-  The variant and effort are session settings that default from `~/.codex/config.toml` (`model`,
-  `model_reasoning_effort`), layered with a project `.codex/config.toml`, and overridden by `-m`,
-  `--reasoning-effort` or `/model`. If the session settings are not visible, read the config file
-  and state that as an assumption.
-- Models on this account per `~/.codex/models_cache.json` (2026-10-29): `gpt-6.1-sol`,
-  `gpt-6-astra`, `gpt-6.1-terra`, `gpt-6-sol`, `gpt-6-luna`, `gpt-5.6-sol`, `gpt-5.6-terra`,
-  `gpt-5.6-luna`, plus the hidden `gpt-reserve` and `codex-auto-review`. Codex offers `low` to
-  `max` on all of them and no `none`. `gpt-6.1-sol`, `gpt-6.1-terra` and `gpt-5.6-sol` default to
-  `low` and the rest to `medium`. Astra, both Sols and both Terras add `ultra`, described as
-  "Maximum reasoning with automatic task delegation". `ultra` is Codex-only and is not an API
-  value.
-- Subagents inherit the parent's model and reasoning effort. Resolution order: the explicit
-  spawn request, then `[agents]` defaults (`default_subagent_model`,
-  `default_subagent_reasoning_effort`, `max_concurrent_threads_per_session`), then the parent's
-  values, then the model's default effort. Set `model` or `reasoning_effort` on a spawn only
-  when the user, `AGENTS.md` or a skill asks. PromptFu is a skill, so it may recommend a level.
-- Custom agents live in `.codex/agents/*.toml` (project) or `~/.codex/agents/` with `name`,
-  `description`, `developer_instructions` and optional keys such as `model`, `model_reasoning_effort`
-  and `sandbox_mode`. Built-ins: `default`, `worker`, `explorer`. OpenAI's subagent guidance:
-  start with `gpt-6.1-sol`, which is also the model for demanding multi-step agents, and use
-  `gpt-6-luna` for narrow, repeatable or high-volume work and fast scans. It names no model for
-  vision. Give Terra the subagents that read screenshots, drawings or scans.
-- Subagents share the parent's sandbox, permission mode and workspace. Give each bounded
-  ownership and acceptance criteria, tell it to preserve other agents' edits, and keep parallel
-  write-heavy work rare. Read-heavy fan-out (exploration, triage, summarization) is the sweet
-  spot.
-- `AGENTS.md` loads from `~/.codex/AGENTS.override.md`, then `~/.codex/AGENTS.md`, then each
-  directory from the git root down to the working directory with closer files overriding, up to
-  `project_doc_max_bytes` (32 KiB). Rules read as a condition plus a safe path. Leave out what
-  CI and linters already enforce.
-- Claude vocabulary does not transfer. No Claude tool names, no `context: fork`, no request for
-  private reasoning, and no routing to a Claude model because a global default names one.
+```text
+For requests to answer, explain, review, diagnose, or plan, inspect the
+relevant materials and report the result. Do not implement changes unless
+the request also asks for them.
 
-## API notes
+For requests to change, build, or fix, make the requested in-scope local
+changes and run relevant non-destructive validation without asking first.
 
-- Endpoints on every text tier: Chat Completions, Responses and Batch. Realtime, Live, Assistants,
-  fine-tuning, embeddings and media endpoints are unsupported. `gpt-5.6-cyber` is Responses only.
-- Context is 1,050,000 tokens and max output 128,000 on every tier, with 922,000 max input on the
-  GPT-5.6 and GPT-6.1 tiers and GPT-6 Luna. Knowledge cutoff 2026-02-16 for GPT-5.6, 2026-04-30 for
-  GPT-6 Astra and GPT-6.1 Sol, 2026-05-18 for GPT-6 Luna and 2026-06-01 for GPT-6.1 Terra.
-- Tools on every text tier: web search, file search, image generation, code interpreter, hosted
-  shell, apply patch, skills, computer use, MCP, tool search. Features: streaming, structured
-  outputs, function calling, image input, prompt caching.
-- Caching on GPT-5.6 and later: minimum 1,024 visible input tokens. `prompt_cache_options.ttl`
-  accepts `"30m"` (default, writes 1.25x input) or `"12h"` (writes 2.5x), and anything else
-  returns HTTP 400. Reads cost 0.1x input, or 0.05x on GPT-6.1 Sol and Terra.
-  `prompt_cache_key` only separates accounting. Explicit breakpoints
-  (`prompt_cache_options.mode: "explicit"`) allow up to four cache writes per request.
-- Fast mode supports EU data residency on GPT-6.1 Sol, GPT-6.1 Terra and GPT-6 Luna. On Luna and
-  GPT-6 Sol, Chat Completions function calling works only at `reasoning_effort: "none"`.
-- `text.verbosity` exists as a request setting (it appears in the cache-invalidation list). Its
-  documented values are `low | medium | high` from the GPT-5 generation and were not re-verified
-  for GPT-5.6.
+Require confirmation for external writes, destructive actions, purchases,
+or a material expansion of scope.
+```
+
+**Stop conditions.** Ask for the fewest useful tool loops, never at the cost of correctness or required evidence. When evidence is missing, the model names the missing fact and takes the smallest fallback.
+
+**Preambles,** when a person watches multi-step work: one or two sentences before the first tool call, then updates only at a major phase change, with no narration of routine calls.
+
+**Verbosity.** `text.verbosity` sets default detail. A broad "be concise" can cut too much, so say what a short answer keeps and drops.
+
+## Effort
+
+- `reasoning.effort` runs `low`, `medium`, `high`, `xhigh`, `max`. Terra and Luna also take `none`. Astra and GPT-6.1 Sol reject it, so use `low`. The API default is `medium` (Astra's page states none).
+- `low` for extraction, routing, classification and routine rewrites, `medium` or `high` to diagnose, compare, plan or reason through code, `xhigh` or `max` only when tests show the gain is worth the cost.
+- Before raising effort, check the prompt for a missing success criterion or verification loop. Levels do not map exactly between model generations.
+- Across vendors: `low` through `max` are the names Anthropic uses. `none` maps to a vendor's lowest level and Codex's `ultra` to `max`. Where a vendor has fewer levels, `xhigh` and `max` map to its top level.
+
+## Thinking cues
+
+OpenAI calls "think step by step" and "explain your reasoning" unnecessary for reasoning models. Turn a wish for depth into the effort recommendation and delete the words. The API returns no raw reasoning, so ask for evidence in the output.
+
+## Hazards
+
+The GPT-5.6 guide names cyber and biology classifiers that can block or refuse a request, legitimate dual-use work included. On GPT-6, reduced refusals for security work need approval under OpenAI's Daybreak programs, so do not try to word around a refusal. OpenAI's example prompts for approved work name the lab, the testing window and a stop line.
+
+## Routing
+
+OpenAI's pairs of model and effort. Keep the lightest that meets the quality bar.
+
+- **Luna.** Low: fine-grained edits, simple extraction. Extra high: finding context across apps, problems with clear constraints.
+- **GPT-6.1 Sol.** Medium: complex technical work, deliverables you expect to revise. Extra high: polished deliverables, decisions from conflicting evidence.
+- **Astra.** Low: concise writing that keeps facts and nuance. Medium: ambitious projects that need broad context. Extra high: demanding analysis with exacting requirements.
+- **GPT-6.1 Terra.** Concise writing from supplied material, computer use with a defined outcome, scoped code fixes, images and screens.
+
+## Dispatch in Codex
+
+- **Levels.** `model_reasoning_effort` takes `low` (Light in the apps), `medium`, `high`, `xhigh`, `max` or `ultra`, by model and client. `ultra` lets Codex start subagents on its own, and GPT-6 Luna lacks it. The docs start Luna at `high` and Astra at `low`.
+- **Subagents** start when asked directly or when `AGENTS.md` or a skill asks. A brief says how to divide the work, whether to wait for all agents, and what to return. The docs name `gpt-6.1-sol` for demanding agents and `gpt-6-luna` for fast, narrow or high-volume ones.
+- **Model and effort.** With nothing set, a subagent inherits both from the parent. Otherwise each resolves from the spawn request, then `[agents]` (`default_subagent_model`, `default_subagent_reasoning_effort`), then the parent. A custom agent file (`.codex/agents/*.toml`) that sets either one wins.
+- **The trap.** A spawn request or `[agents]` default that names a model and no effort runs at that model's default effort, not the parent's. A custom agent file that sets only `model` keeps the resolved effort, which that model may not support. Name both.

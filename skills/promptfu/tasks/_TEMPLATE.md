@@ -1,41 +1,34 @@
-# Playbook: <task type> — TEMPLATE
+# Playbook: <task type> TEMPLATE
 
-Copy this file to `tasks/<slug>.md` for a task type the skill should recognise. A playbook is
-model-agnostic. It decides which blocks a prompt of this type gets and which it must not get. The
-model profile under `models/` then decides the form of each block. The skill reads one playbook,
-one family file and one model file per optimization, so a playbook must stand alone and stay
-short: 60 to 120 lines.
+Copy this file to `tasks/<slug>.md` for a task type the skill should recognize, and add its row
+to the playbook index in `SKILL.md`. A playbook is model-agnostic. It says which blocks a prompt
+of this type gets and which it must not get. The model card then decides the form of each block.
 
-Plain sentences, no em dashes, no "X, not Y" contrasts. Quote a block verbatim where the wording
-carries the effect and say so.
+Rules for every playbook:
 
-Last verified YYYY-MM-DD against <what you checked>.
-Sources: <URLs, official first>.
+- Name no model and no vendor. Model facts live in `models/`, so a model release never touches
+  this file.
+- A block is required only when the draft's task needs it. A block the draft gives no material
+  for is left out, never filled with an invented default.
+- Stay under 4.5 KB. Plain sentences, no em dashes, American spelling.
 
-## When this playbook applies
-Trigger words and the shape of the request. Name the nearest neighbour playbook and the rule that
-separates them.
+## Applies when
 
-## Required blocks
-The subset of the universal shape (Intent, Context, Constraints, Task, Output, Boundaries) this
-type needs, plus its own blocks, each with one line on what it holds and why it earns its tokens.
-Mark blocks as required or conditional.
+The shape of the request, and the rule that separates this type from its nearest neighbor.
+
+## Blocks
+
+The blocks this type adds to the universal shape, each with one line on what it holds and the
+failure it prevents. Mark each one required or conditional, and say what the condition is.
 
 ## Delete
+
 What a draft of this type usually carries that costs tokens or hurts the result.
 
-## Token rule
-What "not longer than it needs to be" means for this type: the target size relative to the draft,
-and the one case that justifies growth.
-
 ## Template
-The compact block skeleton, in the vendor-neutral ALL-CAPS dialect. The profile may rewrite it as
-XML tags or plain prose.
 
-## Per-vendor notes
-Where the product or API differs: one line per vendor pointing at the family or model file, and
-the product-level controls (a Deep Research plan review, an image quality parameter) that live
-outside the prompt.
+The compact block skeleton in neutral labels. The family file's dialect rewrites the labels.
 
 ## Check before sending
-Three to six yes/no questions the rewrite must pass.
+
+Three to five yes or no questions the rewrite must pass.

@@ -1,46 +1,40 @@
 # Harnesses
 
-How each harness names its model and effort, what a dispatch looks like there, and which names exist only there. Read the section for the harness you are running in when you resolve the target (SKILL.md, workflow step 1), and read the last section when the prompt will be pasted into a chat product.
+Where each harness keeps its model and effort, what a dispatch takes there, and which names exist only there. Read the one section you need: when the target or its effort is not visible to you, or when the prompt is headed for another harness or a chat product.
 
-Last verified 2026-09-18 against a Claude Code session, a Codex session transcript on this machine, `~/.codex/config.toml` and `~/.codex/models_cache.json`.
+Verified 2026-11-10 against the Claude Code docs (skills, hooks, sub-agents, model configuration), the Codex docs (skills, subagents, configuration, AGENTS.md, hooks) and the Gemini CLI and Antigravity docs.
+Sources: https://code.claude.com/docs/en/skills, https://code.claude.com/docs/en/sub-agents, https://code.claude.com/docs/en/model-config, https://developers.openai.com/codex/llms.txt, https://geminicli.com/docs, https://antigravity.google/docs
+Unverified: that Claude Code's system prompt names the session model (observed in sessions, not stated in the docs), and whether the Codex or Gemini CLI system prompt names the session model.
 
 ## Claude Code
 
-- **Session model.** The system prompt says "You are powered by the model named <name>. The exact model ID is <id>." That is the session model. The session effort is the configured level (settings or the `/model` picker), shown to the model when the harness exposes it. If you cannot see it, treat it as `high` and say so in the report.
-- **Dispatch.** The `Agent` tool takes `subagent_type` and an optional `model` of `sonnet`, `opus`, `haiku` or `fable`. `fork` inherits the parent model and full context and ignores `model`. An agent definition in `.claude/agents/*.md` may pin its own model and effort in frontmatter. `Workflow` scripts call `agent(prompt, {model, ...})`. A dispatch that sets nothing runs on the session model.
-- **Auto-triggers.** The plugin's hooks fire before every `Agent` or `Workflow` call and on any user prompt over the word threshold. They inject a reminder and never block. The reminder names the target it could read from the call's `model` option.
-- **Names that exist here only.** `AskUserQuestion`, `context: fork`, `subagent_type`, `SendMessage`, `Workflow`, `ScheduleWakeup`, `/skill-name` invocation, `CLAUDE.md`, `.claude/rules/`, `.claude/agents/`, `.claude/skills/`. Never write them into a prompt for another harness.
+- **Session model and effort.** The system prompt names the model and its ID. Inside a skill, `${CLAUDE_EFFORT}` is the current effort. Effort resolves in this order: the `CLAUDE_CODE_EFFORT_LEVEL` variable, a level picked in the session, the `--effort` flag, settings, then the model's default.
+- **Dispatch.** The Agent tool's `model` takes a tier alias and never a full ID. A call that sets none resolves through the agent definition, then `CLAUDE_CODE_SUBAGENT_MODEL`, then the session model. A non-fork call can also pass `effort`, and a subagent on another model without one runs at that model's own default. A fork inherits the model, the tools and the whole conversation. A workflow stage that names a model counts as a per-call model, and a stage that names none runs on the session model.
+- **Auto-triggers.** This plugin's hooks say once at session start that the skill applies to dispatches that carry real work, add one line to a typed prompt over the word threshold, and note the first unstructured dispatch of a session. They never block unless the user turned on gate mode.
+- **Names that exist here only.** `AskUserQuestion`, `subagent_type`, `SendMessage`, `Workflow`, `/skill-name`, `CLAUDE.md`, `.claude/agents/`, `.claude/skills/`. Keep them out of a prompt for another harness.
 
-## Codex (CLI and desktop app)
+## Codex
 
-- **Session model.** The base instructions say "You are Codex, an agent based on GPT-6" and name only the family. The variant and effort are session settings: `model` and `model_reasoning_effort` in `~/.codex/config.toml`, overridden by a project `.codex/config.toml`, by `codex -m <model> --reasoning-effort <level>`, and by `/model` in the TUI. When the session settings are not visible to you, read the config file and write "from config.toml" as the source, because a flag or `/model` may have overridden it.
-- **Models offered** on this machine's account, from the local models cache (2026-10-29): `gpt-6.1-sol`, `gpt-6-astra`, `gpt-6.1-terra`, `gpt-6-sol`, `gpt-6-luna` and the older `gpt-5.6-sol`, `gpt-5.6-terra`, `gpt-5.6-luna`. Confirm in `/model` when it matters. The effort ladder is `low | medium | high | xhigh | max` with no `none`, plus `ultra` on Astra and the Sol and Terra models, described as "maximum reasoning with automatic task delegation". `gpt-6.1-sol` and `gpt-6.1-terra` default to `low`.
-- **Dispatch.** Subagents inherit the parent model and reasoning effort. They accept a `model` or `reasoning_effort` override only when the user, `AGENTS.md` or a skill asks for one, and PromptFu is a skill. All agents share one workspace, so a dispatch names the files each agent owns and tells it to preserve other agents' edits. Custom agent definitions live in `.codex/agents/*.toml`.
-- **Auto-trigger.** No hook in this release. The line `sync_agents.py` writes into `~/.codex/AGENTS.md` ("apply the promptfu skill to any prompt over ~50 words before running it") is the trigger.
-- **Names that exist here only.** `AGENTS.md`, `.codex/config.toml`, `.codex/agents/`, `.codex/hooks.json`, `codex exec`, `apply_patch`, the `ultra` effort. There is no `context: fork`, no `AskUserQuestion`, no `subagent_type`, and Claude tool names mean nothing here. Never ask a GPT model for its private reasoning.
-- **Skills.** `~/.agents/skills/<name>/SKILL.md` for the user, `<repo>/.agents/skills/` for a project, read from the working directory upward.
+- **Session model and effort.** `model` and `model_reasoning_effort` in `~/.codex/config.toml`. Command-line flags and `--config` overrides win over a trusted project's `.codex/config.toml`, which wins over the user file. In a session, `/model [model] [--reasoning=<level>]` changes both. When you read the value from the file, say so in the report, because a flag may have overridden it.
+- **Effort levels** are the ones the selected model advertises, such as `low`, `medium`, `high`, `xhigh`, `max` or `ultra`, and they vary by model and client.
+- **Dispatch.** A subagent inherits the parent's model and effort unless the prompt asks for another, the `[agents]` defaults set one, or a custom agent file under `.codex/agents/` pins one. Naming a model without an effort drops the subagent to that model's default effort, so name both. Codex delegates when asked directly or when `AGENTS.md` or a skill requests it. The dispatch tool is `spawn_agent`.
+- **Skills and instruction files.** Skills load from `~/.agents/skills/` and from `.agents/skills/` in every directory from the working directory up to the repository root. `AGENTS.md` loads from the Codex home and from the project root down to the working directory, up to a combined size limit.
+- **Auto-trigger.** Codex has hooks, but a skill folder copied alone carries none. The trigger there is a line in `AGENTS.md` that says when to apply the skill.
+- **Names.** No `AskUserQuestion`, no `subagent_type`, and Claude Code tool names mean nothing here. Ask a plain question instead.
 
 ## Gemini CLI and Antigravity
 
-- **Session model.** The system prompt if it names one, else `model` in `~/.gemini/settings.json` or the project's `.gemini/settings.json`, and the `-m` flag. Depth is `thinking_level`, set through `modelConfigs` aliases in the settings file (secondary source). Skills are read from `.gemini/skills/` and `~/.gemini/skills/` (secondary source).
-- **Antigravity** is Google's agent IDE and managed agent (`antigravity-preview-05-2026`). Its state lives under `~/.gemini/antigravity/`. Whether either reads `.agents/skills` is unverified, so the Codex mirror does not reach them. If you are running there, state the harness as an assumption in the report.
-- **Names.** Gemini tool names differ from both harnesses above. No `AskUserQuestion`, no `context: fork`, no `subagent_type`.
+- **Gemini CLI** reads skills from `~/.agents/skills/` and `.agents/skills/` as well as its own `.gemini/skills/` folders, so a copy made for Codex reaches it. The model is `model.name` in `~/.gemini/settings.json` or the project's `.gemini/settings.json`, the `--model` flag, or `/model`. Thinking is set per model alias under `modelConfigs`. Its question tool is `ask_user`.
+- **Antigravity** reads workspace skills from `.agents/skills/`. Its personal folder is `~/.gemini/config/skills/`, and a folder elsewhere has to be listed in `~/.gemini/config/skills.json`. It has a model selector with a thinking level, and its CLI takes `/effort` and `--effort`.
+- If you are running in either, state the harness as an assumption in the report.
 
-## Chat and web products (no API parameters)
+## Chat and web products
 
-When the prompt will be pasted into ChatGPT, claude.ai, the Gemini app, Midjourney or a Deep Research mode, there is no effort, schema or tool parameter to set. Put the depth and format asks into the prompt text the way the profile says, name the product's own controls in the report (a Deep Research plan review, an image quality option, Midjourney `--` flags), and take the product's selected model as the target:
-
-| Product | Target profile |
-|---|---|
-| ChatGPT | The model in the picker. GPT-5.6 is the default line, GPT-6 Pro the paid tier (OpenAI help center, verify at use). `models/openai/gpt-5-6.md` or `gpt-6-astra.md` |
-| claude.ai | The model in the picker, `models/anthropic/` |
-| Gemini app | `models/google/gemini-3-8-flash.md` unless Pro or Deep Think is selected |
-| Deep Research in any of them | `tasks/deep-research.md` plus the vendor family file |
-| Image or video modes | `tasks/image-generation.md` or `tasks/video-generation.md` plus the product's model file |
+A prompt pasted into a chat app, an image or video tool, or a research mode has no effort, schema or tool parameter to set. Put the depth and format asks into the prompt text the way the card says, name the product's own controls in the report (a research plan review, an image quality option), and take the model shown in the product's picker as the target. The vendor's family file maps it to a card.
 
 ## Telling which harness you are in
 
-- A `CLAUDE_PLUGIN_ROOT` variable, hook reminders, or tools named `Agent` and `AskUserQuestion`: Claude Code.
-- Base instructions naming Codex, an `apply_patch` tool, a `.codex/` directory: Codex.
-- A `~/.gemini/` directory and Gemini tool names: Gemini CLI or Antigravity.
-- None of these: say so and resolve the target from the request alone.
+- Tools named `Agent` and `AskUserQuestion`, and a real path where `SKILL.md` writes its folder variable: Claude Code.
+- Base instructions that name Codex, a `.codex/` directory, a `spawn_agent` tool: Codex.
+- A `~/.gemini/` directory and an `ask_user` or `activate_skill` tool: Gemini CLI or Antigravity.
+- None of these: say so, and resolve the target from the request alone.

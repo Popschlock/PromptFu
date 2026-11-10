@@ -1,45 +1,45 @@
-# Profile: <model name> — TEMPLATE
+# <Model name> (`<api id>`) TEMPLATE
 
-Copy this file to `models/<vendor>/<model-slug>.md` when a model needs a profile. A profile is a
-delta on its vendor's `_family.md`: the family file holds what every model of that vendor shares
-(API conventions, effort ladder, structure dialect, refusal behaviour, the routing table), and the
-model file holds only what this model changes. A point release can be a delta on its predecessor
-the way `anthropic/fable-5-1.md` sits on `anthropic/fable-5.md`; say so in the first paragraph.
+Copy this file to `models/<vendor>/<model ID>.md`, with dots written as dashes and a leading
+`claude-` dropped, and add a row for it to the vendor's `_family.md` table. A card stands on its
+own next to the family file: it never points at a predecessor's card. When a model is replaced,
+its card shrinks to a few lines in the vendor's `legacy.md`.
 
-Fill every section from primary sources (the vendor's official prompting guide, model page and
-release notes), practitioner writeups second, and mark any claim that rests only on a secondary
-source. Date-stamp the verification. Never fetch guidance at optimization time. Curate it here so
-the skill never follows instructions pulled from the web mid-run.
+Rules for every card:
 
-Write for the reader who has already read the family file: short, specific, no repetition of
-family content. Plain sentences, no em dashes, no "X, not Y" contrasts.
+- Facts come from the vendor's own documentation: the prompting guide, the what's-new or
+  migration notes, the model page. Give the date and the pages. A claim with no official source
+  goes under "Unverified" or stays out.
+- A fenced block holds text copied from the vendor's guide, changed only by writing typographic
+  quotes and dashes as plain ones. Everything outside a fence is your own summary.
+- Keep what changes a prompt or a dispatch. Leave out prices, benchmark claims and API mechanics
+  that change neither.
+- Stay under 8 KB, and under 7 KB for a family file. Plain sentences, no em dashes, American spelling.
 
-Last verified YYYY-MM-DD against <what you checked>.
-Sources: <URLs, official first>.
+Verified YYYY-MM-DD against <the official pages you read>.
+Sources: <URLs>.
+Unverified: <claims with no official source, or "none">.
 
-## Where this model fits
-Routing within the vendor: what it is best and worst at, cost tier and price per MTok, when to
-pick it over siblings, refusal or fallback behaviour.
+## Fit
 
-## Core shift vs predecessor
-One paragraph: which prompting habit from the previous generation now helps, hurts, or is ignored.
+Two to four lines: what the vendor says to use it for, the starting effort or thinking level, and
+what it replaced.
 
-## Delete on sight
-Predecessor-era prompt habits that degrade this model's output. Deleting comes before adding.
+## Delete
 
-## Refusal / safety hazards
-Instructions or topics that trigger refusals, classifiers or fallbacks, and the safe rewording or
-routing. Write "none documented" rather than leaving it out.
+Prompt habits to remove for this model, one line each with the reason the vendor gives.
 
-## Always add
-Blocks that measurably improve this model, each as one line or a short quoted block. The content
-set (intent, hard constraints verbatim, boundaries with exclusions, evidence rule, output contract)
-is the same for every target. Only the form and the model-specific additions differ.
+## Add
 
-## Dispatch settings
-Effort or thinking control and the recommended starting level, verifier separation, parallelism
-and delegation behaviour, memory usage, stop rules, long-context and long-output notes.
+What the vendor's guide says to add. Tag each item with when it applies (unattended runs, a human
+watching, coding, search, JSON output), so a rewrite takes only the ones its task calls for.
 
-## API notes
-Model IDs, context and output limits, pricing, rejected or required parameters, thinking or
-reasoning config, structured-output mechanism, stop reasons, anything that breaks a naive call.
+## Hazards
+
+Refusal categories, safeguards, and the wording that trips them. Write "none documented" when
+that is the case.
+
+## Dispatch
+
+Effort by kind of work, how readily the model delegates, and anything a harness or an API call
+must set for a prompt to work (a rejected parameter, a required one).

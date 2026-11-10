@@ -1,111 +1,73 @@
 #!/usr/bin/env node
 // PromptFu: PreToolUse backstop for Agent and Workflow calls.
-// The UserPromptSubmit hook already tells the model to apply PromptFu before
-// any dispatch it writes. This hook is the quiet backstop for a dispatch that
-// still went out unstructured: in `lint` mode (the default) it adds a note to
-// the tool result, invisible to the user, so the next dispatch or SendMessage
-// continuation is written properly. `gate` mode instead denies such a call
-// once, with a reason that says to apply the skill and re-issue; the second
-// attempt at the same prompt always passes. A deny shows in the transcript as
-// a hook error, which is why it is opt-in. `off` skips dispatch checks.
+// The session-start reminder already asks the model to apply PromptFu before a
+// dispatch that carries real work. This hook is the backstop for one that went
+// out unstructured anyway.
 //
-// PROMPTFU_DISPATCH_MODE selects the mode: lint (default), gate, off.
-// Silenced entirely by the kill switch in gate.js (PROMPTFU_DISABLE env var, or
-// a project `.promptfu` file with `off`).
-const fs = require('fs');
-const os = require('os');
-const path = require('path');
+// It only looks at dispatch prompts over the word threshold. A short brief is
+// almost always a lookup, and a lookup is not worth a rewrite.
+//
+//   lint (default)  Adds a short note to the tool result, once per session. A
+//                   PreToolUse note reaches the model after the call has run,
+//                   so it shapes the next dispatch and cannot change this one.
+//                   Once per session, because text that keeps arriving after
+//                   tool results can be read as a prompt injection.
+//   gate            Denies the call once, with a reason that says to apply the
+//                   skill and send it again. The second attempt at the same
+//                   prompt always passes. A deny shows in the transcript as a
+//                   hook error, which is why this mode is opt-in.
+//   off             Skips dispatch checks.
+//
+// PROMPTFU_DISPATCH_MODE picks the mode. The kill switch in gate.js silences
+// every mode. A Workflow call that names a saved script carries no text to
+// check and passes untouched.
 const crypto = require('crypto');
-const { disabled } = require('./gate');
+const { disabled, truthy, threshold, words, readState, writeState, main, addContext } = require('./gate');
 
 const MODE = (process.env.PROMPTFU_DISPATCH_MODE || 'lint').trim().toLowerCase();
-const NEVER_DOWNGRADE = /^(1|true|yes|on)$/i.test(process.env.PROMPTFU_NEVER_DOWNGRADE || '');
-const MARKER_DIR = path.join(os.tmpdir(), 'promptfu-gate');
-const MARKER_TTL_MS = 24 * 60 * 60 * 1000;
 
-// Any of the three dialects PromptFu writes: Anthropic tags, OpenAI/Markdown
-// section headers, or the universal opening line.
+// Any of the dialects PromptFu writes: tags, section headers, or the universal opening line.
 const STRUCTURED =
   /<(intent|context|constraints|task|output|boundaries)\b[^>]*>|^\s*(#+\s*)?(GOAL|INTENT|CONTEXT|CONSTRAINTS|TASK|OUTPUT|BOUNDARIES|AUTONOMY|TOOL POLICY|STOP CONDITION)\b\s*:?\s*$|\bI'?m working on\b/im;
 
-// Returns true when this prompt was already denied once (and marks it if not).
-function seenBefore(text) {
-  const marker = path.join(MARKER_DIR, crypto.createHash('sha1').update(text).digest('hex'));
-  try {
-    fs.mkdirSync(MARKER_DIR, { recursive: true });
-    const now = Date.now();
-    for (const name of fs.readdirSync(MARKER_DIR)) {
-      const p = path.join(MARKER_DIR, name);
-      try {
-        if (now - fs.statSync(p).mtimeMs > MARKER_TTL_MS) fs.unlinkSync(p);
-      } catch {}
-    }
-    if (fs.existsSync(marker)) return true;
-    fs.writeFileSync(marker, '');
-    return false;
-  } catch {
-    // No writable temp dir: never deny, because a deny we cannot remember could repeat.
-    return true;
-  }
-}
+const HOW_TO =
+  'apply the promptfu skill to a subagent or workflow prompt that asks for multi-step or judgment work ' +
+  'before sending it: state the intent, keep hard constraints verbatim, say what shape you need back.';
 
-let raw = '';
-process.stdin.on('data', (c) => (raw += c));
-process.stdin.on('end', () => {
-  let input = {};
-  let cwd;
-  try {
-    const data = JSON.parse(raw);
-    input = data.tool_input || {};
-    cwd = data.cwd;
-  } catch {
-    input = {};
-  }
-  if (MODE === 'off' || disabled(cwd)) process.exit(0);
+main((data) => {
+  const input = data.tool_input || {};
+  if (MODE === 'off' || disabled(data.cwd)) return;
   const text = typeof input.prompt === 'string' ? input.prompt : typeof input.script === 'string' ? input.script : '';
-  if (!text.trim() || STRUCTURED.test(text)) process.exit(0);
-  const model = typeof input.model === 'string' && input.model.trim();
-  const kind = typeof input.subagent_type === 'string' && input.subagent_type.trim();
-  const target = model
-    ? 'target: ' + model + (kind === 'fork' ? ' (a fork ignores model and inherits the session model)' : '')
-    : kind === 'fork'
-      ? 'target: the session model (fork)'
-      : 'target: the session model unless the agent definition pins one';
-  const howTo =
-    'Apply the PromptFu skill (promptfu) to the prompt: resolve the target per harnesses.md (' + target +
-    '), read that model\'s family file and profile and the task playbook, state the intent, preserve any ' +
-    'hard constraints verbatim, delete what the profile marks delete-on-sight (reasoning-echo requests, step ' +
-    'scaffolding the model does not need), and set the effort.' +
-    (NEVER_DOWNGRADE
-      ? ' PROMPTFU_NEVER_DOWNGRADE is set: do not propose or apply an effort level or model tier'
-        + ' below what is currently configured; hold at the configured level or higher.'
-      : '');
-  if (MODE === 'lint' || seenBefore(text)) {
-    if (MODE !== 'lint') process.exit(0);
+  if (words(text) <= threshold() || STRUCTURED.test(text)) return;
+  const never = truthy('PROMPTFU_NEVER_DOWNGRADE')
+    ? ' PROMPTFU_NEVER_DOWNGRADE is set: propose no model or effort below the configured level.'
+    : '';
+
+  if (MODE === 'gate') {
+    // Deny once per prompt. If the deny cannot be remembered, never deny, because it could repeat.
+    const key = crypto.createHash('sha1').update(text).digest('hex');
+    if (readState('deny', key) !== undefined || !writeState('deny', key, '1')) return;
     process.stdout.write(
       JSON.stringify({
-        suppressOutput: true,
         hookSpecificOutput: {
           hookEventName: 'PreToolUse',
-          additionalContext:
-            'This dispatch has already launched and its prompt shows no PromptFu structure (no intent, ' +
-            'constraints, task or output block). Before the next dispatch, and before continuing this agent ' +
-            'through SendMessage: ' + howTo,
+          permissionDecision: 'deny',
+          permissionDecisionReason:
+            'PromptFu gate: this dispatch was held because its prompt has no intent, constraints or output ' +
+            'block. Now ' + HOW_TO + never + ' Then send the call again. The same call passes on its second ' +
+            'attempt even if unchanged.',
         },
       })
     );
-    process.exit(0);
+    return;
   }
-  process.stdout.write(
-    JSON.stringify({
-      hookSpecificOutput: {
-        hookEventName: 'PreToolUse',
-        permissionDecision: 'deny',
-        permissionDecisionReason:
-          'PromptFu gate: this dispatch was held because its prompt shows no PromptFu structure (no intent, ' +
-          'constraints, task or output block). ' + howTo + ' Then re-issue the call. The same call is allowed on ' +
-          'its second attempt even if unchanged, so this gate never holds a dispatch twice.',
-      },
-    })
+
+  // lint: once per session.
+  const session = data.session_id || 'no-session';
+  if (readState('lint', session) !== undefined || !writeState('lint', session, '1')) return;
+  addContext(
+    'PreToolUse',
+    'PromptFu: that dispatch had no intent, constraints or output block. Apply the promptfu skill to the next ' +
+      'subagent or workflow prompt that asks for multi-step or judgment work, before sending it.' + never
   );
 });
