@@ -5,7 +5,7 @@ description: Use BEFORE sending an Agent, Workflow or subagent prompt, and befor
 
 # PromptFu
 
-Rewrite a prompt so the model that runs it gets it right the first time, at the lowest token cost. A profile changes a prompt's form, never what it asks for.
+Rewrite a prompt so the model that runs it gets it right the first time, at the lowest cost. A profile changes a prompt's form, never what it asks for.
 
 Paths are relative to this file's folder (in Claude Code: `${CLAUDE_SKILL_DIR}`).
 
