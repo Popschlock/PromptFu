@@ -2,7 +2,7 @@
 
 Verified 2026-11-10 against "Prompting Claude Fable 5.2", "Choosing a model" and the Fable 5.2 model page.
 Sources: https://platform.claude.com/docs/en/build-with-claude/prompt-engineering/prompting-claude-fable-5-2, https://platform.claude.com/docs/en/about-claude/models/choosing-a-model, https://platform.claude.com/docs/en/models/fable-5-2/overview
-Unverified: whether the Fable 5.1 habits this guide does not repeat (the batching nudge, the search nudge at `low`, the formatting rule) still apply. They are left out.
+Unverified: whether the Fable 5.1 habits this guide does not repeat (the batching nudge, the search nudge at `low`, the formatting rule) still apply, so they are left out.
 
 ## Fit
 

@@ -5,17 +5,18 @@ infer: what is authorized, what done means, how much to verify and when to stop.
 
 ## Applies when
 
-"Implement", "migrate", "refactor across", "investigate and fix", "run until", "audit the repo",
-a roadmap task, anything that ends in a test suite or a deploy. The work takes more than a
-handful of tool calls and must be verified before the model claims success. A bounded brief with
+"Implement", "migrate", "refactor across", "investigate and fix", "audit the repo", anything
+that ends in a test suite or a deploy. The work takes many tool calls and must be verified
+before the model claims success. A bounded brief with
 one unit and one return takes the universal shape alone. When a wrong call changes state outside
 the workspace (a send, a payment, a deleted record), use `tasks/tool-agents.md` instead.
 
 ## Blocks
 
-- **Autonomy**, required: without it the model stalls on a question or guesses at an
-  irreversible step. Use the template's wording. An ask-or-proceed rule the draft already sets
-  replaces it.
+- **Autonomy**, required, in one form: without it the model stalls on a question or guesses
+  at an irreversible step. Pick the template line that fits who can answer. A rule the draft
+  already sets, or a card block for unattended runs, replaces it. Never paste a general rule
+  and then override it.
 - **Completion**, required: a test a reader can run without asking the model. Build it from the
   deliverable and the checks the draft or the repo names. Prevents a run that ends at a plan.
 - **Verification**, required when the run changes files or state, sized to the risk. A small
@@ -28,8 +29,6 @@ the workspace (a send, a payment, a deleted record), use `tasks/tool-agents.md` 
 - **Scope and tests limiter**, for feature work: no fixing or extending what the task did not
   name, and permanent tests only where the task asks or the repo already keeps them. Follow-ups
   are reported and left alone.
-- **Tool batching**, for loops where the next reads are implied: "Request every item that does
-  not depend on another's result in this one turn." Never invent arguments to batch.
 - **Progress**, only when a human is watching: a line before starting, an update on a milestone
   or change of plan, a recap that stands alone.
 - **Delegation**, when subagents are available: independent tracks that cut wall-clock time
@@ -43,20 +42,21 @@ the workspace (a send, a payment, a deleted record), use `tasks/tool-agents.md` 
 
 - Step-by-step procedures and scripted reasoning. Replace with goal, evidence and criteria.
 - "Keep going until it is done" with no completion test. It stops early or never stops.
-- Stacked re-check loops. One verification block sized to the risk replaces them.
+- Stacked re-check loops. One verification block replaces them.
 - "Think harder" and "use maximum intelligence". Depth is the effort setting on the model card.
 - Warnings and safety checklists for hypothetical risk. They get obeyed literally.
-- Token countdowns.
 
 ## Template
 
 ```
 [Intent] [Context] [Scope] as the universal shape gives them.
-[Autonomy]
-Make reasonable assumptions for non-critical missing details. State important assumptions
-briefly. Ask a question only when the missing information would materially change the strategy
-or create an irreversible decision. Reversible in-scope work is authorized. Approval comes
-last, on a concrete reviewable result.
+[Autonomy] one of:
+Someone can answer: Make reasonable assumptions for non-critical missing details. State
+important assumptions briefly. Ask a question only when the missing information would
+materially change the strategy or create an irreversible decision.
+Nobody can answer: Reversible in-scope work is authorized. Make reasonable assumptions, record
+the important ones in <the output>, and carry on with everything that does not depend on an
+open question. Stop only before an irreversible step.
 [Completion]
 Done means <deliverable> exists, <named checks> pass with output shown, failures the change
 caused are fixed, and blockers are written down. Do not end with a plan for work you can still
@@ -76,4 +76,4 @@ Outcome first. Then files changed, verification with its output, remaining uncer
 - Can a reader test Completion without asking the model whether it is done?
 - Is Verification sized to the risk, using only checks that exist?
 - Is the retry rule labeled as an assumption, and is every budget one the draft stated?
-- Does every block answer something in the draft, with nothing invented to fill it?
+- Does every block answer something in the draft, and is each rule said only once?

@@ -11,8 +11,6 @@ Paths are relative to this file's folder (in Claude Code: `${CLAUDE_SKILL_DIR}`)
 
 ## 1. Decide whether to optimize
 
-A pass costs tokens and time, so it must earn them.
-
 - **Send as typed** a lookup, a single fact, a one-step command or an acknowledgment, and any draft that is already clear and complete with nothing the target's card says to delete. If the user asked for an optimization, say in one line that the draft is fine.
 - **Ask first** when the user is present and a missing piece would change the work: the target is unknown and it changes the form, the deliverable or the done condition reads two ways, or a hard constraint looks like a slip. One batched round (AskUserQuestion in Claude Code, a plain question elsewhere). With nobody to ask, write the gap into the prompt as an assumption.
 - **Otherwise optimize** with the smallest change that fixes what is wrong. Keep the author's wording where it works.
@@ -27,7 +25,7 @@ First match wins:
 4. The session model. Claude Code names the model ID in its system prompt, and the session effort is `${CLAUDE_EFFORT}`. If that still reads as a placeholder you are in another harness, and `harnesses.md` says where to look.
 5. Nothing found: write the universal shape, say so, and never infer a vendor from tag style.
 
-ID prefixes pick the folder: `claude-` is `models/anthropic/`, `gpt-`, `codex` and `o` plus a digit are `models/openai/`, `gemini-`, `veo-`, `imagen-` and `deep-research-` are `models/google/`. Any other vendor takes the nearest family file, and the report says no profile exists.
+ID prefixes pick the folder: `claude-` is `models/anthropic/`, `gpt-`, `codex` and `o` plus a digit are `models/openai/`, `gemini-`, `veo-`, `imagen-` and `deep-research-` are `models/google/`. Another vendor uses `models/<vendor>/_family.md` when that folder exists. Otherwise take the nearest family file and say no profile exists.
 
 Auto mode (the user asks which model or effort, or the dispatch choice is yours): pick from the family file's routing, stay in the running vendor unless the prompt will be pasted elsewhere, and report pick, reason and runner-up.
 
