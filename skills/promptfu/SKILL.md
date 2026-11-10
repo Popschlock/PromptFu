@@ -42,9 +42,9 @@ Ask for them in one batch when you can. A file read earlier in this session is n
 ## 4. Rewrite
 
 1. **Pull out** the intent (why and for whom, inferred and stated when absent), the hard-constraint candidates (formats, scales, field names, paths, counts, orderings, named sections, quoted text, tool limits) and whatever the card lists under Delete.
-2. **Ground the scope** when the files are reachable: check the paths the draft names, keep the author's scope wording, add exclusions for vendored and generated trees. Never swap a scope for a list of what you found, because a list narrows it silently. Write "not verified" for what you did not check.
+2. **Ground the scope** when the files are reachable: check the paths the draft names, keep the author's scope wording, add exclusions for vendored and generated trees. Never swap a scope for a list of what you found, because a list narrows it silently. What you did not check goes in the report as "not verified", never in the prompt.
 3. **Rebuild** in the universal shape, in the family's dialect, with the card additions this kind of task calls for.
-4. **Add nothing the draft does not imply.** A default, cap, tie-break or extra output the author never asked for goes in labeled `Assumption:` so the reader can overrule it, or it stays out. Write a tool-call, token or time budget only when the draft states one, because an invented ceiling stops work the author wanted finished.
+4. **Settle real gaps, and add nothing else.** Where the executor would have to guess (what to return, what counts as a match, how a tie breaks, what to do with missing input), write the answer the author evidently meant in one line labeled `Assumption:`, so the reader can overrule it. Whatever only makes the prompt more thorough stays out. Write a tool-call, token or time budget only when the draft states one, because an invented ceiling stops work the author wanted finished.
 5. **Size.** A one-shot ask comes out no longer than the draft. Longer work may grow by the blocks its playbook requires. Leave out what the harness prompt, an instruction file or a loaded skill already enforces.
 
 ### Hard constraints

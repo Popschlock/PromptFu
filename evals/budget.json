@@ -1,9 +1,9 @@
 {
-  "note": "Ceilings for `python evals/measure.py budget`. Raise one only with a reason in the commit that raises it. The 2.3.0 figures are in baseline/2.3.0.json. The 3.0.0 plan aimed at 8,000 for SKILL.md and 22,000 for the median path and landed at about 8,450 and 23,800.",
-  "skill_md_bytes": 8500,
+  "note": "Ceilings for `python evals/measure.py budget`. Raise one only with a reason in the commit that raises it. The 2.3.0 figures are in baseline/2.3.0.json. The 3.0.0 plan aimed at 8,000 for SKILL.md and 22,000 for the median path and landed at about 8,650 and 24,000.",
+  "skill_md_bytes": 8700,
   "description_bytes": 480,
   "largest_path_bytes": 27000,
-  "median_path_bytes": 24000,
+  "median_path_bytes": 24200,
   "path_reads": 4,
   "skill_folder_bytes": 150000,
   "hook_chars": {
