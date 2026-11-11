@@ -65,7 +65,7 @@ Prompts for larger tasks change more. For an overnight refactor or a subagent br
 
 ## How it works
 
-In Claude Code, PromptFu runs from three hooks, so there is nothing to do after you install it.
+In Claude Code, PromptFu runs from three hooks, so there is nothing to do after you install it. In Codex, the same three hooks run after you approve them.
 
 - When the model is about to hand multi-step work to a subagent or workflow, PromptFu optimizes the brief for the model that will run it and adds no commentary to the conversation.
 - When you type a prompt longer than 50 words that asks for multi-step work or judgment, PromptFu optimizes it before it runs. Only the text you typed counts toward the 50 words.
@@ -73,7 +73,7 @@ In Claude Code, PromptFu runs from three hooks, so there is nothing to do after 
 
 The hooks add very little to your context. They add one short reminder at the start of a session and again after a compaction, one line on a prompt over 50 words, and at most one note per session when a subagent brief goes out unstructured.
 
-In Codex, a line in `AGENTS.md` tells the model when to apply the skill. You can also run PromptFu yourself by typing `/promptfu` and pasting a draft, or by naming the target, for example "optimize this for GPT-6 Astra" or "this is for Midjourney". PromptFu returns the rewritten prompt, an explanation of what it changed, and any refusal risk it found.
+You can also run PromptFu yourself by typing `/promptfu` (`$promptfu` in Codex) and pasting a draft, or by naming the target, for example "optimize this for GPT-6 Astra" or "this is for Midjourney". PromptFu returns the rewritten prompt, an explanation of what it changed, and any refusal risk it found.
 
 ## Safeguards
 
@@ -142,7 +142,16 @@ claude plugin marketplace update promptfu
 claude plugin update promptfu@promptfu
 ```
 
-For Codex, copy `skills/promptfu/` to `~/.agents/skills/promptfu/` and add one line to `~/.codex/AGENTS.md`: "apply the `promptfu` skill to a prompt over ~50 words that asks for multi-step or judgment work, before running it." Gemini CLI reads the same `~/.agents/skills/` folder.
+To install it in Codex, run these commands in a shell:
+
+```
+codex plugin marketplace add Popschlock/PromptFu
+codex plugin add promptfu@promptfu
+```
+
+Codex does not run a plugin's hooks until you review them. Open `/hooks` in the Codex CLI, or Review hooks in the desktop app, and approve PromptFu's three hooks. To update later, run `codex plugin marketplace upgrade promptfu` and install the plugin again. Codex asks for a new review when a hook script changes.
+
+If you would rather not install the plugin in Codex, copy `skills/promptfu/` to `~/.agents/skills/promptfu/` and add one line to `~/.codex/AGENTS.md`: "apply the `promptfu` skill to a prompt over ~50 words that asks for multi-step or judgment work, before running it." Gemini CLI reads the same `~/.agents/skills/` folder. Use one method in Codex and not both, because Codex lists the skill twice when both are present.
 
 ## Settings
 

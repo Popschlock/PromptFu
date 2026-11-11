@@ -37,7 +37,9 @@ const HOW_TO =
 main((data) => {
   const input = data.tool_input || {};
   if (MODE === 'off' || disabled(data.cwd)) return;
-  const text = typeof input.prompt === 'string' ? input.prompt : typeof input.script === 'string' ? input.script : '';
+  // Claude Code's Agent carries the brief in `prompt` and Workflow in `script`. Codex's spawn_agent,
+  // which also matches `Agent`, carries it in `message`.
+  const text = [input.prompt, input.script, input.message].find((value) => typeof value === 'string') || '';
   if (words(text) <= threshold() || STRUCTURED.test(text)) return;
   const never = truthy('PROMPTFU_NEVER_DOWNGRADE')
     ? ' PROMPTFU_NEVER_DOWNGRADE is set: propose no model or effort below the configured level.'

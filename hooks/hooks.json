@@ -5,8 +5,7 @@
         "hooks": [
           {
             "type": "command",
-            "command": "node",
-            "args": ["${CLAUDE_PLUGIN_ROOT}/hooks/session-start.js"],
+            "command": "node \"${CLAUDE_PLUGIN_ROOT}/hooks/session-start.js\"",
             "timeout": 10
           }
         ]
@@ -17,8 +16,7 @@
         "hooks": [
           {
             "type": "command",
-            "command": "node",
-            "args": ["${CLAUDE_PLUGIN_ROOT}/hooks/long-prompt-check.js"],
+            "command": "node \"${CLAUDE_PLUGIN_ROOT}/hooks/long-prompt-check.js\"",
             "timeout": 10
           }
         ]
@@ -30,8 +28,7 @@
         "hooks": [
           {
             "type": "command",
-            "command": "node",
-            "args": ["${CLAUDE_PLUGIN_ROOT}/hooks/dispatch-gate.js"],
+            "command": "node \"${CLAUDE_PLUGIN_ROOT}/hooks/dispatch-gate.js\"",
             "timeout": 10
           }
         ]

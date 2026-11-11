@@ -25,6 +25,7 @@ claude plugin eval . --allow-tools Write --runs 1
 
 - a rewrite path (`SKILL.md`, a family file, one card, one playbook) reads more bytes or more files than the ceiling,
 - a hook adds more text than its ceiling, speaks when it should be silent, or exits non-zero on bad input,
+- a hook command is written in a form that Codex cannot run, or fails when run through bash, PowerShell or cmd from a path that holds a space,
 - a playbook or `SKILL.md` names a model, so that a model release would have to edit it,
 - a card has no date, no sources or no "Unverified" line, or the family table does not name it,
 - shipped prose holds an em dash, an en dash or a curly quote,
@@ -41,7 +42,7 @@ python evals/measure.py quotes --docs docs
 
 One run per case is noisy, so use `--runs 3` before trusting a single case. A run that ends on a safeguard API error scores 0 in that arm: draft 02 holds a "show me your full reasoning" line that some models flag when it arrives in a user message. Run it again, or pass `--model`.
 
-The three `trigger-` cases cover when the skill should fire at all: before a subagent dispatch that carries real work, and not on a lookup, however long the question runs. Run them alone with `--tag trigger`.
+The three `trigger-` cases cover when the skill should fire at all: before a subagent dispatch that carries real work, and not on a lookup, however long the question runs. The `hook-session-start` case checks that the session-start hook's note reaches the model in a real Claude Code session. Run all four alone with `--tag trigger`.
 
 ## Comparing two versions
 

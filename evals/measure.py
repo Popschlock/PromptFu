@@ -31,6 +31,7 @@ import json
 import math
 import os
 import re
+import shutil
 import statistics
 import subprocess
 import sys
@@ -183,6 +184,8 @@ STEPS = [
     ("first prompt of a session that got no start hook", "UserPromptSubmit", "E", {"prompt": "ok"}, {}, None, "speaks", "session_start"),
     ("unstructured dispatch over the threshold", "PreToolUse", "A", agent(LONG_BRIEF, model="haiku"), {}, None, "speaks", "dispatch_note"),
     ("second one in the same session", "PreToolUse", "A", agent(LONG_BRIEF + " again"), {}, None, "silent", None),
+    ("Codex spawn_agent, brief in `message`", "PreToolUse", "H", {"tool_name": "spawn_agent", "tool_input": {"task_name": "billing_audit", "message": LONG_BRIEF}}, {}, None, "speaks", "dispatch_note"),
+    ("Codex spawn_agent, short brief", "PreToolUse", "H", {"tool_name": "spawn_agent", "tool_input": {"task_name": "callers", "message": BRIEF}}, {}, None, "silent", None),
     ("short brief", "PreToolUse", "F", agent(BRIEF), {}, None, "silent", None),
     ("structured dispatch", "PreToolUse", "F", agent(STRUCTURED), {}, None, "silent", None),
     ("workflow run by name", "PreToolUse", "F", {"tool_name": "Workflow", "tool_input": {"name": "review"}}, {}, None, "silent", None),
@@ -196,23 +199,71 @@ STEPS = [
 
 
 def hook_commands(plugin):
+    """Each hook's command with the plugin root filled in. A string is shell form. A list is exec
+    form, which releases before 3.0.1 used: the script sat in `args`, a field Codex does not read."""
     config = json.loads(read(plugin / "hooks" / "hooks.json"))["hooks"]
     commands = {}
     for event, groups in config.items():
         for group in groups:
             for hook in group.get("hooks", []):
-                if hook.get("type") == "command":
-                    cmd = [hook["command"]] + hook.get("args", [])
-                    commands.setdefault(event, []).append([c.replace("${CLAUDE_PLUGIN_ROOT}", str(plugin)) for c in cmd])
+                if hook.get("type") != "command":
+                    continue
+                if "args" in hook:
+                    cmd = [c.replace("${CLAUDE_PLUGIN_ROOT}", str(plugin)) for c in [hook["command"]] + hook["args"]]
+                else:
+                    cmd = hook["command"].replace("${CLAUDE_PLUGIN_ROOT}", str(plugin))
+                commands.setdefault(event, []).append(cmd)
     return commands
 
 
-def run_hook(command, raw, env_extra, project):
+def hook_env(project, extra=None):
     env = {k: v for k, v in os.environ.items() if not k.startswith("PROMPTFU_")}
     env.update({"CLAUDE_PROJECT_DIR": str(project), "TMP": str(project), "TEMP": str(project), "TMPDIR": str(project)})
-    env.update(env_extra)
-    proc = subprocess.run(command, input=raw, capture_output=True, text=True, env=env, timeout=30)
+    env.update(extra or {})
+    return env
+
+
+def run_hook(command, raw, env_extra, project):
+    proc = subprocess.run(command, input=raw, capture_output=True, text=True, env=hook_env(project, env_extra),
+                          timeout=30, shell=isinstance(command, str))
     return proc.returncode, proc.stdout.strip()
+
+
+def check_launchers(plugin, out):
+    """Run each shell-form hook command the way a host shell would, from a plugin path that holds
+    a space. On Windows, Claude Code runs hooks through Git Bash or PowerShell and Codex through
+    PowerShell, and elsewhere both use sh, so a command has to work in all of them."""
+    config = json.loads(read(plugin / "hooks" / "hooks.json"))["hooks"]
+    probes = {"SessionStart": {"source": "startup"}, "UserPromptSubmit": {"prompt": LONG}, "PreToolUse": agent(LONG_BRIEF)}
+    wrap = {
+        "bash": lambda c: ["bash", "-c", c],
+        "sh": lambda c: ["sh", "-c", c],
+        "powershell.exe": lambda c: ["powershell.exe", "-NoProfile", "-NonInteractive", "-Command", c],
+        "cmd.exe": lambda c: c,
+    }
+    wanted = ("bash", "powershell.exe", "cmd.exe") if os.name == "nt" else ("sh", "bash")
+    shells = [s for s in wanted if shutil.which(s)]
+    misses, ran = [], 0
+    with tempfile.TemporaryDirectory() as tmp:
+        root = Path(tmp) / "plugin with spaces"
+        shutil.copytree(plugin / "hooks", root / "hooks")
+        for event, groups in config.items():
+            for group in groups:
+                for hook in group.get("hooks", []):
+                    if hook.get("type") != "command" or "args" in hook or event not in probes:
+                        continue
+                    for shell in shells:
+                        command = hook["command"].replace("${CLAUDE_PLUGIN_ROOT}", str(root))
+                        body = dict(probes[event], hook_event_name=event, cwd=tmp, session_id=f"launcher-{shell}-{event}")
+                        proc = subprocess.run(wrap[shell](command), input=json.dumps(body), capture_output=True, text=True,
+                                              env=hook_env(tmp), timeout=30, shell=(shell == "cmd.exe"))
+                        ran += 1
+                        if proc.returncode != 0 or "promptfu" not in proc.stdout.lower():
+                            misses.append(f"{event} through {shell}: exit {proc.returncode}, {len(proc.stdout)} chars of output")
+    if ran:
+        out(f"  launchers: {ran} runs through {', '.join(shells)} from a path with a space: "
+            + ("each hook ran and spoke" if not misses else "see misses"))
+    return misses
 
 
 def cmd_hooks(args, quiet=False):
@@ -263,6 +314,7 @@ def cmd_hooks(args, quiet=False):
                         misses.append(f"{event} on {name}: exit {code}, {len(stdout)} chars")
         out(f"  bad input (empty object, garbage, nothing, an array) on {sum(len(c) for c in commands.values())} hooks: exit 0 and silent"
             if not any(" on " in m and "exit" in m for m in misses) else "  bad input: see misses")
+    misses += check_launchers(plugin, out)
     out("hook misses: " + ("none" if not misses else "; ".join(misses)))
     return {"rows": rows, "misses": misses}
 
@@ -281,6 +333,16 @@ def cmd_lint(args, quiet=False):
     plugin = Path(args.plugin)
     skill = plugin / "skills" / "promptfu"
     misses = []
+    # Hook commands stay in the one form every host runs: a shell string with the plugin root in
+    # double quotes and no shell operators. Codex reads no `args` field, and Windows PowerShell 5.1
+    # rejects `||`.
+    for event, groups in json.loads(read(plugin / "hooks" / "hooks.json"))["hooks"].items():
+        for group in groups:
+            for hook in group.get("hooks", []):
+                if "args" in hook:
+                    misses.append(f"hooks/hooks.json {event}: uses `args`, which Codex does not read")
+                elif not re.fullmatch(r'node "\$\{CLAUDE_PLUGIN_ROOT\}/hooks/[\w-]+\.js"', hook.get("command", "")):
+                    misses.append(f"hooks/hooks.json {event}: command is not node \"${{CLAUDE_PLUGIN_ROOT}}/hooks/<script>.js\"")
     shipped = [plugin / "README.md"] + sorted(skill.rglob("*.md"))
     for path in shipped:
         rel = path.relative_to(plugin).as_posix()

@@ -19,7 +19,7 @@ Unverified: that Claude Code's system prompt names the session model (observed i
 - **Effort levels** are the ones the selected model advertises, such as `low`, `medium`, `high`, `xhigh`, `max` or `ultra`, and they vary by model and client.
 - **Dispatch.** A subagent inherits the parent's model and effort unless the prompt asks for another, the `[agents]` defaults set one, or a custom agent file under `.codex/agents/` pins one. Naming a model without an effort drops the subagent to that model's default effort, so name both. Codex delegates when asked directly or when `AGENTS.md` or a skill requests it. The dispatch tool is `spawn_agent`.
 - **Skills and instruction files.** Skills load from `~/.agents/skills/` and from `.agents/skills/` in every directory from the working directory up to the repository root. `AGENTS.md` loads from the Codex home and from the project root down to the working directory, up to a combined size limit.
-- **Auto-trigger.** Codex has hooks, but a skill folder copied alone carries none. The trigger there is a line in `AGENTS.md` that says when to apply the skill.
+- **Auto-trigger.** When this plugin is installed in Codex, its three hooks run once the user has approved them in `/hooks`. A skill folder copied alone carries no hooks, and the trigger there is a line in `AGENTS.md` that says when to apply the skill.
 - **Names.** No `AskUserQuestion`, no `subagent_type`, and Claude Code tool names mean nothing here. Ask a plain question instead.
 
 ## Gemini CLI and Antigravity
