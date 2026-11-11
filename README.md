@@ -149,7 +149,7 @@ codex plugin marketplace add Popschlock/PromptFu
 codex plugin add promptfu@promptfu
 ```
 
-Codex does not run a plugin's hooks until you review them. Open `/hooks` in the Codex CLI, or Review hooks in the desktop app, and approve PromptFu's three hooks. To update later, run `codex plugin marketplace upgrade promptfu` and install the plugin again. Codex asks for a new review when a hook script changes.
+Codex does not run a plugin's hooks until you review them. Open `/hooks` in the Codex CLI, or Review hooks in the desktop app, and approve PromptFu's three hooks. To update later, run `codex plugin marketplace upgrade promptfu`, which also updates the installed plugin. Codex asks for a new review when a hook script changes.
 
 If you would rather not install the plugin in Codex, copy `skills/promptfu/` to `~/.agents/skills/promptfu/` and add one line to `~/.codex/AGENTS.md`: "apply the `promptfu` skill to a prompt over ~50 words that asks for multi-step or judgment work, before running it." Gemini CLI reads the same `~/.agents/skills/` folder. Use one method in Codex and not both, because Codex lists the skill twice when both are present.
 
