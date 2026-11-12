@@ -1,6 +1,6 @@
 # Claude Opus 5.5 (`claude-opus-5-5`)
 
-Verified 2026-11-10 against the Opus 5.5 and Opus 5 prompting guides, "What's new in Claude Opus 5.5" and "Optimizing for cost and intelligence".
+Verified 2026-11-12 against the Opus 5.5 and Opus 5 prompting guides, "What's new in Claude Opus 5.5" and "Optimizing for cost and intelligence".
 Sources: https://platform.claude.com/docs/en/build-with-claude/prompt-engineering/prompting-claude-opus-5-5, https://platform.claude.com/docs/en/build-with-claude/prompt-engineering/prompting-claude-opus-5, https://platform.claude.com/docs/en/models/opus-5-5/whats-new-opus-5-5, https://platform.claude.com/docs/en/about-claude/models/optimizing-for-cost-and-intelligence
 Unverified: how much of each Opus 5 habit Opus 5.5 keeps. Its guide says only that the Opus 5 patterns remain a reasonable starting point, so items marked "Opus 5 guide" rest on that. Whether `frontier_llm` or `general_harms` declines occur on it.
 
@@ -36,7 +36,7 @@ A standing instruction from the user, the person you are working for. It is abou
 **Agents working across several connected apps on loosely specified tasks.** Keep untrusted content out of what it searches:
 
 ```text
-Before taking any action, explore broadly with tool calls: list and open the emails, documents, spreadsheet tabs and records across the available apps that could be relevant to this task, including ones the task does not explicitly mention, and use what you find.
+Before taking any action, explore broadly with tool calls: list and open the emails, documents, spreadsheet tabs, and records across the available apps that could be relevant to this task, including ones the task does not explicitly mention, and use what you find.
 ```
 
 **Multi-turn chat, to cut thinking on follow-ups.** Leave it out of long analyses and agentic work, where a later step can expose an earlier mistake:

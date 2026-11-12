@@ -1,6 +1,6 @@
 # Claude Sonnet 5.5 (`claude-sonnet-5-5`)
 
-Verified 2026-11-10 against "Prompting Claude Sonnet 5.5", "Choosing a model" and the Sonnet 5.5 model page.
+Verified 2026-11-12 against "Prompting Claude Sonnet 5.5", "Choosing a model" and the Sonnet 5.5 model page.
 Sources: https://platform.claude.com/docs/en/build-with-claude/prompt-engineering/prompting-claude-sonnet-5-5, https://platform.claude.com/docs/en/about-claude/models/choosing-a-model, https://platform.claude.com/docs/en/models/sonnet-5-5/overview
 Unverified: none.
 
@@ -25,19 +25,19 @@ The API default effort is `high`. For agentic coding and multistep tool use, sta
 ```text
 Keep working until everything the user asked for is done, and only stop to ask when you can't go on without the user or before a risky step.
 
-When the work the user asked for is done and checked, stop and report. Don't add features, tests, files, docs or refactors that weren't asked for. If you think one would help, mention it at the end instead of doing it.
+When the work the user asked for is done and checked, stop and report. Don't add features, tests, files, docs, or refactors that weren't asked for. If you think one would help, mention it at the end instead of doing it.
 ```
 
 **Work at `xhigh` or `max`,** where the model starts its own review rounds and reviewer subagents. In testing at `max` this cut session cost by about a third with no change in quality:
 
 ```text
-When the work the user asked for is done and its checks pass, stop and report. Don't start extra rounds of review or hardening on your own, and don't launch reviewer sub-agents unless the user asked for a review. If you think a deeper review is worth doing, say so at the end.
+When the work the user asked for is done and its checks pass, stop and report. Don't start extra rounds of review or hardening on your own, and don't launch reviewer subagents unless the user asked for a review. If you think a deeper review is worth doing, say so at the end.
 ```
 
 **Open-ended requests where ideas should come before building:**
 
 ```text
-When the user asks for ideas, options or a plan, give them that and stop. Don't start building or changing anything until they say to go ahead.
+When the user asks for ideas, options, or a plan, give them that and stop. Don't start building or changing anything until they say to go ahead.
 ```
 
 **A JSON answer that needs a few steps of working out** (totaling figures, applying a rule, ranking), with structured outputs and adaptive thinking. Put this at the end of the system prompt, or run the request at `xhigh`:
@@ -49,13 +49,13 @@ Think the problem through before you answer.
 **A product that gives the model a search tool:**
 
 ```text
-Use the search tool to check specifics that may have changed since your training, such as what is allowed, required or charged, even when you feel confident. For researched work such as a report or a comparison, gather current sources rather than writing from your training knowledge.
+Use the search tool to check specifics that may have changed since your training, such as what is allowed, required, or charged, even when you feel confident. For researched work such as a report or a comparison, gather current sources rather than writing from your training knowledge.
 ```
 
 **Coding at `low`, when changes are reported done with no test or build output:**
 
 ```text
-When you change code that can be run, built, or type-checked, run a real check that exercises the change before reporting it done: the project's tests, type-checker, or build, or the changed command itself. A syntax-only check, or a check command that failed to start, does not count; if all that is missing is the project's declared dependencies, install them with its own package manager and lockfile (e.g. npm install, pip install -r requirements.txt), never via sudo or the system package manager, unless told not to. Only if no real check can run here, say which one you did not run and why instead of reporting the change as done.
+When you change code that can be run, built, or type-checked, run a real check that exercises the change before reporting it done: the project's tests, type-checker, or build, or the changed command itself. A syntax-only check, or a check command that failed to start, does not count; if all that is missing is the project's declared dependencies, install them with its own package manager and lockfile (for example, npm install or pip install -r requirements.txt), never through sudo or the system package manager, unless told not to. Only if no real check can run here, say which one you did not run and why instead of reporting the change as done.
 ```
 
 **Dense charts and technical drawings.** Give the model a way to crop, zoom or run code on the image. On charts that helps more than raising effort.

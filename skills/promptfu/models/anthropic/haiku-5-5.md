@@ -1,6 +1,6 @@
 # Claude Haiku 5.5 (`claude-haiku-5-5`)
 
-Verified 2026-11-10 against "Prompting Claude Haiku 5.5", "Choosing a model" and the Haiku 5.5 model page.
+Verified 2026-11-12 against "Prompting Claude Haiku 5.5", "Choosing a model" and the Haiku 5.5 model page.
 Sources: https://platform.claude.com/docs/en/build-with-claude/prompt-engineering/prompting-claude-haiku-5-5, https://platform.claude.com/docs/en/about-claude/models/choosing-a-model, https://platform.claude.com/docs/en/models/haiku-5-5/overview
 Unverified: none.
 
@@ -25,7 +25,7 @@ The current date is {{current_date}}.
 With a long system prompt or at `low`, add this directly after the date. With a short prompt at `medium` the date alone is enough:
 
 ```text
-Your training data ends well before today's date. Records, office holders, prices, versions, rules and anything "latest" may have changed since then, so search for those before you answer, even when you feel sure. Facts that can't change need no search. When the answer depends on where the user is, put the user's country or region in the search query.
+Your training data ends well before today's date. Records, office holders, prices, versions, rules, and anything "latest" may have changed since then, so search for those before you answer, even when you feel sure. Facts that can't change need no search. When the answer depends on where the user is, put the user's country or region in the search query.
 ```
 
 **A long coding-agent prompt at `low`, when the model stops early and hands the task back.** Raising effort to `medium` also roughly halves early stopping, for more than twice the output tokens:
@@ -38,7 +38,7 @@ When the work the user asked for is done and checked, stop and report. Don't add
 **Coding at `low` or `medium`, when changes are reported done with no check run:**
 
 ```text
-When you change code that can be run, built, or type-checked, run a real check that exercises the change before reporting it done: the project's tests, type-checker, or build, or the changed command itself. A syntax-only check, or a check command that failed to start, does not count; if all that is missing is the project's declared dependencies, install them with its own package manager and lockfile (e.g. npm install, pip install -r requirements.txt), never via sudo or the system package manager, unless told not to. Only if no real check can run here, say which one you did not run and why instead of reporting the change as done.
+When you change code that can be run, built, or type-checked, run a real check that exercises the change before reporting it done: the project's tests, type-checker, or build, or the changed command itself. A syntax-only check, or a check command that failed to start, does not count; if all that is missing is the project's declared dependencies, install them with its own package manager and lockfile (for example, npm install or pip install -r requirements.txt), never through sudo or the system package manager, unless told not to. Only if no real check can run here, say which one you did not run and why instead of reporting the change as done.
 ```
 
 **A chatbot or support assistant.** Use `high` effort as well when instruction following matters most:

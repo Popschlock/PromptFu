@@ -1,6 +1,6 @@
 # Claude Fable 5.2 (`claude-fable-5-2`)
 
-Verified 2026-11-10 against "Prompting Claude Fable 5.2", "Choosing a model" and the Fable 5.2 model page.
+Verified 2026-11-12 against "Prompting Claude Fable 5.2", "Choosing a model" and the Fable 5.2 model page.
 Sources: https://platform.claude.com/docs/en/build-with-claude/prompt-engineering/prompting-claude-fable-5-2, https://platform.claude.com/docs/en/about-claude/models/choosing-a-model, https://platform.claude.com/docs/en/models/fable-5-2/overview
 Unverified: whether the Fable 5.1 habits this guide does not repeat (the batching nudge, the search nudge at `low`, the formatting rule) still apply, so they are left out.
 
@@ -36,12 +36,12 @@ If you notice yourself inviting the user to redirect you or offering to wait, in
 If someone clearly decided something is a hard blocker, such as a file marked not to be touched, access that was intentionally withheld, or a safety guardrail, leave it alone, say plainly what you found, and look for another safe way to finish the task. Stopping before the task is complete is very rarely merited, as in when the task can't move forward without user input, or where the blocker is deliberate and should not be worked past. This does not override the need for confirmation on risky or destructive actions.
 ```
 
-**Approval rules.** Name the exact actions a rule covers, because the model applies it as written. Put the exception inside the rule ("get a go-ahead first" in the rule itself), since a separate line saying approved steps may proceed changes little. List the steps that need no approval, such as retrying a call that is safe to repeat. A general instruction to act more freely does nothing.
+**Approval rules.** Name the exact actions a rule covers, because the model follows it closely. It treats "never" as absolute, so where the model should still be able to act, write "ask for approval before deleting files", not "never delete files". List the routine steps that need no approval, since "act more freely" is too vague.
 
-**Coding where the model should improve structure as it works.** Without this it adds to the existing structure and reports nearby problems instead of fixing them. With it, expect about 1.5 times the output tokens and changes nobody asked for, so review the diff. Leave it out when the user owns the code and wants it changed as little as possible:
+**Coding where the model should improve structure as it works.** Without this it adds to the existing structure and reports problems instead of fixing them. With it, expect about 70 to 80 percent more output tokens and changes nobody asked for, so review the diff. Leave it out when the user owns the code and wants it changed as little as possible:
 
 ```text
-This codebase is yours: what it's for and how it's built are your call, and you'll keep building on it.
+You are the owner and long-term maintainer of this codebase, and its design is up to you.
 ```
 
 **A human watching the work:**
